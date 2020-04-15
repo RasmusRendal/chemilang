@@ -1,0 +1,7 @@
+﻿---
+IndentWidth: '2'
+TabWidth: '2'
+UseTab: ForContinuationAndIndentation
+AllowShortFunctionsOnASingleLine: Empty
+
+...

@@ -1,0 +1,24 @@
+name: Docker Image CI
+
+on: [push]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker image
+      run: git submodule update --init --recursive && docker-compose up
+    - name: Copy the artefacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: coverage
+        path: htmloutput
+    - name: Copy the short artefact
+      uses: actions/upload-artifact@v1
+      with:
+        name: coverage_short
+        path: htmloutput/coverage_short.html

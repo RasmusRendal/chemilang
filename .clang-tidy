@@ -1,0 +1,13 @@
+Checks: 'readability-identifier-naming,misc-assert-side-effect,readability-container-size-empty,*,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-fuchsia-default-arguments-calls,-modernize-use-trailing-return-type,-google-readability-braces-around-statements,-hicpp-braces-around-statements,-readability-magic-numbers,-readability-braces-around-statements,-*-avoid-magic-numbers,-cppcoreguidelines-pro-type-vararg,-misc-non-private-member-variables-in-classes,-google-runtime-references,-google-explicit-constructor,-cppcoreguidelines-non-private-member-variables-in-classes,-hicpp-explicit-conversions,-llvm-header-guard,-cppcoreguidelines-macro-usage,-hicpp-vararg,-hicpp-special-member-functions,-cert-err58-cpp,-cppcoreguidelines-special-member-functions,-cppcoreguidelines-owning-memory,-fuchsia-statically-constructed-objects,-*-avoid-goto,-fuchsia-default-arguments-declarations,-cert-msc32-c,-cert-msc51-cpp,-fuchsia-overloaded-operator'
+
+CheckOptions:
+ - { key: readability-identifier-naming.ClassCase,           value: camelCase  }
+ - { key: readability-identifier-naming.StructCase,          value: camelCase  }
+ - { key: readability-identifier-naming.EnumCase,            value: PascalCase  }
+ - { key: readability-identifier-naming.VariableCase,        value: camelCase  }
+ - { key: readability-identifier-naming.ParameterCase,       value: camelCase  }
+ - { key: readability-identifier-naming.GlobalConstantCase,  value: UPPER_CASE }
+ - { key: readability-identifier-naming.FunctionCase,        value: PascalCase  }
+ - { key: readability-identifier-naming.PublicMethodCase,    value: PascalCase  }
+ - { key: readability-identifier-naming.PrivateMethodCase,   value: PascalCase  }
+ - { key: readability-identifier-naming.PublicMemberCase,    value: camelCase  }
