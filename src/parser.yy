@@ -27,14 +27,6 @@
 # include "driver.h"
 using SpeciesPair = std::pair<std::string, int>;
 using SpeciesList = std::map<std::string, int>;
-
-void InsertToSpecieMap(SpeciesList &list, SpeciesPair &toInsert) {
-	if (list.find(toInsert.first) == list.end()) {
-		list.insert(toInsert);
-	} else {
-		list[toInsert.first] += toInsert.second;
-	}
-  }
 }
 
 %define api.token.prefix {TOK_}
