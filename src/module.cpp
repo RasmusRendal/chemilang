@@ -14,7 +14,13 @@ std::string Module::Compile() {
 		// Remove the last trailing +, because I'm too lazy not to add it
 		output.pop_back();
 		output.pop_back();
-		output += "-> ";
+		if (std::get<2>(reaction) != 1) {
+			output += "->";
+			output += "(";
+			output += std::to_string(std::get<2>(reaction));
+			output += ") ";
+		} else
+			output += "-> ";
 		auto &products = std::get<1>(reaction);
 		if (!products.empty()) {
 			for (const auto &specie : std::get<1>(reaction)) {

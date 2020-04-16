@@ -125,6 +125,7 @@ reactions: reaction
 		 ;
 
 reaction: reactionSpeciesList "->" reactionSpeciesList ";" { drv.currentModule.reactions.push_back(std::make_tuple($1, $3, 1)); }
+    | reactionSpeciesList "->" "(" "number" ")" reactionSpeciesList ";" { drv.currentModule.reactions.push_back(std::make_tuple($1, $6, $4)); }
 		| reactionSpeciesList "->" "number" ";" { drv.currentModule.reactions.push_back(std::make_tuple($1, speciesRatios(), 1)); }
 		;
 
