@@ -86,6 +86,7 @@ T_DINPUT          "input:"
 T_DOUTPUT         "output:"
 T_DREACTIONS      "reactions:"
 T_DCONCENTRATIONS "concentrations:"
+T_DCOMPOSITIONS "compositions:"
 T_NAME            [a-zA-Z][a-zA-Z]*
 T_RIGHTARROW      "->"
 T_BIARROW         "<->"
@@ -96,6 +97,7 @@ T_BRACEEND        "}"
 T_PARENSTART      "("
 T_PARENEND        ")"
 T_SET             ":="
+T_EQUALS             "="
 T_PLUS            "+"
 T_COMMA           ","
 T_END             ";"
@@ -124,6 +126,7 @@ blank             [ \t\r]
 {T_DOUTPUT}     return yy::parser::make_T_DOUTPUT     (loc);
 {T_DREACTIONS}  return yy::parser::make_T_DREACTIONS  (loc);
 {T_DCONCENTRATIONS}  return yy::parser::make_T_DCONCENTRATIONS  (loc);
+{T_DCOMPOSITIONS}  return yy::parser::make_T_DCOMPOSITIONS  (loc);
 {T_RIGHTARROW}  return yy::parser::make_T_RIGHTARROW  (loc);
 {T_BIARROW}     return yy::parser::make_T_BIARROW     (loc);
 {T_BRACKETSTART}  return yy::parser::make_T_BRACKETSTART  (loc);
@@ -132,6 +135,7 @@ blank             [ \t\r]
 {T_BRACEEND}    return yy::parser::make_T_BRACEEND    (loc);
 {T_PARENSTART}  return yy::parser::make_T_PARENSTART  (loc);
 {T_PARENEND}    return yy::parser::make_T_PARENEND    (loc);
+{T_EQUALS}         return yy::parser::make_T_EQUALS         (loc);
 {T_SET}         return yy::parser::make_T_SET         (loc);
 {T_PLUS}        return yy::parser::make_T_PLUS        (loc);
 {T_COMMA}         return yy::parser::make_T_COMMA         (loc);

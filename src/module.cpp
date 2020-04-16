@@ -2,6 +2,7 @@
 
 std::string Module::Compile() {
 	Verify();
+	ApplyCompositions();
 	std::string output = "";
 	for (const auto &c : concentrations) {
 		output += name + "_" + c.first + " := " + std::to_string(c.second) + ";\n";
@@ -58,5 +59,55 @@ void Module::Verify() {
 				throw SpecieNotDeclaredException(specie.first, name);
 			}
 		}
+	}
+}
+
+void Module::MapReaction(const speciesMapping &mapIn,
+												 const speciesMapping &mapOut, const reaction &r) {
+	speciesRatios leftSide;
+	for (const auto &specie : std::get<0>(r)) {
+		const std::string &specieName = specie.first;
+		if (mapIn.find(specieName) != mapIn.end()) {
+			leftSide.insert(std::make_pair(mapIn.at(specieName), specie.second));
+		} else if (mapOut.find(specieName) != mapOut.end()) {
+			leftSide.insert(std::make_pair(mapOut.at(specieName), specie.second));
+		} else {
+			throw std::runtime_error("Specie not found");
+		}
+	}
+
+	speciesRatios rightSide;
+	for (const auto &specie : std::get<1>(r)) {
+		const std::string &specieName = specie.first;
+		if (mapIn.find(specieName) != mapIn.end()) {
+			rightSide.insert(std::make_pair(mapIn.at(specieName), specie.second));
+		} else if (mapOut.find(specieName) != mapOut.end()) {
+			rightSide.insert(std::make_pair(mapOut.at(specieName), specie.second));
+		} else {
+			throw std::runtime_error("Specie not found");
+		}
+	}
+
+	reactionRate rate = std::get<2>(r);
+	reaction mapped(leftSide, rightSide, rate);
+	reactions.push_back(mapped);
+}
+
+void Module::ApplyCompositions() {
+	int compositionNumber = 0;
+	while (!compositions.empty()) {
+		composition comp = compositions.back();
+		speciesMapping mapIn = std::get<1>(comp);
+		speciesMapping mapOut = std::get<2>(comp);
+		Module *submodule = std::get<0>(comp);
+		submodule->Verify();
+		submodule->ApplyCompositions();
+
+		for (const auto &reaction : submodule->reactions) {
+			MapReaction(mapIn, mapOut, reaction);
+		}
+
+		compositions.pop_back();
+		compositionNumber++;
 	}
 }

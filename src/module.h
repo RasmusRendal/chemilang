@@ -5,10 +5,15 @@
 #include <tuple>
 #include <vector>
 
+class Module;
+
+// TODO: Consider whether these would be more readable as structs
 using specie = std::string;
 using speciesRatios = std::map<specie, int>;
 using reactionRate = int;
 using reaction = std::tuple<speciesRatios, speciesRatios, reactionRate>;
+using speciesMapping = std::map<specie, specie>;
+using composition = std::tuple<Module *, speciesMapping, speciesMapping>;
 
 struct SpecieNotDeclaredException : public std::exception {
 	std::string error;
@@ -25,6 +30,16 @@ public:
 	Module() {}
 	void Verify();
 	std::string Compile();
+	/**
+	 * Remove all compositions from the vector, and add items to the object
+	 *
+	 * During compilations, compositions are added as items in the compositions
+	 * vector. Then, after this is done, this function should be called, and each
+	 * submodules reactions, compositions and private species should be added to
+	 * the supermodule. This function does that action, and pops the modules off
+	 * the vector
+	 */
+	void ApplyCompositions();
 
 	std::string name;
 	std::vector<specie> inputSpecies;
@@ -32,4 +47,9 @@ public:
 	std::vector<specie> privateSpecies;
 	std::map<specie, int> concentrations;
 	std::vector<reaction> reactions;
+	std::vector<composition> compositions;
+
+private:
+	void MapReaction(const speciesMapping &mapIn, const speciesMapping &mapOut,
+									 const reaction &r);
 };
