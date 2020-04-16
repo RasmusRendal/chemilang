@@ -1,16 +1,16 @@
+#include "driver.h"
 #include <iostream>
 #include <string>
-#include "driver.h"
 
 int main(int argc, char *argv[]) {
-	std::cout << "Hello world" << std::endl;
 	std::string filename = argv[1];
-	std::cout << "Compiling " + filename << std::endl;
 	driver drv;
-	drv.parse_file(filename);
-	if (!drv.parse_file(filename)) {
-		std::cout << "Something went wrong" << std::endl;
+	int res = drv.parse_file(filename);
+	if (res != 0) {
+		std::cout << "Compilation error" << std::endl;
+	} else {
+		std::cout << drv.out;
 	}
 
-	return drv.result;
+	return res;
 }

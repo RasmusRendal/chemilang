@@ -21,6 +21,8 @@ include_directories(${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 include_directories(src)
 
 file(GLOB SOURCES "src/*.cpp")
+message("${SOURCES}")
+list(REMOVE_ITEM SOURCES "${CMAKE_SOURCE_DIR}/src/main.cpp")
 file(GLOB TEST_SOURCES "tests/*.cpp")
 
 find_package(Boost 1.56 REQUIRED COMPONENTS iostreams system)
@@ -28,6 +30,7 @@ find_package(Boost 1.56 REQUIRED COMPONENTS iostreams system)
 # add the executable
 add_executable(chemilang
 	${SOURCES}
+	"src/main.cpp"
 	${BISON_parser_OUTPUTS}
 	${FLEX_scanner_OUTPUTS}
 )

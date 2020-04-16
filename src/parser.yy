@@ -7,10 +7,11 @@
 %define parse.assert
 
 %code requires {
-  # include <string>
-  # include <map>
-  # include <vector>
-  # include <exception>
+  #include <string>
+  #include <map>
+  #include <vector>
+  #include <exception>
+  #include "module.h"
   class driver;
 }
 
@@ -62,6 +63,8 @@ void InsertToSpecieMap(SpeciesList &list, SpeciesPair &toInsert) {
 %token <std::string>    T_NAME      "name"
 %token <int>            T_NUMBER    "number"
 
+%nterm <speciesRatios> reactionSpeciesList
+
 %%
 
 %start modules;
@@ -70,7 +73,7 @@ modules  : module
          | modules module
          ;
 
-module : "module:" "name" "{" properties "}" { std::cout << $2 << std::endl; }
+module : T_DMODULE "name" "{" properties "}" { drv.currentModule.name = $2; drv.FinishParsingModule(); }
 	   ;
 
 properties : property
@@ -80,17 +83,19 @@ properties : property
 property : "private:" dSpecies ";"
 		 | "output:" dSpecies ";"
 		 | "reactions:" "{" reactions "}"
+		 | "concentrations:" "{" concentrations "}"
 		 ;
 
 reactions: reaction
 		 | reactions reaction
 		 ;
 
-reaction: reactionSpeciesList "->" reactionSpeciesList ";"
+reaction: reactionSpeciesList "->" reactionSpeciesList ";" { drv.currentModule.reactions.push_back(std::make_tuple($1, $3, 1)); }
+		| reactionSpeciesList "->" "number" ";" { drv.currentModule.reactions.push_back(std::make_tuple($1, speciesRatios(), 1)); }
 		;
 
-reactionSpeciesList: "name"
-				   | reactionSpeciesList "+" "name"
+reactionSpeciesList: "name" { speciesRatios l; l.insert(std::pair<specie, int>($1, 1)); $$ = l; }
+				   | reactionSpeciesList "+" "name" { speciesRatios l = $1; l.insert(std::pair<specie, int>($3, 1)); $$ = l; }
 				   ;
 
 dSpecies: "name"
@@ -101,9 +106,16 @@ speciesArray: "name"
 			| speciesArray "," "name"
 			;
 
+concentrations: concentration
+			  | concentrations concentration
+			  ;
+
+concentration: "name" ":=" "number" ";" {drv.currentModule.concentrations.insert(std::make_pair($1, $3));}
+			 ;
+
 %%
 
-void yy::parser::error (const location_type&, const std::string&)
+void yy::parser::error (const location_type &l, const std::string &m)
 {
-  //std::cerr << l << ": " << m << '\n';
+  std::cerr << l << ": " << m << '\n';
 }
