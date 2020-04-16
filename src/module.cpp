@@ -1,6 +1,7 @@
 #include "module.h"
 
 std::string Module::Compile() {
+	Verify();
 	std::string output = "";
 	for (const auto &c : concentrations) {
 		output += name + "_" + c.first + " := " + std::to_string(c.second) + ";\n";
@@ -27,4 +28,35 @@ std::string Module::Compile() {
 		output += ";\n";
 	}
 	return output;
+}
+
+void Module::Verify() {
+	std::set<specie> declaredSpecies;
+	for (const auto &specie : inputSpecies) {
+		declaredSpecies.insert(specie);
+	}
+	for (const auto &specie : outputSpecies) {
+		declaredSpecies.insert(specie);
+	}
+	for (const auto &specie : privateSpecies) {
+		declaredSpecies.insert(specie);
+	}
+
+	for (const auto &c : concentrations) {
+		if (declaredSpecies.find(c.first) == declaredSpecies.end()) {
+			throw SpecieNotDeclaredException(c.first, name);
+		}
+	}
+	for (const auto &reaction : reactions) {
+		for (const auto &specie : std::get<0>(reaction)) {
+			if (declaredSpecies.find(specie.first) == declaredSpecies.end()) {
+				throw SpecieNotDeclaredException(specie.first, name);
+			}
+		}
+		for (const auto &specie : std::get<1>(reaction)) {
+			if (declaredSpecies.find(specie.first) == declaredSpecies.end()) {
+				throw SpecieNotDeclaredException(specie.first, name);
+			}
+		}
+	}
 }

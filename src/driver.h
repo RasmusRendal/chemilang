@@ -10,6 +10,12 @@
 // ... and declare it for the parser's sake.
 YY_DECL;
 
+struct NoMainModuleException : public std::exception {
+	const char *what() const throw() {
+		return "No main module declared";
+	}
+};
+
 // Conducting the whole scanning and parsing of Calc++.
 //! driver class, wroom wroom.
 class driver {

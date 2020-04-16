@@ -25,8 +25,11 @@
 
 %code {
 # include "driver.h"
-using SpeciesPair = std::pair<std::string, int>;
-using SpeciesList = std::map<std::string, int>;
+void AddToSpeciesVector(std::vector<specie> &v1, const std::vector<specie> &v2) {
+	for (const auto &i : v2) {
+		v1.push_back(i);
+	}
+}
 }
 
 %define api.token.prefix {TOK_}
@@ -55,6 +58,8 @@ using SpeciesList = std::map<std::string, int>;
 %token <std::string>    T_NAME      "name"
 %token <int>            T_NUMBER    "number"
 
+%nterm <std::vector<specie>> dSpecies
+%nterm <std::vector<specie>> speciesArray
 %nterm <speciesRatios> reactionSpeciesList
 
 %%
@@ -72,8 +77,8 @@ properties : property
 		   | properties property
 		   ;
 
-property : "private:" dSpecies ";"
-		 | "output:" dSpecies ";"
+property : "private:" dSpecies ";" { AddToSpeciesVector(drv.currentModule.privateSpecies, $2); }
+		 | "output:" dSpecies ";" { AddToSpeciesVector(drv.currentModule.outputSpecies, $2); }
 		 | "reactions:" "{" reactions "}"
 		 | "concentrations:" "{" concentrations "}"
 		 ;
@@ -90,12 +95,12 @@ reactionSpeciesList: "name" { speciesRatios l; l.insert(std::pair<specie, int>($
 				   | reactionSpeciesList "+" "name" { speciesRatios l = $1; l.insert(std::pair<specie, int>($3, 1)); $$ = l; }
 				   ;
 
-dSpecies: "name"
-		| "[" speciesArray "]"
+dSpecies: "name" { std::vector<specie> v; v.push_back($1); $$ = v; }
+		| "[" speciesArray "]" { $$ = $2; }
 		;
 
-speciesArray: "name"
-			| speciesArray "," "name"
+speciesArray: "name" { std::vector<specie> v; v.push_back($1); $$ = v; }
+			| speciesArray "," "name" { std::vector<specie> v = $1; v.push_back($3); $$ = v; }
 			;
 
 concentrations: concentration

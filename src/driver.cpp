@@ -30,7 +30,7 @@ int driver::parse() {
 	int res = parse();
 	scan_end();
 	if (modules.find("main") == modules.end()) {
-		throw std::runtime_error("No main module;");
+		throw NoMainModuleException();
 	}
 	out = "#!/usr/bin/env crnsimul\n";
 	out += modules["main"].Compile();
