@@ -11,6 +11,7 @@
   #include <map>
   #include <vector>
   #include <exception>
+  #include <assert.h>
   #include "module.h"
   class driver;
 }
@@ -25,11 +26,36 @@
 
 %code {
 # include "driver.h"
-void AddToSpeciesVector(std::vector<specie> &v1, const std::vector<specie> &v2) {
+
+template <class T>
+void MergeVectors(std::vector<T> &v1, const std::vector<T> &v2) {
 	for (const auto &i : v2) {
 		v1.push_back(i);
 	}
 }
+
+void MakeComposition(driver &drv, const std::string &moduleName, std::vector<specie> inputs, std::vector<specie> outputs) {
+	Module *module = &drv.modules.at(moduleName);
+	speciesMapping inputMapping;
+	speciesMapping outputMapping;
+
+	if (inputs.size() != module->inputSpecies.size()) {
+		throw CompositionException(moduleName, "input", inputs.size(), module->inputSpecies.size());
+	}
+	for (int i = 0; i < module->inputSpecies.size(); i++) {
+		inputMapping.insert(std::make_pair(module->inputSpecies[i], inputs[i]));
+	}
+
+	if (outputs.size() != module->outputSpecies.size()) {
+		throw CompositionException(moduleName, "output", outputs.size(), module->outputSpecies.size());
+	}
+	for (int i = 0; i < module->outputSpecies.size(); i++) {
+		outputMapping.insert(std::make_pair(module->outputSpecies[i], outputs[i]));
+	}
+
+	drv.currentModule.compositions.push_back(composition(module, inputMapping, outputMapping));
+}
+
 }
 
 %define api.token.prefix {TOK_}
@@ -41,6 +67,7 @@ void AddToSpeciesVector(std::vector<specie> &v1, const std::vector<specie> &v2) 
     T_DOUTPUT      "output:"
     T_DREACTIONS      "reactions:"
     T_DCONCENTRATIONS      "concentrations:"
+    T_DCOMPOSITIONS      "compositions:"
     T_RIGHTARROW    "->"
     T_BIARROW       "<->"
     T_BRACKETSTART  "["
@@ -50,6 +77,7 @@ void AddToSpeciesVector(std::vector<specie> &v1, const std::vector<specie> &v2) 
     T_PARENSTART    "("
     T_PARENEND      ")"
     T_SET           ":="
+    T_EQUALS           "="
     T_PLUS          "+"
     T_COMMA         ","
     T_END           ";"
@@ -77,11 +105,20 @@ properties : property
 		   | properties property
 		   ;
 
-property : "private:" dSpecies ";" { AddToSpeciesVector(drv.currentModule.privateSpecies, $2); }
-		 | "output:" dSpecies ";" { AddToSpeciesVector(drv.currentModule.outputSpecies, $2); }
+property : "private:" dSpecies ";" { MergeVectors(drv.currentModule.privateSpecies, $2); }
+		 | "output:" dSpecies ";" { MergeVectors(drv.currentModule.outputSpecies, $2); }
+		 | "input:" dSpecies ";" { MergeVectors(drv.currentModule.inputSpecies, $2); }
 		 | "reactions:" "{" reactions "}"
 		 | "concentrations:" "{" concentrations "}"
+		 | "compositions:" "{" compositions "}"
 		 ;
+
+compositions: composition
+			| compositions composition
+			;
+
+composition: speciesArray "=" "name" "(" speciesArray ")" ";" { MakeComposition(drv, $3, $5, $1); }
+		   ;
 
 reactions: reaction
 		 | reactions reaction

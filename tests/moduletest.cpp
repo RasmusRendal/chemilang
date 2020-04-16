@@ -69,3 +69,91 @@ TEST_F(ModuleTest, SpecieNotDeclaredConcentrations) {
 	}
 	EXPECT_THROW(m.Verify(), SpecieNotDeclaredException);
 }
+
+TEST_F(ModuleTest, ApplyCompositionsTest) {
+	Module a;
+	a.inputSpecies.push_back("x");
+	a.inputSpecies.push_back("y");
+	a.outputSpecies.push_back("z");
+	{
+		// x -> z
+		speciesRatios leftSide;
+		leftSide.insert(std::make_pair("x", 1));
+		speciesRatios rightSide;
+		rightSide.insert(std::make_pair("z", 1));
+		reaction r(leftSide, rightSide, 1);
+		a.reactions.push_back(r);
+	}
+	{
+		// y -> z
+		speciesRatios leftSide;
+		leftSide.insert(std::make_pair("y", 1));
+		speciesRatios rightSide;
+		rightSide.insert(std::make_pair("z", 1));
+		reaction r(leftSide, rightSide, 1);
+		a.reactions.push_back(r);
+	}
+
+	Module main;
+	main.name = "main";
+	main.inputSpecies.push_back("x");
+	main.inputSpecies.push_back("y");
+	main.inputSpecies.push_back("z");
+
+	main.outputSpecies.push_back("v");
+	main.privateSpecies.push_back("o");
+
+	{
+		// o = a(x, y);
+		speciesMapping inputMap;
+		inputMap.insert(std::make_pair("x", "x"));
+		inputMap.insert(std::make_pair("y", "y"));
+		speciesMapping outputMap;
+		outputMap.insert(std::make_pair("z", "o"));
+		composition c(&a, inputMap, outputMap);
+		main.compositions.push_back(c);
+	}
+
+	{
+		// v = a(z, o);
+		speciesMapping inputMap;
+		inputMap.insert(std::make_pair("x", "z"));
+		inputMap.insert(std::make_pair("y", "o"));
+		speciesMapping outputMap;
+		outputMap.insert(std::make_pair("z", "v"));
+		composition c(&a, inputMap, outputMap);
+		main.compositions.push_back(c);
+	}
+
+	main.ApplyCompositions();
+	EXPECT_FALSE(main.reactions.empty());
+
+	{
+		const auto &reaction = main.reactions.at(0);
+		const auto &leftSide = std::get<0>(reaction);
+		const auto &rightSide = std::get<1>(reaction);
+		EXPECT_NO_THROW(leftSide.at("z"));
+		EXPECT_NO_THROW(rightSide.at("v"));
+	}
+	{
+		const auto &reaction = main.reactions.at(1);
+		const auto &leftSide = std::get<0>(reaction);
+		const auto &rightSide = std::get<1>(reaction);
+		EXPECT_NO_THROW(leftSide.at("o"));
+		EXPECT_NO_THROW(rightSide.at("v"));
+	}
+	{
+		const auto &reaction = main.reactions.at(2);
+		const auto &leftSide = std::get<0>(reaction);
+		const auto &rightSide = std::get<1>(reaction);
+		EXPECT_NO_THROW(leftSide.at("x"));
+		EXPECT_NO_THROW(rightSide.at("o"));
+	}
+	{
+		const auto &reaction = main.reactions.at(3);
+		const auto &leftSide = std::get<0>(reaction);
+		const auto &rightSide = std::get<1>(reaction);
+		EXPECT_NO_THROW(leftSide.at("y"));
+		EXPECT_NO_THROW(rightSide.at("o"));
+	}
+}
