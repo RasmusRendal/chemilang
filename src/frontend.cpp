@@ -6,11 +6,8 @@ void Frontend::GenerateStringStream() {
 
 void Frontend::WriteFile() {
 	GenerateStringStream();
-	if (outputFileName.empty()) {
-		outputFileName = defaultFilename;
-	}
 	fileStream.open(outputFileName);
 	fileStream << stream.rdbuf();
 	fileStream.close();
-	std::cout << "file generated" << std::endl;
+	std::cout << "Output written to " << outputFileName <<  std::endl;
 }

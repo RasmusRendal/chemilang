@@ -11,9 +11,8 @@ public:
 	std::stringstream stream;
 	void GenerateStringStream();
 	void WriteFile();
-	std::string outputFileName;
+	std::string outputFileName = "out.crn";
 
 private:
-	std::string defaultFilename = "out.crn";
 	std::ofstream fileStream;
 };
