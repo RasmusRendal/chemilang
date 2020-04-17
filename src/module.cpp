@@ -1,4 +1,5 @@
 #include "module.h"
+#include <iostream>
 
 std::string Module::Compile() {
 	Verify();
@@ -52,6 +53,13 @@ void Module::Verify() {
 	for (const auto &c : concentrations) {
 		if (declaredSpecies.find(c.first) == declaredSpecies.end()) {
 			throw SpecieNotDeclaredException(c.first, name);
+		}
+		for (const auto &specie : inputSpecies)
+		{
+			if(c.first == specie)
+			{
+				throw InputSpecieConcException(c.first, name);
+			}
 		}
 	}
 	for (const auto &reaction : reactions) {

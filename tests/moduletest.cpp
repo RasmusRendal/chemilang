@@ -194,3 +194,39 @@ TEST_F(ModuleTest, ReactionRate) {
 
 	EXPECT_EQ(m.Compile(), output);
 }
+
+TEST_F(ModuleTest, InputConcException) {
+	Module a;
+	a.inputSpecies.push_back("x");
+	a.outputSpecies.push_back("z");
+
+	a.concentrations.insert(std::make_pair("x", 50));
+
+	{
+		// x + y -> y
+		speciesRatios leftSide;
+		leftSide.insert(std::make_pair("x", 1));
+		speciesRatios rightSide;
+		rightSide.insert(std::make_pair("z", 1));
+		reaction r(leftSide, rightSide, 1);
+		a.reactions.push_back(r);
+	}
+
+	Module main;
+	main.name = "main";
+	main.inputSpecies.push_back("x");
+
+	main.outputSpecies.push_back("z");
+
+	{
+		// z = a(x);
+		speciesMapping inputMap;
+		inputMap.insert(std::make_pair("x", "x"));
+		speciesMapping outputMap;
+		outputMap.insert(std::make_pair("z", "z"));
+		composition c(&a, inputMap, outputMap);
+		main.compositions.push_back(c);
+	}
+
+	EXPECT_THROW(main.ApplyCompositions(), InputSpecieConcException);
+}
