@@ -230,3 +230,43 @@ TEST_F(ModuleTest, InputConcException) {
 
 	EXPECT_THROW(main.ApplyCompositions(), InputSpecieConcException);
 }
+
+TEST_F(ModuleTest, NestedComposition) {
+	std::string input = "module thing {\n"
+		"input: c;\n"
+		"output: j;\n"
+		"private: chem;\n"
+		"concentrations: {\n"
+			"chem := 420;\n"
+			"}\n"
+		"}\n"
+		"module some {\n"
+			"input: x;\n"
+			"private: aa;\n"
+			"output: b;\n"
+			"concentrations: {\n"
+				"aa := 20;\n"
+			"}\n"
+			"compositions: {\n"
+				"b = thing(aa);\n"
+		"}\n"
+		"}\n"
+		"module main {\n"
+			"input: b;\n"
+			"output: z;\n"
+			"private: a;\n"
+			"concentrations: {\n"
+				"a := 1337;\n"
+			"}\n"
+			"compositions: {\n"
+				"z = some(a);\n"
+			"}\n"
+		"}\n";
+		driver drv;
+		drv.parse_string(input);
+		std::string expected = "#!/usr/bin/env crnsimul\n"
+			"main_a := 1337;\n"
+			"main_some_aa := 20;\n"
+			"main_some_thing_chem := 420;\n";
+		EXPECT_EQ(drv.out, expected);
+}
