@@ -26,7 +26,7 @@ std::string Module::Compile() {
 			output += ") ";
 		} else
 			output += "-> ";
-		auto &products = reaction.products; // std::get<1>(reaction);
+		auto &products = reaction.products;
 		if (!products.empty()) {
 			for (const auto &specie : reaction.products) {
 				output += name + "_" + specie.first + " + ";
@@ -104,7 +104,7 @@ void Module::MapReaction(const speciesMapping &mapIn,
 		}
 	}
 
-	reactionRate rate = r.rate; // std::get<2>(r);
+	reactionRate rate = r.rate;
 	reaction mapped = {leftSide, rightSide, rate};
 	reactions.push_back(mapped);
 }
@@ -113,9 +113,9 @@ void Module::ApplyCompositions() {
 	int compositionNumber = 0;
 	while (!compositions.empty()) {
 		composition comp = compositions.back();
-		speciesMapping mapIn = comp.inputMapping;   // std::get<1>(comp);
-		speciesMapping mapOut = comp.outputMapping; // std::get<2>(comp);
-		Module *submodule = comp.module;            // std::get<0>(comp);
+		speciesMapping mapIn = comp.inputMapping;
+		speciesMapping mapOut = comp.outputMapping;
+		Module *submodule = comp.module;
 		submodule->Verify();
 		submodule->ApplyCompositions();
 
