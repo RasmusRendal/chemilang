@@ -146,3 +146,29 @@ TEST_F(BasicTest, ReactionRateTest) {
 	ASSERT_EQ(drv.parse_string(in), 0);
 	EXPECT_EQ(drv.out, out);
 }
+
+TEST_F(BasicTest, InputConcException) {
+	std::string in = "module Addition {\n"
+									 "input: x;\n"
+									 "output: z;\n"
+									 "concentrations: {\n"
+									 "x := 5;\n"
+									 "}\n"
+									 "reactions: {\n"
+									 "x -> z;\n"
+									 "}\n"
+									 "}\n"
+									 "module main {\n"
+									 "private: a;\n"
+									 "output: b;\n"
+									 "concentrations: {\n"
+									 "a := 50;\n"
+									 "}\n"
+									 "compositions: {\n"
+									 "b = Addition(a);\n"
+									 "}\n"
+									 "}\n";
+
+	driver drv;
+	ASSERT_THROW(drv.parse_string(in), InputSpecieConcException);
+}
