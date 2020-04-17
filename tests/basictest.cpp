@@ -191,3 +191,22 @@ TEST_F(BasicTest, MultSpeciesInReact) {
 	ASSERT_EQ(drv.parse_string(in), 0);
 	EXPECT_EQ(drv.out, out);
 }
+
+TEST_F(BasicTest, MultSpeciesInReact2) {
+	std::string in = "module main {\n"
+									 "private: x;\n"
+									 "output: y;\n"
+									 "concentrations: {\n"
+									 "x := 50;\n"
+									 "}\n"
+									 "reactions: {\n"
+									 "x + x + x -> y;\n"
+									 "}\n"
+									 "}\n";
+	std::string out = "#!/usr/bin/env crnsimul\n"
+										"main_x := 50;\n"
+										"3main_x -> main_y;\n";
+	driver drv;
+	ASSERT_EQ(drv.parse_string(in), 0);
+	EXPECT_EQ(drv.out, out);
+}

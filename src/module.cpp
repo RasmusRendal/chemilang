@@ -10,11 +10,10 @@ std::string Module::Compile() {
 	}
 	for (const auto &reaction : reactions) {
 		for (const auto &specie : std::get<0>(reaction)) {
-			if(specie.second != 1)
-			{
-				output += std::to_string(specie.second) + name + "_" + specie.first + " + ";
-			}
-			else
+			if (specie.second != 1) {
+				output +=
+						std::to_string(specie.second) + name + "_" + specie.first + " + ";
+			} else
 				output += name + "_" + specie.first + " + ";
 		}
 		// Remove the last trailing +, because I'm too lazy not to add it
