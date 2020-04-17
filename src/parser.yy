@@ -57,9 +57,8 @@ void MakeComposition(driver &drv, const std::string &moduleName, std::vector<spe
 }
 
 using SpeciesPair = std::pair<specie, int>;
-using SpeciesRatios = std::map<specie, int>;
 
-void InsertToSpecieMap(SpeciesRatios &ratio, SpeciesPair &toInsert) {
+void InsertToSpecieMap(speciesRatios &ratio, SpeciesPair &toInsert) {
 	if (ratio.find(toInsert.first) == ratio.end()) {
 		ratio.insert(toInsert);
 	} else {
@@ -137,17 +136,17 @@ reactions: reaction
 		 ;
 
 reaction: reactionSpeciesList "->" reactionSpeciesList ";" { drv.currentModule.reactions.push_back(std::make_tuple($1, $3, 1)); }
-    | reactionSpeciesList "->" "(" "number" ")" reactionSpeciesList ";" { drv.currentModule.reactions.push_back(std::make_tuple($1, $6, $4)); }
+    	| reactionSpeciesList "->" "(" "number" ")" reactionSpeciesList ";" { drv.currentModule.reactions.push_back(std::make_tuple($1, $6, $4)); }
 		| reactionSpeciesList "->" "number" ";" { drv.currentModule.reactions.push_back(std::make_tuple($1, speciesRatios(), 1)); }
 		;
 
 reactionSpeciesList: reactionSpecie { speciesRatios l; InsertToSpecieMap(l, $1); $$ = l; }
-					| reactionSpeciesList "+" reactionSpecie { speciesRatios l = $1; InsertToSpecieMap(l, $3); $$ = l; }
-					;
+                    | reactionSpeciesList "+" reactionSpecie { speciesRatios l = $1; InsertToSpecieMap(l, $3); $$ = l; }
+                    ;
 
-reactionSpecie:	"name" { $$ = std::pair<specie, int>(std::move($1), std::move(1)); }
-				| "number" "name" { $$ = std::pair<specie, int>(std::move($2), std::move($1)); }
-				;
+reactionSpecie: "name" { $$ = std::pair<specie, int>(std::move($1), std::move(1)); }
+                | "number" "name" { $$ = std::pair<specie, int>(std::move($2), std::move($1)); }
+                ;
 
 dSpecies: "name" { std::vector<specie> v; v.push_back($1); $$ = v; }
 		| "[" speciesArray "]" { $$ = $2; }
