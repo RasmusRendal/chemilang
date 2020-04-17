@@ -10,11 +10,10 @@ int main(int argc, char *argv[]) {
 	int res = drv.parse_file(filename);
 	if (res != 0) {
 		std::cout << "Compilation error" << std::endl;
-	}
-	else {
-		for(int i = 1; i < argc; ++i) {
+	} else {
+		for (int i = 1; i < argc; ++i) {
 			if (argv[i] == std::string("-o"))
-			frontend.outputFileName = std::string(argv[++i]);
+				frontend.outputFileName = std::string(argv[++i]);
 		}
 		frontend.drv = &drv;
 		frontend.WriteFile();

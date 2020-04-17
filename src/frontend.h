@@ -1,7 +1,7 @@
 #include "driver.h"
+#include <fstream>
 #include <iostream>
 #include <sstream>
-#include <fstream>
 #include <stdlib.h>
 #include <string>
 
@@ -12,6 +12,7 @@ public:
 	void GenerateStringStream();
 	void WriteFile();
 	std::string outputFileName;
+
 private:
 	std::string defaultFilename = "out.crn";
 	std::ofstream fileStream;

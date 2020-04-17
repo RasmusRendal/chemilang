@@ -5,7 +5,7 @@ void Frontend::GenerateStringStream() {
 }
 
 void Frontend::WriteFile() {
-  GenerateStringStream();
+	GenerateStringStream();
 	if (outputFileName.empty()) {
 		outputFileName = defaultFilename;
 	}
