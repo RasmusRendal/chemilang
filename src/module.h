@@ -60,7 +60,8 @@ public:
 	 * the vector
 	 */
 	void ApplyCompositions();
-
+	void InsertConcentrations(std::string moduleName, std::string specieName,
+														int concentration);
 	std::string name;
 	std::vector<specie> inputSpecies;
 	std::vector<specie> outputSpecies;

@@ -123,7 +123,17 @@ void Module::ApplyCompositions() {
 			MapReaction(mapIn, mapOut, reaction);
 		}
 
+		for (const auto &c : submodule->concentrations) {
+			InsertConcentrations(submodule->name, c.first, c.second);
+		}
+
 		compositions.pop_back();
 		compositionNumber++;
 	}
+}
+
+void Module::InsertConcentrations(std::string moduleName,
+																	std::string specieName, int concentration) {
+	std::string newName = moduleName + "_" + specieName;
+	concentrations.insert(std::pair<specie, int>(newName, concentration));
 }
