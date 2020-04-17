@@ -9,5 +9,5 @@ void Frontend::WriteFile() {
 	fileStream.open(outputFileName);
 	fileStream << stream.rdbuf();
 	fileStream.close();
-	std::cout << "Output written to " << outputFileName <<  std::endl;
+	std::cout << "Output written to " << outputFileName << std::endl;
 }

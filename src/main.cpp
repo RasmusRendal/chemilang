@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
 	std::string filename;
 	driver drv;
 
-	for(int i = 1; i < argc; ++i) {
+	for (int i = 1; i < argc; ++i) {
 		if (file_included(argv[i])) {
 			filename = argv[i];
 		} else if (argv[i] == std::string("-o")) {
@@ -26,6 +26,6 @@ int main(int argc, char *argv[]) {
 	} else {
 		std::cout << "Compilation error" << std::endl;
 	}
-	
+
 	return 0;
 }
