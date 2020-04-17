@@ -172,3 +172,22 @@ TEST_F(BasicTest, InputConcException) {
 	driver drv;
 	ASSERT_THROW(drv.parse_string(in), InputSpecieConcException);
 }
+
+TEST_F(BasicTest, MultSpeciesInReact) {
+	std::string in = "module main {\n"
+									 "private: x;\n"
+									 "output: y;\n"
+									 "concentrations: {\n"
+									 "x := 50;\n"
+									 "}\n"
+									 "reactions: {\n"
+									 "2x -> y;\n"
+									 "}\n"
+									 "}\n";
+	std::string out = "#!/usr/bin/env crnsimul\n"
+										"main_x := 50;\n"
+										"2main_x -> main_y;\n";
+	driver drv;
+	ASSERT_EQ(drv.parse_string(in), 0);
+	EXPECT_EQ(drv.out, out);
+}

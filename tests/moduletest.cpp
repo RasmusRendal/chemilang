@@ -230,3 +230,34 @@ TEST_F(ModuleTest, InputConcException) {
 
 	EXPECT_THROW(main.ApplyCompositions(), InputSpecieConcException);
 }
+
+TEST_F(ModuleTest, MultSpeciesInReact) {
+	Module m;
+	m.name = "main";
+	m.privateSpecies.push_back("a");
+	m.privateSpecies.push_back("c");
+
+	{
+		speciesRatios leftSide;
+		leftSide.insert(std::make_pair("a", 2));
+		speciesRatios rightSide;
+		rightSide.insert(std::make_pair("c", 1));
+		reaction r(leftSide, rightSide, 1);
+		m.reactions.push_back(r);
+	}
+	{
+		speciesRatios leftSide;
+		leftSide.insert(std::make_pair("c", 1));
+		speciesRatios rightSide;
+		reaction r(leftSide, rightSide, 1);
+		m.reactions.push_back(r);
+	}
+
+	m.concentrations.insert(std::make_pair("a", 50));
+
+	std::string output = "main_a := 50;\n"
+											 "2main_a -> main_c;\n"
+											 "main_c -> 0;\n";
+
+	EXPECT_EQ(m.Compile(), output);
+}
