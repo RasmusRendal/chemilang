@@ -11,9 +11,19 @@ class Module;
 using specie = std::string;
 using speciesRatios = std::map<specie, int>;
 using reactionRate = int;
-using reaction = std::tuple<speciesRatios, speciesRatios, reactionRate>;
 using speciesMapping = std::map<specie, specie>;
-using composition = std::tuple<Module *, speciesMapping, speciesMapping>;
+
+struct reaction {
+	speciesRatios reactants;
+	speciesRatios products;
+	reactionRate rate;
+};
+
+struct composition {
+	Module *module;
+	speciesMapping inputMapping;
+	speciesMapping outputMapping;
+};
 
 struct SpecieNotDeclaredException : public std::exception {
 	std::string error;

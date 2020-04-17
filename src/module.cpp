@@ -9,22 +9,26 @@ std::string Module::Compile() {
 		output += name + "_" + c.first + " := " + std::to_string(c.second) + ";\n";
 	}
 	for (const auto &reaction : reactions) {
-		for (const auto &specie : std::get<0>(reaction)) {
-			output += name + "_" + specie.first + " + ";
+		for (const auto &specie : reaction.reactants) {
+			if (specie.second != 1) {
+				output +=
+						std::to_string(specie.second) + name + "_" + specie.first + " + ";
+			} else
+				output += name + "_" + specie.first + " + ";
 		}
 		// Remove the last trailing +, because I'm too lazy not to add it
 		output.pop_back();
 		output.pop_back();
-		if (std::get<2>(reaction) != 1) {
+		if (reaction.rate != 1) {
 			output += "->";
 			output += "(";
-			output += std::to_string(std::get<2>(reaction));
+			output += std::to_string(reaction.rate);
 			output += ") ";
 		} else
 			output += "-> ";
-		auto &products = std::get<1>(reaction);
+		auto &products = reaction.products;
 		if (!products.empty()) {
-			for (const auto &specie : std::get<1>(reaction)) {
+			for (const auto &specie : reaction.products) {
 				output += name + "_" + specie.first + " + ";
 			}
 			output.pop_back();
@@ -61,12 +65,12 @@ void Module::Verify() {
 		}
 	}
 	for (const auto &reaction : reactions) {
-		for (const auto &specie : std::get<0>(reaction)) {
+		for (const auto &specie : reaction.reactants) {
 			if (declaredSpecies.find(specie.first) == declaredSpecies.end()) {
 				throw SpecieNotDeclaredException(specie.first, name);
 			}
 		}
-		for (const auto &specie : std::get<1>(reaction)) {
+		for (const auto &specie : reaction.products) {
 			if (declaredSpecies.find(specie.first) == declaredSpecies.end()) {
 				throw SpecieNotDeclaredException(specie.first, name);
 			}
@@ -77,7 +81,7 @@ void Module::Verify() {
 void Module::MapReaction(const speciesMapping &mapIn,
 												 const speciesMapping &mapOut, const reaction &r) {
 	speciesRatios leftSide;
-	for (const auto &specie : std::get<0>(r)) {
+	for (const auto &specie : r.reactants) {
 		const std::string &specieName = specie.first;
 		if (mapIn.find(specieName) != mapIn.end()) {
 			leftSide.insert(std::make_pair(mapIn.at(specieName), specie.second));
@@ -89,7 +93,7 @@ void Module::MapReaction(const speciesMapping &mapIn,
 	}
 
 	speciesRatios rightSide;
-	for (const auto &specie : std::get<1>(r)) {
+	for (const auto &specie : r.products) {
 		const std::string &specieName = specie.first;
 		if (mapIn.find(specieName) != mapIn.end()) {
 			rightSide.insert(std::make_pair(mapIn.at(specieName), specie.second));
@@ -100,8 +104,8 @@ void Module::MapReaction(const speciesMapping &mapIn,
 		}
 	}
 
-	reactionRate rate = std::get<2>(r);
-	reaction mapped(leftSide, rightSide, rate);
+	reactionRate rate = r.rate;
+	reaction mapped = {leftSide, rightSide, rate};
 	reactions.push_back(mapped);
 }
 
@@ -109,9 +113,9 @@ void Module::ApplyCompositions() {
 	int compositionNumber = 0;
 	while (!compositions.empty()) {
 		composition comp = compositions.back();
-		speciesMapping mapIn = std::get<1>(comp);
-		speciesMapping mapOut = std::get<2>(comp);
-		Module *submodule = std::get<0>(comp);
+		speciesMapping mapIn = comp.inputMapping;
+		speciesMapping mapOut = comp.outputMapping;
+		Module *submodule = comp.module;
 		submodule->Verify();
 		submodule->ApplyCompositions();
 
