@@ -54,10 +54,8 @@ void Module::Verify() {
 		if (declaredSpecies.find(c.first) == declaredSpecies.end()) {
 			throw SpecieNotDeclaredException(c.first, name);
 		}
-		for (const auto &specie : inputSpecies)
-		{
-			if(c.first == specie)
-			{
+		for (const auto &specie : inputSpecies) {
+			if (c.first == specie) {
 				throw InputSpecieConcException(c.first, name);
 			}
 		}
