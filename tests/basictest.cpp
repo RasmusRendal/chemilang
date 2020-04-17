@@ -210,3 +210,50 @@ TEST_F(BasicTest, MultSpeciesInReact2) {
 	ASSERT_EQ(drv.parse_string(in), 0);
 	EXPECT_EQ(drv.out, out);
 }
+
+TEST_F(BasicTest, CompWrongInputSize) {
+	std::string in = "module Addition {\n"
+									 "input: x;\n"
+									 "output: z;\n"
+									 "reactions: {\n"
+									 "x -> z;\n"
+									 "}\n"
+									 "}\n"
+									 "module main {\n"
+									 "private: [a, b];\n"
+									 "output: c;\n"
+									 "concentrations: {\n"
+									 "a := 50;\n"
+									 "b := 50;\n"
+									 "}\n"
+									 "compositions: {\n"
+									 "c = Addition(a, b);\n"
+									 "}\n"
+									 "}\n";
+
+	driver drv;
+	ASSERT_THROW(drv.parse_string(in), CompositionException);
+}
+
+TEST_F(BasicTest, CompWrongOutputSize) {
+	std::string in = "module Addition {\n"
+									 "input: x;\n"
+									 "output: z;\n"
+									 "reactions: {\n"
+									 "x -> z;\n"
+									 "}\n"
+									 "}\n"
+									 "module main {\n"
+									 "private: a;\n"
+									 "output: [b, c];\n"
+									 "concentrations: {\n"
+									 "a := 50;\n"
+									 "}\n"
+									 "compositions: {\n"
+									 "b, c = Addition(a);\n"
+									 "}\n"
+									 "}\n";
+
+	driver drv;
+	ASSERT_THROW(drv.parse_string(in), CompositionException);
+}
