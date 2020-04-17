@@ -4,3 +4,4 @@ CTestTestfile.cmake
 Makefile
 bin/
 cmake_install.cmake
+.stdafx.c.pch
