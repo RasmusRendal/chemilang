@@ -28,14 +28,14 @@ TEST_F(ModuleTest, twoValues) {
 		rightSide.insert(std::make_pair("a", 1));
 		rightSide.insert(std::make_pair("b", 1));
 		rightSide.insert(std::make_pair("c", 1));
-		reaction r(leftSide, rightSide, 1);
+		reaction r = {leftSide, rightSide, 1};
 		m.reactions.push_back(r);
 	}
 	{
 		speciesRatios leftSide;
 		leftSide.insert(std::make_pair("c", 1));
 		speciesRatios rightSide;
-		reaction r(leftSide, rightSide, 1);
+		reaction r = {leftSide, rightSide, 1};
 		m.reactions.push_back(r);
 	}
 
@@ -64,7 +64,7 @@ TEST_F(ModuleTest, SpecieNotDeclaredConcentrations) {
 		speciesRatios leftSide;
 		leftSide.insert(std::make_pair("c", 1));
 		speciesRatios rightSide;
-		reaction r(leftSide, rightSide, 1);
+		reaction r = {leftSide, rightSide, 1};
 		m.reactions.push_back(r);
 	}
 	EXPECT_THROW(m.Verify(), SpecieNotDeclaredException);
@@ -81,7 +81,7 @@ TEST_F(ModuleTest, ApplyCompositionsTest) {
 		leftSide.insert(std::make_pair("x", 1));
 		speciesRatios rightSide;
 		rightSide.insert(std::make_pair("z", 1));
-		reaction r(leftSide, rightSide, 1);
+		reaction r = {leftSide, rightSide, 1};
 		a.reactions.push_back(r);
 	}
 	{
@@ -90,7 +90,7 @@ TEST_F(ModuleTest, ApplyCompositionsTest) {
 		leftSide.insert(std::make_pair("y", 1));
 		speciesRatios rightSide;
 		rightSide.insert(std::make_pair("z", 1));
-		reaction r(leftSide, rightSide, 1);
+		reaction r = {leftSide, rightSide, 1};
 		a.reactions.push_back(r);
 	}
 
@@ -110,7 +110,7 @@ TEST_F(ModuleTest, ApplyCompositionsTest) {
 		inputMap.insert(std::make_pair("y", "y"));
 		speciesMapping outputMap;
 		outputMap.insert(std::make_pair("z", "o"));
-		composition c(&a, inputMap, outputMap);
+		composition c = {&a, inputMap, outputMap};
 		main.compositions.push_back(c);
 	}
 
@@ -121,7 +121,7 @@ TEST_F(ModuleTest, ApplyCompositionsTest) {
 		inputMap.insert(std::make_pair("y", "o"));
 		speciesMapping outputMap;
 		outputMap.insert(std::make_pair("z", "v"));
-		composition c(&a, inputMap, outputMap);
+		composition c = {&a, inputMap, outputMap};
 		main.compositions.push_back(c);
 	}
 
@@ -130,29 +130,29 @@ TEST_F(ModuleTest, ApplyCompositionsTest) {
 
 	{
 		const auto &reaction = main.reactions.at(0);
-		const auto &leftSide = std::get<0>(reaction);
-		const auto &rightSide = std::get<1>(reaction);
+		const auto &leftSide = reaction.reactants;
+		const auto &rightSide = reaction.products;
 		EXPECT_NO_THROW(leftSide.at("z"));
 		EXPECT_NO_THROW(rightSide.at("v"));
 	}
 	{
 		const auto &reaction = main.reactions.at(1);
-		const auto &leftSide = std::get<0>(reaction);
-		const auto &rightSide = std::get<1>(reaction);
+		const auto &leftSide = reaction.reactants;
+		const auto &rightSide = reaction.products;
 		EXPECT_NO_THROW(leftSide.at("o"));
 		EXPECT_NO_THROW(rightSide.at("v"));
 	}
 	{
 		const auto &reaction = main.reactions.at(2);
-		const auto &leftSide = std::get<0>(reaction);
-		const auto &rightSide = std::get<1>(reaction);
+		const auto &leftSide = reaction.reactants;
+		const auto &rightSide = reaction.products;
 		EXPECT_NO_THROW(leftSide.at("x"));
 		EXPECT_NO_THROW(rightSide.at("o"));
 	}
 	{
 		const auto &reaction = main.reactions.at(3);
-		const auto &leftSide = std::get<0>(reaction);
-		const auto &rightSide = std::get<1>(reaction);
+		const auto &leftSide = reaction.reactants;
+		const auto &rightSide = reaction.products;
 		EXPECT_NO_THROW(leftSide.at("y"));
 		EXPECT_NO_THROW(rightSide.at("o"));
 	}
@@ -173,14 +173,14 @@ TEST_F(ModuleTest, ReactionRate) {
 		rightSide.insert(std::make_pair("a", 1));
 		rightSide.insert(std::make_pair("b", 1));
 		rightSide.insert(std::make_pair("c", 1));
-		reaction r(leftSide, rightSide, 2);
+		reaction r = {leftSide, rightSide, 2};
 		m.reactions.push_back(r);
 	}
 	{
 		speciesRatios leftSide;
 		leftSide.insert(std::make_pair("c", 1));
 		speciesRatios rightSide;
-		reaction r(leftSide, rightSide, 1);
+		reaction r = {leftSide, rightSide, 1};
 		m.reactions.push_back(r);
 	}
 
@@ -208,7 +208,7 @@ TEST_F(ModuleTest, InputConcException) {
 		leftSide.insert(std::make_pair("x", 1));
 		speciesRatios rightSide;
 		rightSide.insert(std::make_pair("z", 1));
-		reaction r(leftSide, rightSide, 1);
+		reaction r = {leftSide, rightSide, 1};
 		a.reactions.push_back(r);
 	}
 
@@ -224,7 +224,7 @@ TEST_F(ModuleTest, InputConcException) {
 		inputMap.insert(std::make_pair("x", "x"));
 		speciesMapping outputMap;
 		outputMap.insert(std::make_pair("z", "z"));
-		composition c(&a, inputMap, outputMap);
+		composition c = {&a, inputMap, outputMap};
 		main.compositions.push_back(c);
 	}
 
@@ -242,14 +242,14 @@ TEST_F(ModuleTest, MultSpeciesInReact) {
 		leftSide.insert(std::make_pair("a", 2));
 		speciesRatios rightSide;
 		rightSide.insert(std::make_pair("c", 1));
-		reaction r(leftSide, rightSide, 1);
+		reaction r = {leftSide, rightSide, 1};
 		m.reactions.push_back(r);
 	}
 	{
 		speciesRatios leftSide;
 		leftSide.insert(std::make_pair("c", 1));
 		speciesRatios rightSide;
-		reaction r(leftSide, rightSide, 1);
+		reaction r = {leftSide, rightSide, 1};
 		m.reactions.push_back(r);
 	}
 
