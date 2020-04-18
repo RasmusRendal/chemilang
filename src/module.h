@@ -45,6 +45,19 @@ struct InputSpecieConcException : public std::exception {
 	}
 };
 
+struct MapConcForSubModuleException : public std::exception {
+	std::string error;
+	MapConcForSubModuleException(std::string speciesName,
+															 std::string moduleNameFrom,
+															 std::string moduleNameTo)
+			: error("Something went wrong, couldn't map specie: " + speciesName +
+							" from module " + moduleNameFrom + " to module " + moduleNameTo +
+							"'s concentrations") {}
+	const char *what() const throw() {
+		return error.c_str();
+	}
+};
+
 class Module {
 public:
 	Module() {}
@@ -60,8 +73,7 @@ public:
 	 * the vector
 	 */
 	void ApplyCompositions();
-	void InsertConcentrations(std::string moduleName, std::string specieName,
-														int concentration);
+
 	std::string name;
 	std::vector<specie> inputSpecies;
 	std::vector<specie> outputSpecies;
@@ -72,5 +84,5 @@ public:
 
 private:
 	void MapReaction(const speciesMapping &mapIn, const speciesMapping &mapOut,
-									 const reaction &r);
+									 const speciesMapping &mapPri, const reaction &r);
 };
