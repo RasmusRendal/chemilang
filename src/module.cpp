@@ -143,12 +143,11 @@ void Module::ApplyCompositions() {
 				concentrations.insert(
 						std::pair<specie, int>(mapPri.at(c.first), c.second));
 			} else {
-				if(mapOut.find(c.first) != mapOut.end()) {
+				if (mapOut.find(c.first) != mapOut.end()) {
 					std::cout << c.first << " <=> " << mapOut.at(c.first) << " found\n";
-					concentrations.insert(std::pair<specie, int>(mapOut.at(c.first), c.second));
-				}
-				else {
-
+					concentrations.insert(
+							std::pair<specie, int>(mapOut.at(c.first), c.second));
+				} else {
 				}
 			}
 		}
