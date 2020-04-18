@@ -86,13 +86,10 @@ void Module::MapReaction(const speciesMapping &mapIn,
 	for (const auto &specie : r.reactants) {
 		const std::string &specieName = specie.first;
 		if (mapIn.find(specieName) != mapIn.end()) {
-			std::cout << specie.first << " Is in\n";
 			leftSide.insert(std::make_pair(mapIn.at(specieName), specie.second));
 		} else if (mapOut.find(specieName) != mapOut.end()) {
-			std::cout << specie.first << " Is out\n";
 			leftSide.insert(std::make_pair(mapOut.at(specieName), specie.second));
 		} else if (mapPri.find(specieName) != mapPri.end()) {
-			std::cout << specie.first << " Is pri\n";
 			leftSide.insert(std::make_pair(mapPri.at(specieName), specie.second));
 		} else {
 			throw std::runtime_error("Specie not found");

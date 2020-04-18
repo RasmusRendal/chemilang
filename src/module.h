@@ -45,15 +45,6 @@ struct InputSpecieConcException : public std::exception {
 	}
 };
 
-struct SpeciePrivateCompException : public std::exception {
-	std::string error;
-	SpeciePrivateCompException(std::string speciesName)
-			: error("Fatal: The specie " + speciesName + " already exist") {}
-	const char *what() const throw() {
-		return error.c_str();
-	}
-};
-
 class Module {
 public:
 	Module() {}
