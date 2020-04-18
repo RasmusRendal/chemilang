@@ -127,8 +127,8 @@ void Module::ApplyCompositions() {
 		submodule->ApplyCompositions();
 
 		for (auto priSpecie : submodule->privateSpecies) {
-			specie newSpecie =
-					submodule->name + "_" + std::to_string(compositionNumber) + "_" + priSpecie;
+			specie newSpecie = submodule->name + "_" +
+												 std::to_string(compositionNumber) + "_" + priSpecie;
 
 			privateSpecies.push_back(newSpecie);
 			mapPri.insert(std::make_pair(priSpecie, newSpecie));
@@ -143,9 +143,9 @@ void Module::ApplyCompositions() {
 				concentrations.insert(
 						std::pair<specie, int>(mapPri.at(c.first), c.second));
 			} else {
-				std::string newName = submodule->name + "_" + std::to_string(compositionNumber) + "_" + c.first;
-				concentrations.insert(
-						std::pair<specie, int>(newName, c.second));
+				std::string newName = submodule->name + "_" +
+															std::to_string(compositionNumber) + "_" + c.first;
+				concentrations.insert(std::pair<specie, int>(newName, c.second));
 			}
 		}
 
