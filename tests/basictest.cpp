@@ -469,3 +469,40 @@ TEST_F(BasicTest, outputSpecInSubModConc) {
 	ASSERT_EQ(drv.parse_string(in), 0);
 	EXPECT_EQ(drv.out, out);
 }
+
+TEST_F(BasicTest, UsingInputSpecieAsOutputOfCompModuleException) {
+	std::string in = "module AdditionTwo {\n"
+									 "input: x;\n"
+									 "output: z;\n"
+									 "concentrations: {\n"
+									 "z := 20;\n"
+									 "}\n"
+									 "reactions: {\n"
+									 "x -> z;\n"
+									 "}\n"
+									 "}\n"
+									 "module Addition {\n"
+									 "input: x;\n"
+									 "output: z;\n"
+									 "reactions: {\n"
+									 "x -> z;\n"
+									 "}\n"
+									 "compositions: {\n"
+									 "x = AdditionTwo(z);\n"
+									 "}\n"
+									 "}\n"
+									 "module main {\n"
+									 "private: [a, b];\n"
+									 "output: e;\n"
+									 "concentrations: {\n"
+									 "a := 50;\n"
+									 "b := 30;\n"
+									 "}\n"
+									 "compositions: {\n"
+									 "b = Addition(a);\n"
+									 "}\n"
+									 "}\n";
+
+	driver drv;
+	ASSERT_THROW(drv.parse_string(in), MapConcForSubModuleException);
+}
