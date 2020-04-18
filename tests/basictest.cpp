@@ -293,8 +293,8 @@ TEST_F(BasicTest, NestedComposition) {
 		drv.parse_string(input);
 		std::string expected = "#!/usr/bin/env crnsimul\n"
 			"main_a := 1337;\n"
-			"main_some_1_aa := 20;\n"
-			"main_some_1_thing_1_chem := 420;\n";
+			"main_some_0_aa := 20;\n"
+			"main_some_0_thing_0_chem := 420;\n";
 		EXPECT_EQ(drv.out, expected);
 }
 
@@ -325,12 +325,12 @@ TEST_F(BasicTest, privateSpecMapOneSubMod) {
 									 "}\n";
 
 	std::string out = "#!/usr/bin/env crnsimul\n"
-										"main_Addition_1_y := 20;\n"
+										"main_Addition_0_y := 20;\n"
 										"main_a := 50;\n"
 										"main_b := 30;\n"
 										"main_c := 30;\n"
 										"main_a -> main_d;\n"
-										"main_Addition_1_y -> main_d;\n";
+										"main_Addition_0_y -> main_d;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
 	EXPECT_EQ(drv.out, out);
@@ -378,15 +378,93 @@ TEST_F(BasicTest, privateSpecMapTwoSubMod) {
 									 "}\n";
 
 	std::string out = "#!/usr/bin/env crnsimul\n"
-										"main_Addition_1_AdditionTwo_1_y := 20;\n"
-										"main_Addition_1_y := 20;\n"
+										"main_Addition_0_AdditionTwo_0_y := 20;\n"
+										"main_Addition_0_y := 20;\n"
 										"main_a := 50;\n"
 										"main_b := 30;\n"
 										"main_c := 30;\n"
 										"main_a -> main_d;\n"
-										"main_Addition_1_y -> main_d;\n"
-										"main_Addition_1_y -> main_d;\n"
-										"main_Addition_1_AdditionTwo_1_y -> main_d;\n";
+										"main_Addition_0_y -> main_d;\n"
+										"main_Addition_0_y -> main_d;\n"
+										"main_Addition_0_AdditionTwo_0_y -> main_d;\n";
+	driver drv;
+	ASSERT_EQ(drv.parse_string(in), 0);
+	EXPECT_EQ(drv.out, out);
+}
+
+TEST_F(BasicTest, privateSpecSubModReacConc) {
+	std::string in = "module Addition {\n"
+									 "input: x;\n"
+									 "private: y;\n"
+									 "output: z;\n"
+									 "concentrations: {\n"
+									 "y := 20;\n"
+									 "}\n"
+									 "reactions: {\n"
+									 "5x -> z;\n"
+									 "10y -> z;\n"
+									 "}\n"
+									 "}\n"
+									 "module main {\n"
+									 "private: [a, b, c, d];\n"
+									 "output: e;\n"
+									 "concentrations: {\n"
+									 "a := 50;\n"
+									 "b := 30;\n"
+									 "c := 30;\n"
+									 "}\n"
+									 "compositions: {\n"
+									 "d = Addition(a);\n"
+									 "}\n"
+									 "}\n";
+
+	std::string out = "#!/usr/bin/env crnsimul\n"
+										"main_Addition_0_y := 20;\n"
+										"main_a := 50;\n"
+										"main_b := 30;\n"
+										"main_c := 30;\n"
+										"5main_a -> main_d;\n"
+										"10main_Addition_0_y -> main_d;\n";
+	driver drv;
+	ASSERT_EQ(drv.parse_string(in), 0);
+	EXPECT_EQ(drv.out, out);
+}
+
+TEST_F(BasicTest, outputSpecInSubModConc) {
+	std::string in = "module Addition {\n"
+									 "input: x;\n"
+									 "private: y;\n"
+									 "output: z;\n"
+									 "concentrations: {\n"
+									 "y := 20;\n"
+									 "z := 20;\n"
+									 "}\n"
+									 "reactions: {\n"
+									 "5x -> z;\n"
+									 "10y -> z;\n"
+									 "}\n"
+									 "}\n"
+									 "module main {\n"
+									 "private: [a, b, c, d];\n"
+									 "output: e;\n"
+									 "concentrations: {\n"
+									 "a := 50;\n"
+									 "b := 30;\n"
+									 "c := 30;\n"
+									 "}\n"
+									 "compositions: {\n"
+									 "d = Addition(a);\n"
+									 "}\n"
+									 "}\n";
+
+	std::string out = "#!/usr/bin/env crnsimul\n"
+										"main_Addition_0_y := 20;\n"
+										"main_Addition_0_z := 20;\n"
+										"main_a := 50;\n"
+										"main_b := 30;\n"
+										"main_c := 30;\n"
+										"5main_a -> main_d;\n"
+										"10main_Addition_0_y -> main_d;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
 	EXPECT_EQ(drv.out, out);
