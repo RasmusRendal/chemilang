@@ -459,10 +459,10 @@ TEST_F(BasicTest, outputSpecInSubModConc) {
 
 	std::string out = "#!/usr/bin/env crnsimul\n"
 										"main_Addition_0_y := 20;\n"
-										"main_Addition_0_z := 20;\n"
 										"main_a := 50;\n"
 										"main_b := 30;\n"
 										"main_c := 30;\n"
+										"main_d := 20;\n"
 										"5main_a -> main_d;\n"
 										"10main_Addition_0_y -> main_d;\n";
 	driver drv;
