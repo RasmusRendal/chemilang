@@ -145,6 +145,8 @@ void Module::ApplyCompositions() {
 			} else if (mapOut.find(c.first) != mapOut.end()) {
 				concentrations.insert(
 						std::pair<specie, int>(mapOut.at(c.first), c.second));
+			} else {
+				throw MapConcForSubModuleException(c.first, submodule->name, name);
 			}
 		}
 
