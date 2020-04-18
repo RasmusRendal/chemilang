@@ -257,3 +257,137 @@ TEST_F(BasicTest, CompWrongOutputSize) {
 	driver drv;
 	ASSERT_THROW(drv.parse_string(in), CompositionException);
 }
+
+TEST_F(BasicTest, NestedComposition) {
+	std::string input = "module thing {\n"
+		"input: c;\n"
+		"output: j;\n"
+		"private: chem;\n"
+		"concentrations: {\n"
+			"chem := 420;\n"
+			"}\n"
+		"}\n"
+		"module some {\n"
+			"input: x;\n"
+			"private: aa;\n"
+			"output: b;\n"
+			"concentrations: {\n"
+				"aa := 20;\n"
+			"}\n"
+			"compositions: {\n"
+				"b = thing(aa);\n"
+		"}\n"
+		"}\n"
+		"module main {\n"
+			"input: b;\n"
+			"output: z;\n"
+			"private: a;\n"
+			"concentrations: {\n"
+				"a := 1337;\n"
+			"}\n"
+			"compositions: {\n"
+				"z = some(a);\n"
+			"}\n"
+		"}\n";
+		driver drv;
+		drv.parse_string(input);
+		std::string expected = "#!/usr/bin/env crnsimul\n"
+			"main_a := 1337;\n"
+			"main_some_1_aa := 20;\n"
+			"main_some_1_thing_1_chem := 420;\n";
+		EXPECT_EQ(drv.out, expected);
+}
+
+TEST_F(BasicTest, privateSpecMapOneSubMod) {
+	std::string in = "module Addition {\n"
+									 "input: x;\n"
+									 "private: y;\n"
+									 "output: z;\n"
+									 "concentrations: {\n"
+									 "y := 20;\n"
+									 "}\n"
+									 "reactions: {\n"
+									 "x -> z;\n"
+									 "y -> z;\n"
+									 "}\n"
+									 "}\n"
+									 "module main {\n"
+									 "private: [a, b, c, d];\n"
+									 "output: e;\n"
+									 "concentrations: {\n"
+									 "a := 50;\n"
+									 "b := 30;\n"
+									 "c := 30;\n"
+									 "}\n"
+									 "compositions: {\n"
+									 "d = Addition(a);\n"
+									 "}\n"
+									 "}\n";
+
+	std::string out = "#!/usr/bin/env crnsimul\n"
+										"main_Addition_1_y := 20;\n"
+										"main_a := 50;\n"
+										"main_b := 30;\n"
+										"main_c := 30;\n"
+										"main_a -> main_d;\n"
+										"main_Addition_1_y -> main_d;\n";
+	driver drv;
+	ASSERT_EQ(drv.parse_string(in), 0);
+	EXPECT_EQ(drv.out, out);
+}
+
+TEST_F(BasicTest, privateSpecMapTwoSubMod) {
+	std::string in = "module AdditionTwo {\n"
+									 "input: x;\n"
+									 "private: y;\n"
+									 "output: z;\n"
+									 "concentrations: {\n"
+									 "y := 20;\n"
+									 "}\n"
+									 "reactions: {\n"
+									 "x -> z;\n"
+									 "y -> z;\n"
+									 "}\n"
+									 "}\n"
+									 "module Addition {\n"
+									 "input: x;\n"
+									 "private: y;\n"
+									 "output: z;\n"
+									 "concentrations: {\n"
+									 "y := 20;\n"
+									 "}\n"
+									 "reactions: {\n"
+									 "x -> z;\n"
+									 "y -> z;\n"
+									 "}\n"
+									 "compositions: {\n"
+									 "z = AdditionTwo(y);\n"
+									 "}\n"
+									 "}\n"
+									 "module main {\n"
+									 "private: [a, b, c, d];\n"
+									 "output: e;\n"
+									 "concentrations: {\n"
+									 "a := 50;\n"
+									 "b := 30;\n"
+									 "c := 30;\n"
+									 "}\n"
+									 "compositions: {\n"
+									 "d = Addition(a);\n"
+									 "}\n"
+									 "}\n";
+
+	std::string out = "#!/usr/bin/env crnsimul\n"
+										"main_Addition_1_AdditionTwo_1_y := 20;\n"
+										"main_Addition_1_y := 20;\n"
+										"main_a := 50;\n"
+										"main_b := 30;\n"
+										"main_c := 30;\n"
+										"main_a -> main_d;\n"
+										"main_Addition_1_y -> main_d;\n"
+										"main_Addition_1_y -> main_d;\n"
+										"main_Addition_1_AdditionTwo_1_y -> main_d;\n";
+	driver drv;
+	ASSERT_EQ(drv.parse_string(in), 0);
+	EXPECT_EQ(drv.out, out);
+}

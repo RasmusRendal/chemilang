@@ -45,6 +45,15 @@ struct InputSpecieConcException : public std::exception {
 	}
 };
 
+struct SpeciePrivateCompException : public std::exception {
+	std::string error;
+	SpeciePrivateCompException(std::string speciesName)
+			: error("Fatal: The specie " + speciesName + " already exist") {}
+	const char *what() const throw() {
+		return error.c_str();
+	}
+};
+
 class Module {
 public:
 	Module() {}
@@ -60,8 +69,7 @@ public:
 	 * the vector
 	 */
 	void ApplyCompositions();
-	void InsertConcentrations(std::string moduleName, std::string specieName,
-														int concentration);
+
 	std::string name;
 	std::vector<specie> inputSpecies;
 	std::vector<specie> outputSpecies;
@@ -72,5 +80,5 @@ public:
 
 private:
 	void MapReaction(const speciesMapping &mapIn, const speciesMapping &mapOut,
-									 const reaction &r);
+									 const speciesMapping &mapPri, const reaction &r);
 };
