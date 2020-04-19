@@ -31,7 +31,7 @@ TEST_F(FrontendTest, stringstreamTest) {
 									 "z -> 0;\n"
 									 "}\n"
 									 "}\n";
-	std::string out = "#!/usr/bin/env crnsimul\n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_z \n"
 										"main_x := 50;\n"
 										"main_y := 30;\n"
 										"main_x + main_y -> main_x + main_y + main_z;\n"
