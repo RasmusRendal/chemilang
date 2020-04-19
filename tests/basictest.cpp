@@ -522,7 +522,7 @@ TEST_F(BasicTest, multipleOutputSpecie) {
 									 "}\n"
 									 "}\n";
 
-	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e main_f \n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e, main_f \n"
 										"main_a := 50;\n"
 										"main_b := 30;\n"
 										"main_c := 30;\n"
@@ -555,7 +555,7 @@ TEST_F(BasicTest, multipleOutputSpecieWithSubMod) {
 									 "}\n"
 									 "}\n";
 
-	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e main_f \n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e, main_f \n"
 										"main_a := 50;\n"
 										"main_b := 30;\n"
 										"main_c := 30;\n"
