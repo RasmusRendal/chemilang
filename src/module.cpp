@@ -9,9 +9,9 @@ std::string Module::Compile() {
 	std::string output = "";
 
 	if (outputSpecies.size() > 0) {
-		output += "-C";
+		output += "-C ";
 		for (const auto &specie : outputSpecies) {
-			output += " " + name + "_" + specie + ",";
+			output += name + "_" + specie + ",";
 		}
 		output.pop_back();
 	}
