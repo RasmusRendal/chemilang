@@ -15,7 +15,7 @@ std::string Module::Compile() {
 		}
 		output.pop_back();
 	}
-	output += " \n";
+	output += "\n";
 
 	for (const auto &c : concentrations) {
 		output += name + "_" + c.first + " := " + std::to_string(c.second) + ";\n";

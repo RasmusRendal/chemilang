@@ -25,7 +25,7 @@ TEST_F(BasicTest, CompileExample) {
 									 "z -> 0;\n"
 									 "}\n"
 									 "}\n";
-	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_z \n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_z\n"
 										"main_x := 50;\n"
 										"main_y := 30;\n"
 										"main_x + main_y -> main_x + main_y + main_z;\n"
@@ -78,7 +78,7 @@ TEST_F(BasicTest, TwoModules) {
 									 "z -> 0;\n"
 									 "}\n"
 									 "}\n";
-	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_z \n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_z\n"
 										"main_x := 50;\n"
 										"main_y := 30;\n"
 										"main_x + main_y -> main_x + main_y + main_z;\n"
@@ -111,7 +111,7 @@ TEST_F(BasicTest, CompositionTest) {
 									 "}\n"
 									 "}\n";
 
-	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e \n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e\n"
 										"main_a := 50;\n"
 										"main_b := 30;\n"
 										"main_c := 30;\n"
@@ -137,7 +137,7 @@ TEST_F(BasicTest, ReactionRateTest) {
 									 "z -> 0;\n"
 									 "}\n"
 									 "}\n";
-	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_z \n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_z\n"
 										"main_x := 50;\n"
 										"main_y := 30;\n"
 										"main_x + main_y ->(2) main_x + main_y + main_z;\n"
@@ -184,7 +184,7 @@ TEST_F(BasicTest, MultSpeciesInReact) {
 									 "2x -> y;\n"
 									 "}\n"
 									 "}\n";
-	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_y \n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_y\n"
 										"main_x := 50;\n"
 										"2main_x -> main_y;\n";
 	driver drv;
@@ -203,7 +203,7 @@ TEST_F(BasicTest, MultSpeciesInReact2) {
 									 "x + x + x -> y;\n"
 									 "}\n"
 									 "}\n";
-	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_y \n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_y\n"
 										"main_x := 50;\n"
 										"3main_x -> main_y;\n";
 	driver drv;
@@ -291,7 +291,7 @@ TEST_F(BasicTest, NestedComposition) {
 		"}\n";
 		driver drv;
 		drv.parse_string(input);
-		std::string expected = "#!/usr/bin/env -S crnsimul -e -P -C main_z \n"
+		std::string expected = "#!/usr/bin/env -S crnsimul -e -P -C main_z\n"
 			"main_a := 1337;\n"
 			"main_some_0_aa := 20;\n"
 			"main_some_0_thing_0_chem := 420;\n";
@@ -324,7 +324,7 @@ TEST_F(BasicTest, privateSpecMapOneSubMod) {
 									 "}\n"
 									 "}\n";
 
-	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e \n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e\n"
 										"main_Addition_0_y := 20;\n"
 										"main_a := 50;\n"
 										"main_b := 30;\n"
@@ -377,7 +377,7 @@ TEST_F(BasicTest, privateSpecMapTwoSubMod) {
 									 "}\n"
 									 "}\n";
 
-	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e \n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e\n"
 										"main_Addition_0_AdditionTwo_0_y := 20;\n"
 										"main_Addition_0_y := 20;\n"
 										"main_a := 50;\n"
@@ -418,7 +418,7 @@ TEST_F(BasicTest, privateSpecSubModReacConc) {
 									 "}\n"
 									 "}\n";
 
-	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e \n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e\n"
 										"main_Addition_0_y := 20;\n"
 										"main_a := 50;\n"
 										"main_b := 30;\n"
@@ -457,7 +457,7 @@ TEST_F(BasicTest, outputSpecInSubModConc) {
 									 "}\n"
 									 "}\n";
 
-	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e \n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e\n"
 										"main_Addition_0_y := 20;\n"
 										"main_a := 50;\n"
 										"main_b := 30;\n"
@@ -522,7 +522,7 @@ TEST_F(BasicTest, multipleOutputSpecie) {
 									 "}\n"
 									 "}\n";
 
-	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e,main_f \n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e,main_f\n"
 										"main_a := 50;\n"
 										"main_b := 30;\n"
 										"main_c := 30;\n"
@@ -555,7 +555,7 @@ TEST_F(BasicTest, multipleOutputSpecieWithSubMod) {
 									 "}\n"
 									 "}\n";
 
-	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e,main_f \n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e,main_f\n"
 										"main_a := 50;\n"
 										"main_b := 30;\n"
 										"main_c := 30;\n"
