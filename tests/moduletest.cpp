@@ -42,7 +42,7 @@ TEST_F(ModuleTest, twoValues) {
 	m.concentrations.insert(std::make_pair("a", 50));
 	m.concentrations.insert(std::make_pair("b", 30));
 
-	std::string output = "main_a := 50;\n"
+	std::string output = "\nmain_a := 50;\n"
 											 "main_b := 30;\n"
 											 "main_a + main_b -> main_a + main_b + main_c;\n"
 											 "main_c -> 0;\n";
@@ -187,7 +187,7 @@ TEST_F(ModuleTest, ReactionRate) {
 	m.concentrations.insert(std::make_pair("a", 50));
 	m.concentrations.insert(std::make_pair("b", 30));
 
-	std::string output = "main_a := 50;\n"
+	std::string output = "\nmain_a := 50;\n"
 											 "main_b := 30;\n"
 											 "main_a + main_b ->(2) main_a + main_b + main_c;\n"
 											 "main_c -> 0;\n";
@@ -255,7 +255,7 @@ TEST_F(ModuleTest, MultSpeciesInReact) {
 
 	m.concentrations.insert(std::make_pair("a", 50));
 
-	std::string output = "main_a := 50;\n"
+	std::string output = "\nmain_a := 50;\n"
 											 "2main_a -> main_c;\n"
 											 "main_c -> 0;\n";
 

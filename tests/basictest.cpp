@@ -25,7 +25,7 @@ TEST_F(BasicTest, CompileExample) {
 									 "z -> 0;\n"
 									 "}\n"
 									 "}\n";
-	std::string out = "#!/usr/bin/env crnsimul\n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_z\n"
 										"main_x := 50;\n"
 										"main_y := 30;\n"
 										"main_x + main_y -> main_x + main_y + main_z;\n"
@@ -78,7 +78,7 @@ TEST_F(BasicTest, TwoModules) {
 									 "z -> 0;\n"
 									 "}\n"
 									 "}\n";
-	std::string out = "#!/usr/bin/env crnsimul\n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_z\n"
 										"main_x := 50;\n"
 										"main_y := 30;\n"
 										"main_x + main_y -> main_x + main_y + main_z;\n"
@@ -111,7 +111,7 @@ TEST_F(BasicTest, CompositionTest) {
 									 "}\n"
 									 "}\n";
 
-	std::string out = "#!/usr/bin/env crnsimul\n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e\n"
 										"main_a := 50;\n"
 										"main_b := 30;\n"
 										"main_c := 30;\n"
@@ -137,7 +137,7 @@ TEST_F(BasicTest, ReactionRateTest) {
 									 "z -> 0;\n"
 									 "}\n"
 									 "}\n";
-	std::string out = "#!/usr/bin/env crnsimul\n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_z\n"
 										"main_x := 50;\n"
 										"main_y := 30;\n"
 										"main_x + main_y ->(2) main_x + main_y + main_z;\n"
@@ -184,7 +184,7 @@ TEST_F(BasicTest, MultSpeciesInReact) {
 									 "2x -> y;\n"
 									 "}\n"
 									 "}\n";
-	std::string out = "#!/usr/bin/env crnsimul\n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_y\n"
 										"main_x := 50;\n"
 										"2main_x -> main_y;\n";
 	driver drv;
@@ -203,7 +203,7 @@ TEST_F(BasicTest, MultSpeciesInReact2) {
 									 "x + x + x -> y;\n"
 									 "}\n"
 									 "}\n";
-	std::string out = "#!/usr/bin/env crnsimul\n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_y\n"
 										"main_x := 50;\n"
 										"3main_x -> main_y;\n";
 	driver drv;
@@ -291,7 +291,7 @@ TEST_F(BasicTest, NestedComposition) {
 		"}\n";
 		driver drv;
 		drv.parse_string(input);
-		std::string expected = "#!/usr/bin/env crnsimul\n"
+		std::string expected = "#!/usr/bin/env -S crnsimul -e -P -C main_z\n"
 			"main_a := 1337;\n"
 			"main_some_0_aa := 20;\n"
 			"main_some_0_thing_0_chem := 420;\n";
@@ -324,7 +324,7 @@ TEST_F(BasicTest, privateSpecMapOneSubMod) {
 									 "}\n"
 									 "}\n";
 
-	std::string out = "#!/usr/bin/env crnsimul\n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e\n"
 										"main_Addition_0_y := 20;\n"
 										"main_a := 50;\n"
 										"main_b := 30;\n"
@@ -377,7 +377,7 @@ TEST_F(BasicTest, privateSpecMapTwoSubMod) {
 									 "}\n"
 									 "}\n";
 
-	std::string out = "#!/usr/bin/env crnsimul\n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e\n"
 										"main_Addition_0_AdditionTwo_0_y := 20;\n"
 										"main_Addition_0_y := 20;\n"
 										"main_a := 50;\n"
@@ -418,7 +418,7 @@ TEST_F(BasicTest, privateSpecSubModReacConc) {
 									 "}\n"
 									 "}\n";
 
-	std::string out = "#!/usr/bin/env crnsimul\n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e\n"
 										"main_Addition_0_y := 20;\n"
 										"main_a := 50;\n"
 										"main_b := 30;\n"
@@ -457,7 +457,7 @@ TEST_F(BasicTest, outputSpecInSubModConc) {
 									 "}\n"
 									 "}\n";
 
-	std::string out = "#!/usr/bin/env crnsimul\n"
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e\n"
 										"main_Addition_0_y := 20;\n"
 										"main_a := 50;\n"
 										"main_b := 30;\n"
@@ -505,4 +505,63 @@ TEST_F(BasicTest, UsingInputSpecieAsOutputOfCompModuleException) {
 
 	driver drv;
 	ASSERT_THROW(drv.parse_string(in), MapConcForSubModuleException);
+}
+
+TEST_F(BasicTest, multipleOutputSpecie) {
+	std::string in = "module main {\n"
+									 "private: [a, b, c];\n"
+									 "output: [e, f];\n"
+									 "concentrations: {\n"
+									 "a := 50;\n"
+									 "b := 30;\n"
+									 "c := 30;\n"
+									 "}\n"
+									 "reactions: {\n"
+									 "a + b -> a + b + e;\n"
+									 "a + e -> a + e + f;\n"
+									 "}\n"
+									 "}\n";
+
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e,main_f\n"
+										"main_a := 50;\n"
+										"main_b := 30;\n"
+										"main_c := 30;\n"
+										"main_a + main_b -> main_a + main_b + main_e;\n"
+										"main_a + main_e -> main_a + main_e + main_f;\n";
+	driver drv;
+	ASSERT_EQ(drv.parse_string(in), 0);
+	EXPECT_EQ(drv.out, out);
+}
+
+TEST_F(BasicTest, multipleOutputSpecieWithSubMod) {
+	std::string in = "module Addition {\n"
+									 "input: x;\n"
+									 "output: z;\n"
+									 "reactions: {\n"
+									 "5x -> z;\n"
+									 "}\n"
+									 "}\n"
+									 "module main {\n"
+									 "private: [a, b, c];\n"
+									 "output: [e, f];\n"
+									 "concentrations: {\n"
+									 "a := 50;\n"
+									 "b := 30;\n"
+									 "c := 30;\n"
+									 "}\n"
+									 "compositions: {\n"
+									 "d = Addition(a);\n"
+									 "e = Addition(b);\n"
+									 "}\n"
+									 "}\n";
+
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_e,main_f\n"
+										"main_a := 50;\n"
+										"main_b := 30;\n"
+										"main_c := 30;\n"
+										"5main_b -> main_e;\n"
+										"5main_a -> main_d;\n";
+	driver drv;
+	ASSERT_EQ(drv.parse_string(in), 0);
+	EXPECT_EQ(drv.out, out);
 }

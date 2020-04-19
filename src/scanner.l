@@ -87,7 +87,7 @@ T_DOUTPUT         "output:"
 T_DREACTIONS      "reactions:"
 T_DCONCENTRATIONS "concentrations:"
 T_DCOMPOSITIONS "compositions:"
-T_NAME            [a-zA-Z][a-zA-Z]*
+T_NAME            [a-zA-Z][a-zA-Z0-9]*
 T_RIGHTARROW      "->"
 T_BIARROW         "<->"
 T_BRACKETSTART    "["
