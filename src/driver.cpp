@@ -32,7 +32,7 @@ int driver::parse() {
 	if (modules.find("main") == modules.end()) {
 		throw NoMainModuleException();
 	}
-	out = "#!/usr/bin/env crnsimul\n";
+	out = "#!/usr/bin/env -S crnsimul -e -P ";
 	out += modules["main"].Compile();
 	return res;
 }

@@ -5,7 +5,17 @@
 std::string Module::Compile() {
 	Verify();
 	ApplyCompositions();
+
 	std::string output = "";
+
+	if (outputSpecies.size() > 0) {
+		output += "-C ";
+		for (const auto &specie : outputSpecies) {
+			output += name + "_" + specie + " ";
+		}
+	}
+	output += "\n";
+
 	for (const auto &c : concentrations) {
 		output += name + "_" + c.first + " := " + std::to_string(c.second) + ";\n";
 	}
