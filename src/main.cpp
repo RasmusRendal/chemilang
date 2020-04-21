@@ -11,6 +11,10 @@ int main(int argc, char *argv[]) {
 	Frontend frontend;
 	std::string filename;
 	driver drv;
+	if (argv[argc - 1] == std::string("-h")) {
+		Frontend::Helper(helpArgument);
+		return 0;
+	}
 
 	for (int i = 1; i < argc; ++i) {
 		if (file_included(argv[i])) {
@@ -23,9 +27,9 @@ int main(int argc, char *argv[]) {
 	if (drv.parse_file(filename) == 0) {
 		frontend.drv = &drv;
 		frontend.WriteFile();
-	} else {
+	} else
 		std::cout << "Compilation error" << std::endl;
-	}
+	Frontend::Helper();
 
 	return 0;
 }
