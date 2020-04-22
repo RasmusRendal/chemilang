@@ -70,6 +70,7 @@ void Module::Verify() {
 
 	for (const auto &c : concentrations) {
 		if (declaredSpecies.find(c.first) == declaredSpecies.end()) {
+			throw SpecieNotDeclaredException(c.first, name);
 		}
 		for (const auto &specie : inputSpecies) {
 			if (c.first == specie) {
