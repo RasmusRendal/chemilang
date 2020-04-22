@@ -110,7 +110,7 @@ TEST_F(ModuleTest, ApplyCompositionsTest) {
 		inputMap.insert(std::make_pair("y", "y"));
 		speciesMapping outputMap;
 		outputMap.insert(std::make_pair("z", "o"));
-		composition c = {&a, inputMap, outputMap};
+		auto c = new ModuleComposition(&a, inputMap, outputMap);
 		main.compositions.push_back(c);
 	}
 
@@ -121,7 +121,7 @@ TEST_F(ModuleTest, ApplyCompositionsTest) {
 		inputMap.insert(std::make_pair("y", "o"));
 		speciesMapping outputMap;
 		outputMap.insert(std::make_pair("z", "v"));
-		composition c = {&a, inputMap, outputMap};
+		auto c = new ModuleComposition(&a, inputMap, outputMap);
 		main.compositions.push_back(c);
 	}
 
@@ -159,7 +159,7 @@ TEST_F(ModuleTest, ApplyCompositionsTest) {
 }
 
 TEST_F(ModuleTest, ReactionRate) {
-		Module m;
+	Module m;
 	m.name = "main";
 	m.privateSpecies.push_back("a");
 	m.privateSpecies.push_back("b");
@@ -224,7 +224,7 @@ TEST_F(ModuleTest, InputConcException) {
 		inputMap.insert(std::make_pair("x", "x"));
 		speciesMapping outputMap;
 		outputMap.insert(std::make_pair("z", "z"));
-		composition c = {&a, inputMap, outputMap};
+		auto c = new ModuleComposition(&a, inputMap, outputMap);
 		main.compositions.push_back(c);
 	}
 

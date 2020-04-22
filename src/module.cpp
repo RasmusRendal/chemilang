@@ -1,4 +1,5 @@
 #include "module.h"
+#include "composition.h"
 #include <algorithm>
 #include <iostream>
 
@@ -92,78 +93,12 @@ void Module::Verify() {
 	}
 }
 
-void Module::MapReaction(const speciesMapping &mapIn,
-												 const speciesMapping &mapOut,
-												 const speciesMapping &mapPri, const reaction &r) {
-	speciesRatios leftSide;
-	for (const auto &specie : r.reactants) {
-		const std::string &specieName = specie.first;
-		if (mapIn.find(specieName) != mapIn.end()) {
-			leftSide.insert(std::make_pair(mapIn.at(specieName), specie.second));
-		} else if (mapOut.find(specieName) != mapOut.end()) {
-			leftSide.insert(std::make_pair(mapOut.at(specieName), specie.second));
-		} else if (mapPri.find(specieName) != mapPri.end()) {
-			leftSide.insert(std::make_pair(mapPri.at(specieName), specie.second));
-		} else {
-			throw std::runtime_error("Specie not found");
-		}
-	}
-
-	speciesRatios rightSide;
-	for (const auto &specie : r.products) {
-		const std::string &specieName = specie.first;
-		if (mapIn.find(specieName) != mapIn.end()) {
-			rightSide.insert(std::make_pair(mapIn.at(specieName), specie.second));
-		} else if (mapOut.find(specieName) != mapOut.end()) {
-			rightSide.insert(std::make_pair(mapOut.at(specieName), specie.second));
-		} else if (mapPri.find(specieName) != mapPri.end()) {
-			leftSide.insert(std::make_pair(mapPri.at(specieName), specie.second));
-		} else {
-			throw std::runtime_error("Specie not found");
-		}
-	}
-
-	reactionRate rate = r.rate;
-	reaction mapped = {leftSide, rightSide, rate};
-	reactions.push_back(mapped);
-}
-
 void Module::ApplyCompositions() {
 	int compositionNumber = 0;
 	while (!compositions.empty()) {
-		composition comp = compositions.back();
-		speciesMapping mapIn = comp.inputMapping;
-		speciesMapping mapOut = comp.outputMapping;
-		speciesMapping mapPri;
-		Module *submodule = comp.module;
-		submodule->Verify();
-		submodule->ApplyCompositions();
-
-		for (auto priSpecie : submodule->privateSpecies) {
-			specie newSpecie = submodule->name + "_" +
-												 std::to_string(compositionNumber) + "_" + priSpecie;
-
-			privateSpecies.push_back(newSpecie);
-			mapPri.insert(std::make_pair(priSpecie, newSpecie));
-		}
-
-		for (const auto &reaction : submodule->reactions) {
-			MapReaction(mapIn, mapOut, mapPri, reaction);
-		}
-
-		for (const auto &c : submodule->concentrations) {
-			if (mapPri.find(c.first) != mapPri.end()) {
-				concentrations.insert(
-						std::pair<specie, int>(mapPri.at(c.first), c.second));
-			} else if (mapOut.find(c.first) != mapOut.end()) {
-				concentrations.insert(
-						std::pair<specie, int>(mapOut.at(c.first), c.second));
-			} else {
-				throw MapConcForSubModuleException(c.first, submodule->name, name);
-			}
-		}
-
+		Composition *comp = compositions.back();
+		comp->ApplyComposition(name, compositionNumber++, concentrations, reactions,
+													 privateSpecies);
 		compositions.pop_back();
-		compositionNumber++;
 	}
 }

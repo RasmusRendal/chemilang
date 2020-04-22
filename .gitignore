@@ -5,3 +5,5 @@ Makefile
 bin/
 cmake_install.cmake
 .stdafx.c.pch
+compile_commands.json
+result
