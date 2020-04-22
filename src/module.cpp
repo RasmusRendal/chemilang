@@ -1,6 +1,7 @@
 #include "module.h"
 #include <algorithm>
 #include <iostream>
+#include "composition.h"
 
 std::string Module::Compile() {
 	Verify();
@@ -131,7 +132,7 @@ void Module::MapReaction(const speciesMapping &mapIn,
 void Module::ApplyCompositions() {
 	int compositionNumber = 0;
 	while (!compositions.empty()) {
-		composition comp = compositions.back();
+		Composition comp = compositions.back();
 		speciesMapping mapIn = comp.inputMapping;
 		speciesMapping mapOut = comp.outputMapping;
 		speciesMapping mapPri;

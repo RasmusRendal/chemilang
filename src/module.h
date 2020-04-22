@@ -1,4 +1,5 @@
 #pragma once
+#include "typedefs.h"
 #include <map>
 #include <set>
 #include <string>
@@ -6,24 +7,7 @@
 #include <vector>
 
 class Module;
-
-// TODO: Consider whether these would be more readable as structs
-using specie = std::string;
-using speciesRatios = std::map<specie, int>;
-using reactionRate = int;
-using speciesMapping = std::map<specie, specie>;
-
-struct reaction {
-	speciesRatios reactants;
-	speciesRatios products;
-	reactionRate rate;
-};
-
-struct composition {
-	Module *module;
-	speciesMapping inputMapping;
-	speciesMapping outputMapping;
-};
+class Composition;
 
 struct SpecieNotDeclaredException : public std::exception {
 	std::string error;
@@ -80,7 +64,7 @@ public:
 	std::vector<specie> privateSpecies;
 	std::map<specie, int> concentrations;
 	std::vector<reaction> reactions;
-	std::vector<composition> compositions;
+	std::vector<Composition> compositions;
 
 private:
 	void MapReaction(const speciesMapping &mapIn, const speciesMapping &mapOut,

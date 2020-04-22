@@ -36,25 +36,7 @@ void MergeVectors(std::vector<T> &v1, const std::vector<T> &v2) {
 
 void MakeComposition(driver &drv, const std::string &moduleName, std::vector<specie> inputs, std::vector<specie> outputs) {
 	Module *module = &drv.modules.at(moduleName);
-	speciesMapping inputMapping;
-	speciesMapping outputMapping;
-
-	if (inputs.size() != module->inputSpecies.size()) {
-		throw CompositionException(moduleName, "input", inputs.size(), module->inputSpecies.size());
-	}
-	for (int i = 0; i < module->inputSpecies.size(); i++) {
-		inputMapping.insert(std::make_pair(module->inputSpecies[i], inputs[i]));
-	}
-
-	if (outputs.size() != module->outputSpecies.size()) {
-		throw CompositionException(moduleName, "output", outputs.size(), module->outputSpecies.size());
-	}
-	for (int i = 0; i < module->outputSpecies.size(); i++) {
-		outputMapping.insert(std::make_pair(module->outputSpecies[i], outputs[i]));
-	}
-
-	composition comp = {module, inputMapping, outputMapping};
-	drv.currentModule.compositions.push_back(comp);
+	drv.currentModule.compositions.push_back(Composition(module, inputs, outputs));
 }
 
 using SpeciesPair = std::pair<specie, int>;
