@@ -33,5 +33,5 @@ int main(int argc, char *argv[]) {
 		std::cout << "Compilation error" << std::endl;
 		return 1;
 	}
-	return 1;
+	return 0;
 }
