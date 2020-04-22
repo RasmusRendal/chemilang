@@ -11,26 +11,27 @@ int main(int argc, char *argv[]) {
 	Frontend frontend;
 	std::string filename;
 	driver drv;
-	if (argv[argc - 1] == std::string("-h")) {
-		Frontend::Helper(helpArgument);
+	if (argv[argc - 1] == std::string("-h") ||
+			argv[argc - 1] == std::string("-help")) {
+		Frontend::PrintHelper();
 		return 0;
 	}
-
 	for (int i = 1; i < argc; ++i) {
 		if (file_included(argv[i])) {
 			filename = argv[i];
 		} else if (argv[i] == std::string("-o")) {
 			frontend.outputFileName = std::string(argv[++i]);
+		} else {
+			Frontend::Exception(argError, argv[i]);
+			return 1;
 		}
 	}
-
 	if (drv.parse_file(filename) == 0) {
 		frontend.drv = &drv;
 		frontend.WriteFile();
 	} else {
 		std::cout << "Compilation error" << std::endl;
+		return 1;
 	}
-	Frontend::Helper();
-
 	return 0;
 }

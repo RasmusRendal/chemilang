@@ -1,6 +1,6 @@
 #include "driver.h"
+#include "frontend.h"
 #include "parser.hpp"
-
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -10,7 +10,7 @@ driver::driver() : trace_parsing(false), trace_scanning(false) {}
 int driver::parse_file(const std::string &filename) {
 	std::ifstream fileStream(filename.c_str());
 	if (!fileStream.good()) {
-		std::cout << "File not found" << std::endl;
+		Frontend::Exception(fileError, filename);
 		return 1;
 	}
 	std::stringstream buffer;

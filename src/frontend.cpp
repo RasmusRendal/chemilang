@@ -12,10 +12,22 @@ void Frontend::WriteFile() {
 	std::cout << "Output written to " << outputFileName << std::endl;
 }
 
-void Frontend::Helper(Error errorCode) {
-	if (errorCode == fileError) {
-		std::cout << "Error: No file for parsing" << std::endl;
+void Frontend::Exception(Error errorCode, const std::string &input) {
+	switch (errorCode) {
+	case helpArgument:
+		Frontend::PrintHelper();
+		break;
+	case fileError:
+		std::cout << "Error: No file for parsing" << input << std::endl;
+		break;
+	case argError:
+		std::cout << "Invalid command-line argument used: " << input << "\n";
+		std::cout << "Please see -h for more info" << std::endl;
+		break;
 	}
+}
+
+void Frontend::PrintHelper() {
 	std::string helperstring = "Usage:  chemilang filename [OPTIONS]\n"
 														 "Options:\n"
 														 "    -o  Output filename\n"
