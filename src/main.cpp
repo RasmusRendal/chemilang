@@ -12,8 +12,8 @@ int main(int argc, char *argv[]) {
 	std::string filename;
 	driver drv;
 	if (argv[argc - 1] == std::string("-h")) {
-		Frontend::Helper(helpArgument);
-		return 0;
+		Frontend::PrintHelper();
+		return 1;
 	}
 	for (int i = 1; i < argc; ++i) {
 		if (file_included(argv[i])) {
@@ -32,5 +32,5 @@ int main(int argc, char *argv[]) {
 		std::cout << "Compilation error" << std::endl;
 		return 1;
 	}
-        return 1;
+	return 1;
 }
