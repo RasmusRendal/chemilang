@@ -16,19 +16,6 @@ struct NoMainModuleException : public std::exception {
 	}
 };
 
-struct CompositionException : public std::exception {
-	std::string error;
-
-	CompositionException(std::string moduleName, std::string input, int real,
-											 int expected)
-			: error("Composition failed for module '" + moduleName +
-							"'. It expects " + std::to_string(expected) + " " + input +
-							" species, but " + std::to_string(real) + " were provided.") {}
-	const char *what() const throw() {
-		return error.c_str();
-	}
-};
-
 // Conducting the whole scanning and parsing of Calc++.
 //! driver class, wroom wroom.
 class driver {

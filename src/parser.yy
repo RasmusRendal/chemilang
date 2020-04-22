@@ -13,6 +13,8 @@
   #include <exception>
   #include <assert.h>
   #include "module.h"
+  #include "modulecomposition.h"
+  #include "conditionalcomposition.h"
   class driver;
 }
 
@@ -34,27 +36,9 @@ void MergeVectors(std::vector<T> &v1, const std::vector<T> &v2) {
 	}
 }
 
-void MakeComposition(driver &drv, const std::string &moduleName, std::vector<specie> inputs, std::vector<specie> outputs) {
+Composition *MakeComposition(driver &drv, const std::string &moduleName, std::vector<specie> inputs, std::vector<specie> outputs) {
 	Module *module = &drv.modules.at(moduleName);
-	speciesMapping inputMapping;
-	speciesMapping outputMapping;
-
-	if (inputs.size() != module->inputSpecies.size()) {
-		throw CompositionException(moduleName, "input", inputs.size(), module->inputSpecies.size());
-	}
-	for (int i = 0; i < module->inputSpecies.size(); i++) {
-		inputMapping.insert(std::make_pair(module->inputSpecies[i], inputs[i]));
-	}
-
-	if (outputs.size() != module->outputSpecies.size()) {
-		throw CompositionException(moduleName, "output", outputs.size(), module->outputSpecies.size());
-	}
-	for (int i = 0; i < module->outputSpecies.size(); i++) {
-		outputMapping.insert(std::make_pair(module->outputSpecies[i], outputs[i]));
-	}
-
-	composition comp = {module, inputMapping, outputMapping};
-	drv.currentModule.compositions.push_back(comp);
+	return new ModuleComposition(module, inputs, outputs);
 }
 
 using SpeciesPair = std::pair<specie, int>;
@@ -66,32 +50,32 @@ void InsertToSpecieMap(speciesRatios &ratio, SpeciesPair &toInsert) {
 		ratio[toInsert.first] += toInsert.second;
 	}
   }
-
 }
 
 %define api.token.prefix {TOK_}
 %token
-    END  0          "end of file"
-    T_DMODULE       "module"
-    T_DPRIVATE      "private:"
-    T_DINPUT      "input:"
-    T_DOUTPUT      "output:"
-    T_DREACTIONS      "reactions:"
-    T_DCONCENTRATIONS      "concentrations:"
+    END  0               "end of file"
+    T_DMODULE            "module"
+    T_DPRIVATE           "private:"
+    T_DINPUT             "input:"
+    T_DOUTPUT            "output:"
+    T_DREACTIONS         "reactions:"
+    T_DCONCENTRATIONS    "concentrations:"
     T_DCOMPOSITIONS      "compositions:"
-    T_RIGHTARROW    "->"
-    T_BIARROW       "<->"
-    T_BRACKETSTART  "["
-    T_BRACKETEND    "]"
-    T_BRACESTART    "{"
-    T_BRACEEND      "}"
-    T_PARENSTART    "("
-    T_PARENEND      ")"
-    T_SET           ":="
-    T_EQUALS           "="
-    T_PLUS          "+"
-    T_COMMA         ","
-    T_END           ";"
+    T_DIF                "if"
+    T_RIGHTARROW         "->"
+    T_BIARROW            "<->"
+    T_BRACKETSTART       "["
+    T_BRACKETEND         "]"
+    T_BRACESTART         "{"
+    T_BRACEEND           "}"
+    T_PARENSTART         "("
+    T_PARENEND           ")"
+    T_SET                ":="
+    T_EQUALS             "="
+    T_PLUS               "+"
+    T_COMMA              ","
+    T_END                ";"
 ;
 
 %token <std::string>    T_NAME      "name"
@@ -101,6 +85,9 @@ void InsertToSpecieMap(speciesRatios &ratio, SpeciesPair &toInsert) {
 %nterm <std::vector<specie>> speciesArray
 %nterm <speciesRatios> reactionSpeciesList
 %nterm <std::pair<specie, int>> reactionSpecie
+
+%nterm <Composition*> composition
+%nterm <std::vector<Composition*>> compositions
 
 %%
 
@@ -122,14 +109,15 @@ property : "private:" dSpecies ";" { MergeVectors(drv.currentModule.privateSpeci
 		 | "input:" dSpecies ";" { MergeVectors(drv.currentModule.inputSpecies, $2); }
 		 | "reactions:" "{" reactions "}"
 		 | "concentrations:" "{" concentrations "}"
-		 | "compositions:" "{" compositions "}"
+		 | "compositions:" "{" compositions "}" {{ MergeVectors(drv.currentModule.compositions, $3); }}
 		 ;
 
-compositions: composition
-			| compositions composition
+compositions: composition { std::vector<Composition*> vec; vec.push_back($1); $$ = vec; }
+			| compositions composition { auto vec = $1; $1.push_back($2); $$ = $1; }
 			;
 
-composition: speciesArray "=" "name" "(" speciesArray ")" ";" { MakeComposition(drv, $3, $5, $1); }
+composition: speciesArray "=" "name" "(" speciesArray ")" ";" { $$ = MakeComposition(drv, $3, $5, $1); }
+           | "if" "(" "name" ")" "{" compositions "}" { $$ = new ConditionalComposition($3, $6); }
 		   ;
 
 reactions: reaction

@@ -4,7 +4,7 @@ stdenv.mkDerivation {
   name = "chemilang";
   src = ./.;
 
-  buildInputs = [ cmake clang boost flex bison gnuplot gtest gdb ];
+  buildInputs = [ cmake clang boost flex bison gnuplot gtest gdb doxygen ];
 
   buildPhase = "cmake . && make && ./bin/tests";
 

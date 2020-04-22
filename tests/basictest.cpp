@@ -260,42 +260,42 @@ TEST_F(BasicTest, CompWrongOutputSize) {
 
 TEST_F(BasicTest, NestedComposition) {
 	std::string input = "module thing {\n"
-		"input: c;\n"
-		"output: j;\n"
-		"private: chem;\n"
-		"concentrations: {\n"
-			"chem := 420;\n"
-			"}\n"
-		"}\n"
-		"module some {\n"
-			"input: x;\n"
-			"private: aa;\n"
-			"output: b;\n"
-			"concentrations: {\n"
-				"aa := 20;\n"
-			"}\n"
-			"compositions: {\n"
-				"b = thing(aa);\n"
-		"}\n"
-		"}\n"
-		"module main {\n"
-			"input: b;\n"
-			"output: z;\n"
-			"private: a;\n"
-			"concentrations: {\n"
-				"a := 1337;\n"
-			"}\n"
-			"compositions: {\n"
-				"z = some(a);\n"
-			"}\n"
-		"}\n";
-		driver drv;
-		drv.parse_string(input);
-		std::string expected = "#!/usr/bin/env -S crnsimul -e -P -C main_z\n"
-			"main_a := 1337;\n"
-			"main_some_0_aa := 20;\n"
-			"main_some_0_thing_0_chem := 420;\n";
-		EXPECT_EQ(drv.out, expected);
+											"input: c;\n"
+											"output: j;\n"
+											"private: chem;\n"
+											"concentrations: {\n"
+											"chem := 420;\n"
+											"}\n"
+											"}\n"
+											"module some {\n"
+											"input: x;\n"
+											"private: aa;\n"
+											"output: b;\n"
+											"concentrations: {\n"
+											"aa := 20;\n"
+											"}\n"
+											"compositions: {\n"
+											"b = thing(aa);\n"
+											"}\n"
+											"}\n"
+											"module main {\n"
+											"input: b;\n"
+											"output: z;\n"
+											"private: a;\n"
+											"concentrations: {\n"
+											"a := 1337;\n"
+											"}\n"
+											"compositions: {\n"
+											"z = some(a);\n"
+											"}\n"
+											"}\n";
+	driver drv;
+	drv.parse_string(input);
+	std::string expected = "#!/usr/bin/env -S crnsimul -e -P -C main_z\n"
+												 "main_a := 1337;\n"
+												 "main_some_0_aa := 20;\n"
+												 "main_some_0_thing_0_chem := 420;\n";
+	EXPECT_EQ(drv.out, expected);
 }
 
 TEST_F(BasicTest, privateSpecMapOneSubMod) {
@@ -561,6 +561,40 @@ TEST_F(BasicTest, multipleOutputSpecieWithSubMod) {
 										"main_c := 30;\n"
 										"5main_b -> main_e;\n"
 										"5main_a -> main_d;\n";
+	driver drv;
+	ASSERT_EQ(drv.parse_string(in), 0);
+	EXPECT_EQ(drv.out, out);
+}
+
+TEST_F(BasicTest, FuzzyLogicTest) {
+	std::string in = "module ident {\n"
+									 "input: x;\n"
+									 "output: y;\n"
+									 "reactions: {\n"
+									 "x -> x + y;\n"
+									 "y -> 0;\n"
+									 "}\n"
+									 "}\n"
+									 "module main {\n"
+									 "private: [a, b];\n"
+									 "output: z;\n"
+									 "concentrations: {\n"
+									 "a := 5;\n"
+									 "b := 0;\n"
+									 "}\n"
+									 "compositions: {\n"
+									 "if (b) {\n"
+									 "z = ident(a);\n"
+									 "}\n"
+									 "}\n"
+									 "}\n";
+
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_z\n"
+										"main_a := 5;\n"
+										"main_b := 0;\n"
+										"main_a + main_b -> main_a + main_b + main_z;\n"
+										"main_b + main_z -> main_b;\n";
+
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
 	EXPECT_EQ(drv.out, out);
