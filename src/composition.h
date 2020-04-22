@@ -12,5 +12,3 @@ public:
 																std::vector<reaction> &reactionOut,
 																std::vector<specie> &specieOut) = 0;
 };
-
-
