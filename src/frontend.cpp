@@ -24,9 +24,9 @@ void Frontend::Exception(Error errorCode, const std::string &input) {
 void Frontend::Helper(Error errorCode) {
 	if (errorCode == helpArgument) {
 		std::string helperstring = "Usage:  chemilang filename [OPTIONS]\n"
-                                            "Options:\n"
-                                            "    -o  Output filename\n"
-                                            "    -h  Display help information";
+															 "Options:\n"
+															 "    -o  Output filename\n"
+															 "    -h  Display help information";
 		std::cout << helperstring << std::endl;
 	}
 };
