@@ -1,4 +1,5 @@
 #include "frontend.h"
+#include <ostream>
 
 void Frontend::GenerateStringStream() {
 	stream.str(drv->out);
@@ -23,6 +24,9 @@ void Frontend::Exception(Error errorCode, const std::string &input) {
 	case argError:
 		std::cout << "Invalid command-line argument used: " << input << "\n";
 		std::cout << "Please see -h for more info" << std::endl;
+		break;
+	case outFileError:
+		std::cout << "Error: No output file specified" << std::endl;
 		break;
 	}
 }
