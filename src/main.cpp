@@ -11,6 +11,10 @@ int main(int argc, char *argv[]) {
 	Frontend frontend;
 	std::string filename;
 	driver drv;
+	if (argv[argc - 1] == std::string("-h")) {
+		Frontend::Helper(helpArgument);
+		return 0;
+	}
 
 	try {
 		if (argv[argc - 1] == std::string("-h")) {
@@ -26,7 +30,6 @@ int main(int argc, char *argv[]) {
 				throw std::invalid_argument(argv[i]);
 			}
 		}
-
 		if (drv.parse_file(filename) == 0) {
 			frontend.drv = &drv;
 			frontend.WriteFile();
