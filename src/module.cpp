@@ -24,10 +24,9 @@ std::string Module::Compile() {
 		for (const auto &specie : reaction.reactants) {
 			if (specie.second != 1) {
 				output +=
-					std::to_string(specie.second) + name + "_" + specie.first + " + ";
+						std::to_string(specie.second) + name + "_" + specie.first + " + ";
 			} else {
 				output += name + "_" + specie.first + " + ";
-
 			}
 		}
 		// Remove the last trailing +, because I'm too lazy not to add it
@@ -93,8 +92,8 @@ void Module::Verify() {
 }
 
 void Module::MapReaction(const speciesMapping &mapIn,
-		const speciesMapping &mapOut,
-		const speciesMapping &mapPri, const reaction &r) {
+												 const speciesMapping &mapOut,
+												 const speciesMapping &mapPri, const reaction &r) {
 	speciesRatios leftSide;
 	for (const auto &specie : r.reactants) {
 		const std::string &specieName = specie.first;
@@ -141,7 +140,7 @@ void Module::ApplyCompositions() {
 
 		for (auto priSpecie : submodule->privateSpecies) {
 			specie newSpecie = submodule->name + "_" +
-				std::to_string(compositionNumber) + "_" + priSpecie;
+												 std::to_string(compositionNumber) + "_" + priSpecie;
 
 			privateSpecies.push_back(newSpecie);
 			mapPri.insert(std::make_pair(priSpecie, newSpecie));
