@@ -27,8 +27,9 @@ int main(int argc, char *argv[]) {
 	if (drv.parse_file(filename) == 0) {
 		frontend.drv = &drv;
 		frontend.WriteFile();
-	} else
+	} else {
 		std::cout << "Compilation error" << std::endl;
+	}
 	Frontend::Helper();
 
 	return 0;

@@ -25,8 +25,9 @@ std::string Module::Compile() {
 			if (specie.second != 1) {
 				output +=
 						std::to_string(specie.second) + name + "_" + specie.first + " + ";
-			} else
+			} else {
 				output += name + "_" + specie.first + " + ";
+			}
 		}
 		// Remove the last trailing +, because I'm too lazy not to add it
 		output.pop_back();
@@ -36,8 +37,9 @@ std::string Module::Compile() {
 			output += "(";
 			output += std::to_string(reaction.rate);
 			output += ") ";
-		} else
+		} else {
 			output += "-> ";
+		}
 		auto &products = reaction.products;
 		if (!products.empty()) {
 			for (const auto &specie : reaction.products) {
