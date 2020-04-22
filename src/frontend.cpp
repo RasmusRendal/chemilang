@@ -15,7 +15,7 @@ void Frontend::WriteFile() {
 void Frontend::Exception(Error errorCode, const std::string &input) {
 	if (errorCode == fileError) {
 		std::cout << "Error: No file for parsing" << "\n";
-                std::cout << &input << std::endl;
+                std::cout << input << std::endl;
 	}
 	if (errorCode == argError) {
 		std::cout << "Invalid command-line argument used " << input << '\n';
