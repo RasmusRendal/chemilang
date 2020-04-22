@@ -9,6 +9,7 @@ enum Error {
 	helpArgument = 0,
 	fileError = 1,
 	argError = 2,
+	outFileError = 3,
 };
 
 class Frontend {
