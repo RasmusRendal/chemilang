@@ -14,19 +14,19 @@ void Frontend::WriteFile() {
 
 void Frontend::Exception(Error errorCode, const std::string &input) {
 	if (errorCode == fileError) {
-		std::cout << "Error: No file for parsing" << std::endl;
-	} else if (errorCode == argError) {
+		std::cout << "Error: No file for parsing" << "\n";
+                std::cout << &input << std::endl;
+	}
+	if (errorCode == argError) {
 		std::cout << "Invalid command-line argument used " << input << '\n';
 		std::cout << "Please see -h for more info" << std::endl;
 	}
 }
 
-void Frontend::Helper(Error errorCode) {
-	if (errorCode == helpArgument) {
-		std::string helperstring = "Usage:  chemilang filename [OPTIONS]\n"
-															 "Options:\n"
-															 "    -o  Output filename\n"
-															 "    -h  Display help information";
-		std::cout << helperstring << std::endl;
-	}
+void Frontend::PrintHelper() {
+	std::string helperstring = "Usage:  chemilang filename [OPTIONS]\n"
+														 "Options:\n"
+														 "    -o  Output filename\n"
+														 "    -h  Display help information";
+	std::cout << helperstring << std::endl;
 };
