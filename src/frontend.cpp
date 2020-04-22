@@ -13,12 +13,17 @@ void Frontend::WriteFile() {
 }
 
 void Frontend::Exception(Error errorCode, const std::string &input) {
-	if (errorCode == fileError) {
+	switch (errorCode) {
+	case helpArgument:
+		Frontend::PrintHelper();
+		break;
+	case fileError:
 		std::cout << "Error: No file for parsing" << input << std::endl;
-	}
-	if (errorCode == argError) {
-		std::cout << "Invalid command-line argument used " << input << '\n';
+		break;
+	case argError:
+		std::cout << "Invalid command-line argument used: " << input << "\n";
 		std::cout << "Please see -h for more info" << std::endl;
+		break;
 	}
 }
 
