@@ -15,11 +15,6 @@ int main(int argc, char *argv[]) {
 		Frontend::Helper(helpArgument);
 		return 0;
 	}
-
-	if (argv[argc - 1] == std::string("-h")) {
-		Frontend::Helper(helpArgument);
-		return 0;
-	}
 	for (int i = 1; i < argc; ++i) {
 		if (file_included(argv[i])) {
 			filename = argv[i];
@@ -27,7 +22,7 @@ int main(int argc, char *argv[]) {
 			frontend.outputFileName = std::string(argv[++i]);
 		} else {
 			Frontend::Exception(argError, argv[i]);
-			return 0;
+			return 1;
 		}
 	}
 	if (drv.parse_file(filename) == 0) {
@@ -35,8 +30,7 @@ int main(int argc, char *argv[]) {
 		frontend.WriteFile();
 	} else {
 		std::cout << "Compilation error" << std::endl;
+		return 1;
 	}
-	
-        Frontend::Helper();
 	return 0;
 }
