@@ -64,5 +64,6 @@ public:
 	std::vector<specie> privateSpecies;
 	std::map<specie, int> concentrations;
 	std::vector<reaction> reactions;
+	// TODO: This should be an unique pointer instead
 	std::vector<Composition *> compositions;
 };
