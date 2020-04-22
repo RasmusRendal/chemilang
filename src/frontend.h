@@ -15,8 +15,8 @@ class Frontend {
 public:
 	driver *drv;
 	std::stringstream stream;
-	static void PrintHelper(); 
-        static void Exception(Error errorCode, const std::string &input);
+	static void PrintHelper();
+	static void Exception(Error errorCode, const std::string &input);
 	void GenerateStringStream();
 	void WriteFile();
 	std::string outputFileName = "out.crn";
