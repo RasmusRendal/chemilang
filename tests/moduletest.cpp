@@ -110,7 +110,7 @@ TEST_F(ModuleTest, ApplyCompositionsTest) {
 		inputMap.insert(std::make_pair("y", "y"));
 		speciesMapping outputMap;
 		outputMap.insert(std::make_pair("z", "o"));
-		Composition c(&a, inputMap, outputMap);
+		auto c = new ModuleComposition(&a, inputMap, outputMap);
 		main.compositions.push_back(c);
 	}
 
@@ -121,7 +121,7 @@ TEST_F(ModuleTest, ApplyCompositionsTest) {
 		inputMap.insert(std::make_pair("y", "o"));
 		speciesMapping outputMap;
 		outputMap.insert(std::make_pair("z", "v"));
-		Composition c(&a, inputMap, outputMap);
+		auto c = new ModuleComposition(&a, inputMap, outputMap);
 		main.compositions.push_back(c);
 	}
 
@@ -224,7 +224,7 @@ TEST_F(ModuleTest, InputConcException) {
 		inputMap.insert(std::make_pair("x", "x"));
 		speciesMapping outputMap;
 		outputMap.insert(std::make_pair("z", "z"));
-		Composition c(&a, inputMap, outputMap);
+		auto c = new ModuleComposition(&a, inputMap, outputMap);
 		main.compositions.push_back(c);
 	}
 

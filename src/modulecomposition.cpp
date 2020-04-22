@@ -1,8 +1,8 @@
-#include "composition.h"
+#include "modulecomposition.h"
 #include "module.h"
 
-Composition::Composition(Module *module, std::vector<specie> inputs,
-												 std::vector<specie> outputs)
+ModuleComposition::ModuleComposition(Module *module, std::vector<specie> inputs,
+																		 std::vector<specie> outputs)
 		: module(module) {
 
 	if (inputs.size() != module->inputSpecies.size()) {
@@ -22,11 +22,10 @@ Composition::Composition(Module *module, std::vector<specie> inputs,
 	}
 }
 
-void Composition::ApplyComposition(std::string moduleName,
-																	 int compositionNumber,
-																	 std::map<specie, int> &concOut,
-																	 std::vector<reaction> &reactionsOut,
-																	 std::vector<specie> &privateSpecieOut) {
+void ModuleComposition::ApplyComposition(
+		std::string moduleName, int compositionNumber,
+		std::map<specie, int> &concOut, std::vector<reaction> &reactionsOut,
+		std::vector<specie> &privateSpecieOut) {
 	speciesMapping mapPri;
 	module->Verify();
 	module->ApplyCompositions();
@@ -55,8 +54,8 @@ void Composition::ApplyComposition(std::string moduleName,
 	}
 }
 
-reaction Composition::MapReaction(const speciesMapping &mapPri,
-																	const reaction &r) {
+reaction ModuleComposition::MapReaction(const speciesMapping &mapPri,
+																				const reaction &r) {
 	speciesRatios leftSide;
 	for (const auto &specie : r.reactants) {
 		const std::string &specieName = specie.first;

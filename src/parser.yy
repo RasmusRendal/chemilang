@@ -13,6 +13,7 @@
   #include <exception>
   #include <assert.h>
   #include "module.h"
+  #include "modulecomposition.h"
   class driver;
 }
 
@@ -36,7 +37,7 @@ void MergeVectors(std::vector<T> &v1, const std::vector<T> &v2) {
 
 void MakeComposition(driver &drv, const std::string &moduleName, std::vector<specie> inputs, std::vector<specie> outputs) {
 	Module *module = &drv.modules.at(moduleName);
-	drv.currentModule.compositions.push_back(Composition(module, inputs, outputs));
+	drv.currentModule.compositions.push_back(new ModuleComposition(module, inputs, outputs));
 }
 
 using SpeciesPair = std::pair<specie, int>;

@@ -64,9 +64,5 @@ public:
 	std::vector<specie> privateSpecies;
 	std::map<specie, int> concentrations;
 	std::vector<reaction> reactions;
-	std::vector<Composition> compositions;
-
-private:
-	void MapReaction(const speciesMapping &mapIn, const speciesMapping &mapOut,
-									 const speciesMapping &mapPri, const reaction &r);
+	std::vector<Composition *> compositions;
 };

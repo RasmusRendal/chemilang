@@ -96,9 +96,9 @@ void Module::Verify() {
 void Module::ApplyCompositions() {
 	int compositionNumber = 0;
 	while (!compositions.empty()) {
-		Composition comp = compositions.back();
-		comp.ApplyComposition(name, compositionNumber++, concentrations, reactions,
-													privateSpecies);
+		Composition *comp = compositions.back();
+		comp->ApplyComposition(name, compositionNumber++, concentrations, reactions,
+													 privateSpecies);
 		compositions.pop_back();
 	}
 }

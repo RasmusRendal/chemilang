@@ -4,7 +4,6 @@
 #include <map>
 #include <string>
 #include <vector>
-#include "composition.h"
 
 // Give Flex the prototype of yylex we want ...
 #define YY_DECL yy::parser::symbol_type yylex(driver &drv)
