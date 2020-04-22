@@ -48,7 +48,6 @@ void InsertToSpecieMap(speciesRatios &ratio, SpeciesPair &toInsert) {
 		ratio[toInsert.first] += toInsert.second;
 	}
   }
-
 }
 
 %define api.token.prefix {TOK_}

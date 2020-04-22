@@ -24,9 +24,11 @@ public:
 							std::vector<specie> outputs);
 	Composition(Module *module, speciesMapping inputMap, speciesMapping outputMap)
 			: module(module), inputMapping(inputMap), outputMapping(outputMap) {}
-	/*void ApplyComposition(std::string moduleName, std::map<specie, int>
-		 &concOut, std::vector<reaction> &reactionOut, std::vector<specie>
-		 &specieOut);*/
+	void ApplyComposition(std::string moduleName, int compositionNumber, std::map<specie, int> &concOut,
+												std::vector<reaction> &reactionOut,
+												std::vector<specie> &specieOut);
+
+	reaction MapReaction(const speciesMapping &mapPri, const reaction &r);
 	speciesMapping inputMapping;
 	speciesMapping outputMapping;
 	Module *module;
