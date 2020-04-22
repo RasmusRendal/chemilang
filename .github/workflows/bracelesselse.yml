@@ -1,0 +1,14 @@
+name: Checking for braceless else
+
+on: [push]
+
+jobs:
+
+  bracelesselse:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check for braceless else
+      run: bash -c "! grep -r -E '} else$' ."

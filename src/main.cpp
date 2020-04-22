@@ -35,7 +35,8 @@ int main(int argc, char *argv[]) {
 		frontend.WriteFile();
 	} else {
 		std::cout << "Compilation error" << std::endl;
-		Frontend::Helper();
 	}
-	return 1;
+	
+        Frontend::Helper();
+	return 0;
 }
