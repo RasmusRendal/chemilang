@@ -11,9 +11,10 @@ int main(int argc, char *argv[]) {
 	Frontend frontend;
 	std::string filename;
 	driver drv;
-	if (argv[argc - 1] == std::string("-h")) {
+	if (argv[argc - 1] == std::string("-h") ||
+			argv[argc - 1] == std::string("-help")) {
 		Frontend::PrintHelper();
-		return 1;
+		return 0;
 	}
 	for (int i = 1; i < argc; ++i) {
 		if (file_included(argv[i])) {
