@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
 		frontend.drv = &drv;
 		frontend.WriteFile();
 	} else {
-		return parseRes;
+		return EX_DATAERR;
 	}
 	return EX_OK;
 }
