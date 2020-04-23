@@ -1,5 +1,6 @@
 #include "driver.h"
 #include "frontend.h"
+#include "sysexits.h"
 #include <cstdio>
 #include <iostream>
 #include <string>
@@ -15,7 +16,7 @@ int main(int argc, char *argv[]) {
 	if (argv[argc - 1] == std::string("-h") ||
 			argv[argc - 1] == std::string("-help")) {
 		Frontend::PrintHelper();
-		return 0;
+		return EX_OK;
 	}
 
 	for (int i = 1; i < argc; ++i) {
@@ -25,10 +26,10 @@ int main(int argc, char *argv[]) {
 			frontend.outputFileName = std::string(argv[++i]);
 		} else if (argv[i] == std::string("-o") && argc <= 3) {
 			Frontend::Exception(outFileError, argv[i]);
-			return 1;
+			return EX_DATAERR;
 		} else {
 			Frontend::Exception(argError, argv[i]);
-			return 1;
+			return EX_DATAERR;
 		}
 	}
 
@@ -39,5 +40,5 @@ int main(int argc, char *argv[]) {
 	} else {
 		return parseRes;
 	}
-	return 0;
+	return EX_OK;
 }
