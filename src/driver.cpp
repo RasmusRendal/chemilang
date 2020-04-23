@@ -29,6 +29,9 @@ int driver::parse() {
 			static_cast<yy::parser::debug_level_type>(trace_parsing));
 	int res = parse();
 	scan_end();
+	if (res != 0) {
+		return res;
+	}
 	if (modules.find("main") == modules.end()) {
 		throw NoMainModuleException();
 	}

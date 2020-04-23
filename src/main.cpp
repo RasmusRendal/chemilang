@@ -32,12 +32,12 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	if (drv.parse_file(filename) == 0) {
+	int parseRes = drv.parse_file(filename);
+	if (parseRes == 0) {
 		frontend.drv = &drv;
 		frontend.WriteFile();
 	} else {
-		std::cout << "Compilation error" << std::endl;
-		return 1;
+		return parseRes;
 	}
 	return 0;
 }
