@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <sys/stat.h>
 
 void Frontend::GenerateStringStream() {
 	stream.str(drv->out);
@@ -21,6 +22,7 @@ void Frontend::WriteFile() {
 	fileStream.open(outputFileName);
 	fileStream << stream.rdbuf();
 	fileStream.close();
+	chmod(outputFileName.c_str(), S_IXUSR);
 	std::cout << "Output written to " << outputFileName << std::endl;
 }
 
