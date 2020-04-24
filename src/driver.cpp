@@ -9,10 +9,6 @@ driver::driver() : trace_parsing(false), trace_scanning(false) {}
 
 int driver::parse_file(const std::string &filename) {
 	std::ifstream fileStream(filename.c_str());
-	if (!fileStream.good()) {
-		Frontend::Exception(fileError, filename);
-		return 1;
-	}
 	std::stringstream buffer;
 	buffer << fileStream.rdbuf();
 	return parse_string(buffer.str());
