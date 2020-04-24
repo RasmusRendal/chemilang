@@ -22,7 +22,7 @@ void Frontend::WriteFile() {
 	fileStream.open(outputFileName);
 	fileStream << stream.rdbuf();
 	fileStream.close();
-	chmod(outputFileName.c_str(), S_IXUSR);
+	chmod(outputFileName.c_str(), S_IRWXU);
 	std::cout << "Output written to " << outputFileName << std::endl;
 }
 
