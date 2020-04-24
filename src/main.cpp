@@ -16,17 +16,22 @@ int main(int argc, char *argv[]) {
 	}
 
 	for (int i = 1; i < argc; ++i) {
-		if (Frontend::ValidateFileStream(argv[i])) {
-			filename = argv[i];
-		} else if (argv[i] == std::string("-o") && argc == 4) {
+		if (argv[i] == std::string("-o") && argc == 4 || argc == 3) {
 			frontend.outputFileName = std::string(argv[++i]);
-		} else if (argv[i] == std::string("-o") && argc <= 3) {
+		} else if (argv[i] == std::string("-o") && argc == 2) {
 			Frontend::Exception(outFileError, argv[i]);
 			return EX_USAGE;
-		} else {
-			Frontend::Exception(argError, argv[i]);
-			return EX_DATAERR;
 		}
+
+		if (Frontend::IsValidPath(argv[i]) && argc == 4 || argc == 2) {
+			filename = argv[i];
+		}
+
+		if (argc == 3) {
+			Frontend::Exception(argError, argv[i]);
+			return EX_USAGE;
+		}
+		std::cout << argv[i] << argc << i << std::endl;
 	}
 
 	int parseRes = drv.parse_file(filename);
