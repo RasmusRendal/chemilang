@@ -49,7 +49,7 @@ void Frontend::Exception(Error errorCode, const std::string &input) {
 }
 
 void Frontend::PrintHelper() {
-	std::string helperstring = "Usage:  chemilang [OPTIONS]\n"
+	std::string helperstring = "Usage:  chemilang [OPTIONS] filename\n"
 														 "Options:\n"
 														 "    -o  Output filename\n"
 														 "    -h  Display help information";
