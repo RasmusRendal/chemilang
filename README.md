@@ -1,7 +1,7 @@
 # Chemilang codebase
 This is the codebase for chemilang.
 
-Chemilang is a declerational language for constructing advanced Chemical Reaction Networks. Inspired by HDL languages and [CRN++](https://arxiv.org/abs/1809.07430), it combines features from both to allow for sequential programs, but also fully utilizing the power of parallel execution.
+Chemilang is a declarational language for constructing advanced Chemical Reaction Networks. Inspired by HDL languages and [CRN++](https://arxiv.org/abs/1809.07430), it combines features from both to allow for sequential programs, but also fully utilizing the power of parallel execution.
 
 It is meant to compile to [crnsimul](https://github.com/RasmusRendal/crnsimul) compatible source code, and the two projects are developed by the same group.
 ## Building
