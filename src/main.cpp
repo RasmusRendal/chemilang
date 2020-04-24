@@ -5,10 +5,6 @@
 #include <iostream>
 #include <string>
 
-bool file_included(const std::string &filename) {
-	return std::ifstream(filename).good();
-}
-
 int main(int argc, char *argv[]) {
 	Frontend frontend;
 	std::string filename;
@@ -20,7 +16,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	for (int i = 1; i < argc; ++i) {
-		if (file_included(argv[i])) {
+		if (Frontend::ValidateFileStream(argv[i])) {
 			filename = argv[i];
 		} else if (argv[i] == std::string("-o") && argc == 4) {
 			frontend.outputFileName = std::string(argv[++i]);
@@ -28,7 +24,7 @@ int main(int argc, char *argv[]) {
 			Frontend::Exception(outFileError, argv[i]);
 			return EX_USAGE;
 		} else {
-			Frontend::Exception(fileError, argv[i]);
+			Frontend::Exception(argError, argv[i]);
 			return EX_DATAERR;
 		}
 	}
