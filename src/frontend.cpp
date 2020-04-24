@@ -1,7 +1,4 @@
 #include "frontend.h"
-#include <fstream>
-#include <iostream>
-#include <sstream>
 
 void Frontend::GenerateStringStream() {
 	stream.str(drv->out);
