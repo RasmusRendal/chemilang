@@ -19,7 +19,8 @@ void Frontend::Exception(Error errorCode, const std::string &input) {
 		Frontend::PrintHelper();
 		break;
 	case fileError:
-		std::cout << "Error: No file for parsing" << input << std::endl;
+		std::cout << "Error: No file for parsing or file not found: " << input
+							<< std::endl;
 		break;
 	case argError:
 		std::cout << "Invalid command-line argument used: " << input << "\n";
