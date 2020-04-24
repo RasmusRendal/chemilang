@@ -1,9 +1,20 @@
 #include "frontend.h"
-#include <ostream>
+#include <fstream>
+#include <iostream>
+#include <sstream>
 
 void Frontend::GenerateStringStream() {
 	stream.str(drv->out);
 }
+
+bool Frontend::ValidateFileStream(const std::string &filename) {
+	std::ifstream fileStream(filename.c_str());
+	if (!fileStream.good()) {
+		Frontend::Exception(fileError, filename);
+		return false;
+	}
+	return true;
+};
 
 void Frontend::WriteFile() {
 	GenerateStringStream();
@@ -19,13 +30,21 @@ void Frontend::Exception(Error errorCode, const std::string &input) {
 		Frontend::PrintHelper();
 		break;
 	case fileError:
-		std::cout << "Error: No file for parsing or file not found: " << input
-							<< std::endl;
-		break;
+		if (input.find('-') == std::string::npos) {
+			std::cout << "Error: No file for parsing or file not found: " << input
+								<< std::endl;
+			break;
+		} else {
+			break;
+		}
 	case argError:
-		std::cout << "Invalid command-line argument used: " << input << "\n";
-		std::cout << "Please see -h for more info" << std::endl;
-		break;
+		if (input.find('-') != std::string::npos) {
+			std::cout << "Invalid command-line argument used: " << input << "\n";
+			std::cout << "Please see -h for more info" << std::endl;
+			break;
+		} else {
+			break;
+		}
 	case outFileError:
 		std::cout << "Error: No output file specified" << std::endl;
 		break;
@@ -33,7 +52,7 @@ void Frontend::Exception(Error errorCode, const std::string &input) {
 }
 
 void Frontend::PrintHelper() {
-	std::string helperstring = "Usage:  chemilang filename [OPTIONS]\n"
+	std::string helperstring = "Usage:  chemilang [OPTIONS]\n"
 														 "Options:\n"
 														 "    -o  Output filename\n"
 														 "    -h  Display help information";
