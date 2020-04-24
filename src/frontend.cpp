@@ -4,17 +4,18 @@ void Frontend::GenerateStringStream() {
 	stream.str(drv->out);
 }
 
-bool Frontend::ValidateFileStream(const std::string &filename) {
-	std::ifstream fileStream(filename.c_str());
-	if (filename[0] == '-') {
+bool Frontend::IsValidPath(const std::string &filePath) {
+	if (filePath[0] == '-') {
+		Exception(argError, filePath);
 		return false;
 	}
 
+	std::ifstream fileStream(filePath.c_str());
 	if (fileStream.good()) {
 		return true;
 	}
 
-	Frontend::Exception(fileError, filename);
+	Frontend::Exception(fileError, filePath);
 
 	return false;
 };
@@ -49,7 +50,8 @@ void Frontend::Exception(Error errorCode, const std::string &input) {
 			break;
 		}
 	case outFileError:
-		std::cout << "Error: No output file specified" << std::endl;
+		std::cout << "Error: No output file specified for option: " << input
+							<< std::endl;
 		break;
 	}
 }
