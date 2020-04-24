@@ -18,6 +18,7 @@ public:
 	std::stringstream stream;
 	static void PrintHelper();
 	static void Exception(Error errorCode, const std::string &input);
+	static bool ValidateFileStream(const std::string &filename);
 	void GenerateStringStream();
 	void WriteFile();
 	std::string outputFileName = "out.crn";
