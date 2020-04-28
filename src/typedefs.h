@@ -4,7 +4,7 @@
 
 using specie = std::string;
 using speciesRatios = std::map<specie, int>;
-using reactionRate = int;
+using reactionRate = double;
 
 struct reaction {
 	speciesRatios reactants;
