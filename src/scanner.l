@@ -148,7 +148,7 @@ blank             [ \t\r]
 {T_END}              return yy::parser::make_T_END             (loc);
 
 {int}                return make_T_NUMBER(yytext, loc);
-{decimal}            return make_T_DECIMAL{yytext, loc};
+{decimal}            return make_T_DECIMAL(yytext, loc);
 {T_NAME}             return yy::parser::make_T_NAME (yytext, loc);
 .               {
                   throw yy::parser::syntax_error
@@ -172,6 +172,7 @@ yy::parser::symbol_type
 make_T_DECIMAL (const std::string &s, const yy::parser::location_type& loc)
 {
   errno = 0;
+  if (! ())
   double d = atof (s.c_str());
   return yy::parser::make_T_DECIMAL ( (double) d, loc);
 }
