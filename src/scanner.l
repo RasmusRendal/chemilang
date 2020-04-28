@@ -172,7 +172,6 @@ yy::parser::symbol_type
 make_T_DECIMAL (const std::string &s, const yy::parser::location_type& loc)
 {
   errno = 0;
-  if (! ())
   double d = atof (s.c_str());
   return yy::parser::make_T_DECIMAL ( (double) d, loc);
 }
