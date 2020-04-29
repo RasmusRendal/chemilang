@@ -7,9 +7,9 @@ void ScalarComposition::ApplyComposition(std::string moduleName,
 																				 std::vector<specie> &specieOut) {
 	std::vector<reaction> preRates;
 	for (Composition *subcomp : subCompositions) {
-    subcomp->ApplyComposition(moduleName, compositionNumber,
-       concOut, preRates, specieOut);
-  }
+		subcomp->ApplyComposition(moduleName, compositionNumber, concOut, preRates,
+															specieOut);
+	}
 	for (auto reaction : preRates) {
 		reaction.rate *= time;
 		reactionOut.push_back(reaction);
