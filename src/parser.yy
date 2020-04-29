@@ -106,7 +106,7 @@ functions : function
           | functions function
           ;
 
-function : T_DFUNCTION "name" "{" properties "}" { std::cout << $2 << std::endl; }
+function : T_DFUNCTION "name" "{" properties "}" { drv.currentModule.name = $2; drv.FinishParsingFunction(); }
 
 properties : property
 		   | properties property

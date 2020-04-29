@@ -46,6 +46,7 @@ void driver::FinishParsingModule() {
 }
 
 void driver::FinishParsingFunction() {
-	functions.insert(std::make_pair(currentFunction.name, currentFunction));
-	currentFunction = Function();
+	currentModule.VerifyFunction();
+	modules.insert(std::make_pair(currentModule.name, currentModule));
+	currentModule = Module();
 }

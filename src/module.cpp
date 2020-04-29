@@ -102,3 +102,28 @@ void Module::ApplyCompositions() {
 		compositions.pop_back();
 	}
 }
+
+void Module::VerifyFunction() {
+	// Verify();
+	bool reactants = false;
+	bool products = false;
+	int inputSpeciesSize = inputSpecies.size();
+	int counter = 0;
+	for (const auto &reaction : reactions) {
+		for (const auto &specie : reaction.reactants) {
+			for (const auto &input : inputSpecies) {
+				if (input == specie.first)
+					counter++;
+			}
+		}
+		for (const auto &specie : reaction.products) {
+			for (const auto &input : inputSpecies) {
+				if (input == specie.first)
+					counter++;
+			}
+		}
+	}
+  if (counter != (inputSpeciesSize*2)) {
+		throw FunctionIncorrectReactionsException(name);
+	}
+}

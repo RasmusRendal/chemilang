@@ -1,6 +1,5 @@
 #pragma once
 #include "module.h"
-#include "function.h"
 #include "parser.hpp"
 #include <map>
 #include <string>
@@ -33,9 +32,7 @@ public:
 	std::string file;
 	std::string out = "";
 	std::map<std::string, Module> modules;
-	std::map<std::string, Function> functions;
 	Module currentModule;
-	Function currentFunction;
 	// Whether to generate parser debug traces.
 	bool trace_parsing;
 

@@ -9,6 +9,16 @@
 class Module;
 class Composition;
 
+struct FunctionIncorrectReactionsException : public std::exception {
+	std::string error;
+	FunctionIncorrectReactionsException(std::string moduleName)
+		: error("Mistake in function " + moduleName + " .Input species must be " +
+		"present on each side of the reactionarrow") {}
+		const char *what() const throw() {
+			return error.c_str();
+		}
+};
+
 struct SpecieNotDeclaredException : public std::exception {
 	std::string error;
 	SpecieNotDeclaredException(std::string speciesName, std::string moduleName)
@@ -46,6 +56,7 @@ class Module {
 public:
 	Module() {}
 	void Verify();
+	void VerifyFunction();
 	std::string Compile();
 	/**
 	 * Remove all compositions from the vector, and add items to the object
