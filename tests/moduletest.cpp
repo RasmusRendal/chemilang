@@ -340,3 +340,22 @@ TEST_F(ModuleTest, FunctionTestThrow) {
 	driver drv;
 	EXPECT_THROW(drv.parse_string(input), FunctionIncorrectReactionsException);
 }
+
+TEST_F(ModuleTest, FunctionTestRatioDifferent) {
+	std::string input = "function funcm { \n"
+											"input: c; \n"
+											"private: b; \n"
+											"output: a; \n"
+											"reactions: {\n"
+											"c + a -> b + a + 3c; \n } \n"
+											"}"
+											"module main { \n"
+											"private: a; \n"
+											"concentrations: { \n"
+											"a := 5; \n } \n"
+											"compositions: {\n"
+											" a = funcm(a); \n "
+											"} \n}";
+  driver drv;
+	EXPECT_THROW(drv.parse_string(input), FunctionIncorrectReactionsException);
+}
