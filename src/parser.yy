@@ -81,6 +81,7 @@ void InsertToSpecieMap(speciesRatios &ratio, SpeciesPair &toInsert) {
 
 %token <std::string>    T_NAME      "name"
 %token <int>            T_NUMBER    "number"
+%token <double>         T_DECIMAL    "decimal"
 
 %nterm <std::vector<specie>> dSpecies
 %nterm <std::vector<specie>> speciesArray
@@ -132,11 +133,24 @@ reactions: reaction
 		 | reactions reaction
 		 ;
 
-reaction: reactionSpeciesList "->" reactionSpeciesList ";" { reaction r = {$1, $3, 1}; drv.currentModule.reactions.push_back(r); }
-    	| reactionSpeciesList "->" "(" "number" ")" reactionSpeciesList ";" { reaction r = {$1, $6, $4}; drv.currentModule.reactions.push_back(r); }
-		| reactionSpeciesList "->" "number" ";" { reaction r = {$1, speciesRatios(), 1}; drv.currentModule.reactions.push_back(r); }
-                    | reactionSpeciesList "->" "(" "number" ")" "number" ";" {reaction r = {$1, speciesRatios(), $4}; drv.currentModule.reactions.push_back(r); }
-                    ;
+reaction: reactionSpeciesList "->" reactionSpeciesList ";"
+            { reaction r = {$1, $3, 1}; drv.currentModule.reactions.push_back(r); } 
+    
+        | reactionSpeciesList "->" "(" "decimal" ")" reactionSpeciesList ";" 
+            { reaction r = {$1, $6, $4}; drv.currentModule.reactions.push_back(r); }
+
+        | reactionSpeciesList "->" "(" "number" ")" reactionSpeciesList ";"
+            { reaction r = {$1, $6, static_cast<double>($4)}; drv.currentModule.reactions.push_back(r); }
+
+	| reactionSpeciesList "->" "number" ";" 
+            { reaction r = {$1, speciesRatios(), static_cast<double>(1)}; drv.currentModule.reactions.push_back(r); }
+
+        | reactionSpeciesList "->" "(" "decimal" ")" "number" ";" 
+            {reaction r = {$1, speciesRatios(), $4}; drv.currentModule.reactions.push_back(r); } 
+
+        | reactionSpeciesList "->" "(" "number" ")" "number" ";" 
+            {reaction r = {$1, speciesRatios(), static_cast<double>($4)}; drv.currentModule.reactions.push_back(r); }
+            ;
 
 reactionSpeciesList: reactionSpecie { speciesRatios l; InsertToSpecieMap(l, $1); $$ = l; }
                     | reactionSpeciesList "+" reactionSpecie { speciesRatios l = $1; InsertToSpecieMap(l, $3); $$ = l; }
