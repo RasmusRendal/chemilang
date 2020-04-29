@@ -96,17 +96,17 @@ void InsertToSpecieMap(speciesRatios &ratio, SpeciesPair &toInsert) {
 
 modules  : module
          | modules module
-         | functions function
+         | functions
          ;
 
 module : T_DMODULE "name" "{" properties "}" { drv.currentModule.name = $2; drv.FinishParsingModule(); }
 	   ;
 
 functions : function
-      | functions function
-      ;
+          | functions function
+          ;
 
-function : T_DFUNCTION "name" "{" properties "}" { drv.currentFunction.name = $2; drv.FinishParsingFunction(); }
+function : T_DFUNCTION "name" "{" properties "}" { std::cout << $2 << std::endl; }
 
 properties : property
 		   | properties property
