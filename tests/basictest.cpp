@@ -268,6 +268,34 @@ TEST_F(BasicTest, BiArrowIntDouble) {
 	ASSERT_EQ(drv.parse_string(in), 0);
 	EXPECT_EQ(drv.out, out);
 }
+TEST_F(BasicTest, BiArrowZero) {
+	std::string in = "module main {\n"
+									 "private: [x, y];\n"
+									 "output: z;\n"
+									 "reactions: {\n"
+									 "x <-> 0;\n"
+									 "x <->(2) 0;\n"
+									 "x (2)<->(2) 0;\n"
+									 "x (2)<-> 0;\n"
+									 "}\n"
+									 "}\n";
+
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_z\n"
+										"main_x -> 0;\n"
+										"0 -> main_x;\n"
+
+										"main_x ->(2) 0;\n"
+										"0 -> main_x;\n"
+
+										"main_x ->(2) 0;\n"
+										"0 ->(2) main_x;\n"
+
+										"main_x -> 0;\n"
+										"0 ->(2) 0;\n";
+	driver drv;
+	ASSERT_EQ(drv.parse_string(in), 0);
+	EXPECT_EQ(drv.out, out);
+}
 
 TEST_F(BasicTest, InputConcException) {
 	std::string in = "module Addition {\n"
