@@ -77,9 +77,13 @@
   // A number symbol corresponding to the value in S.
   yy::parser::symbol_type
   make_T_NUMBER (const std::string &s, const yy::parser::location_type& loc);
+
+  yy::parser::symbol_type
+  make_T_DECIMAL (const std::string &s, const yy::parser::location_type& loc); 
 %}
 
 int               [0-9]+
+decimal           [0-9]+\.[0-9]+
 T_DMODULE         "module"
 T_DPRIVATE        "private:"
 T_DINPUT          "input:"
@@ -144,6 +148,7 @@ blank             [ \t\r]
 {T_END}              return yy::parser::make_T_END             (loc);
 
 {int}                return make_T_NUMBER(yytext, loc);
+{decimal}            return make_T_DECIMAL(yytext, loc);
 {T_NAME}             return yy::parser::make_T_NAME (yytext, loc);
 .               {
                   throw yy::parser::syntax_error
@@ -161,6 +166,14 @@ make_T_NUMBER (const std::string &s, const yy::parser::location_type& loc)
   if (! (INT_MIN <= n && n <= INT_MAX && errno != ERANGE))
     throw yy::parser::syntax_error (loc, "integer is out of range: " + s);
   return yy::parser::make_T_NUMBER ((int) n, loc);
+}
+
+yy::parser::symbol_type
+make_T_DECIMAL (const std::string &s, const yy::parser::location_type& loc)
+{
+  errno = 0;
+  double d = atof (s.c_str());
+  return yy::parser::make_T_DECIMAL ( (double) d, loc);
 }
 
 void driver::scan_begin (const std::string &instream)
