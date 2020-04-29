@@ -3,10 +3,10 @@
 
 class ScalarComposition : public Composition {
 public:
-	ScalarComposition(double time, double concentration,
-										std::vector<Composition *> subCompositions) {
-		time = time;
-		concentration = concentration;
+	ScalarComposition(double time,
+										std::vector<Composition *> subCompositions)
+									 : subCompositions(subCompositions) {
+		this->time = time;
 	}
 
 	void ApplyComposition(std::string moduleName, int compositionNumber,
@@ -15,6 +15,5 @@ public:
 												std::vector<specie> &specieOut) override;
 private:
 	double time;
-	double concentration;
 	std::vector<Composition *> subCompositions;
 };
