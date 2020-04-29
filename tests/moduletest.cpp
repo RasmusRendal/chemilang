@@ -359,3 +359,28 @@ TEST_F(ModuleTest, FunctionTestRatioDifferent) {
   driver drv;
 	EXPECT_THROW(drv.parse_string(input), FunctionIncorrectReactionsException);
 }
+
+TEST_F(ModuleTest, FunctionTestInputSpeciesVariantPresence) {
+ std::string input = "function funcm { \n"
+											"input: c; \n"
+											"private: b; \n"
+											"output: a; \n"
+											"reactions: {\n"
+											"c + a -> b + a + c; \n"
+										 	"a -> 0; \n } \n"
+											"}"
+											"module main { \n"
+											"private: a; \n"
+											"concentrations: { \n"
+											"a := 5; \n } \n"
+											"compositions: {\n"
+											" a = funcm(a); \n "
+											"} \n}";
+  std::string expected = "#!/usr/bin/env -S crnsimul -e -P \n"
+												 "main_a := 5;\n"
+												 "main_a + main_funcm_0_b -> main_a;\n"
+												 "main_a -> 0;\n";
+	driver drv;
+	drv.parse_string(input);
+	EXPECT_EQ(drv.out, expected);
+}
