@@ -172,6 +172,23 @@ TEST_F(BasicTest, ReactionRateTrailingZeros) {
 	ASSERT_EQ(drv.parse_string(in), 0);
 	EXPECT_EQ(drv.out, out);
 }
+
+TEST_F(BasicTest, ReactionRateZero) {
+
+	std::string in = "module main {\n"
+									 "output: z;\n"
+									 "reactions: {\n"
+									 "z ->(3) 0;\n"
+									 "}\n"
+									 "}\n";
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_z\n"
+										"main_z ->(3) 0;\n";
+
+	driver drv;
+	ASSERT_EQ(drv.parse_string(in), 0);
+	EXPECT_EQ(drv.out, out);
+}
+
 TEST_F(BasicTest, InputConcException) {
 	std::string in = "module Addition {\n"
 									 "input: x;\n"
