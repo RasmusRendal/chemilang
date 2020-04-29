@@ -174,14 +174,14 @@ TEST_F(ModuleTest, ReactionRate) {
 		rightSide.insert(std::make_pair("a", 1));
 		rightSide.insert(std::make_pair("b", 1));
 		rightSide.insert(std::make_pair("c", 1));
-		reaction r = {leftSide, rightSide, static_cast<double>(2)};
+		reaction r = {leftSide, rightSide, 2.30};
 		m.reactions.push_back(r);
 	}
 	{
 		speciesRatios leftSide;
 		leftSide.insert(std::make_pair("c", 1));
 		speciesRatios rightSide;
-		reaction r = {leftSide, rightSide, static_cast<double>(1)};
+		reaction r = {leftSide, rightSide, 1};
 		m.reactions.push_back(r);
 	}
 
@@ -190,9 +190,7 @@ TEST_F(ModuleTest, ReactionRate) {
 
 	std::string output = "\nmain_a := 50;\n"
 											 "main_b := 30;\n"
-											 "main_a + main_b ->(" +
-											 std::to_string(static_cast<double>(2)) +
-											 ") main_a + main_b + main_c;\n"
+											 "main_a + main_b ->(2.3) main_a + main_b + main_c;\n"
 											 "main_c -> 0;\n";
 
 	EXPECT_EQ(m.Compile(), output);
