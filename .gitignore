@@ -3,6 +3,8 @@ CMakeFiles/
 CTestTestfile.cmake
 Makefile
 bin/
+html/
+latex/
 cmake_install.cmake
 .stdafx.c.pch
 compile_commands.json

@@ -114,3 +114,12 @@ void Module::ApplyCompositions() {
 		compositions.pop_back();
 	}
 }
+
+void Module::VerifyFunction() {
+	for (const auto &input : inputSpecies) {
+		for (auto reaction : reactions) {
+			if (reaction.reactants[input] != reaction.products[input])
+				throw FunctionIncorrectReactionsException(name);
+		}
+	}
+}

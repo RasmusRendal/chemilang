@@ -56,6 +56,7 @@ void InsertToSpecieMap(speciesRatios &ratio, SpeciesPair &toInsert) {
 %token
     END  0               "end of file"
     T_DMODULE            "module"
+    T_DFUNCTION          "function"
     T_DPRIVATE           "private:"
     T_DINPUT             "input:"
     T_DOUTPUT            "output:"
@@ -99,7 +100,7 @@ modules  : module
          ;
 
 module : T_DMODULE "name" "{" properties "}" { drv.currentModule.name = $2; drv.FinishParsingModule(); }
-	   ;
+       | T_DFUNCTION "name" "{" properties "}" { drv.currentModule.name = $2; drv.FinishParsingFunction(); }
 
 properties : property
 		   | properties property
@@ -126,21 +127,21 @@ reactions: reaction
 		 ;
 
 reaction: reactionSpeciesList "->" reactionSpeciesList ";"
-            { reaction r = {$1, $3, 1}; drv.currentModule.reactions.push_back(r); } 
-    
-        | reactionSpeciesList "->" "(" "decimal" ")" reactionSpeciesList ";" 
+            { reaction r = {$1, $3, 1}; drv.currentModule.reactions.push_back(r); }
+
+        | reactionSpeciesList "->" "(" "decimal" ")" reactionSpeciesList ";"
             { reaction r = {$1, $6, $4}; drv.currentModule.reactions.push_back(r); }
 
         | reactionSpeciesList "->" "(" "number" ")" reactionSpeciesList ";"
             { reaction r = {$1, $6, static_cast<double>($4)}; drv.currentModule.reactions.push_back(r); }
 
-	| reactionSpeciesList "->" "number" ";" 
+	| reactionSpeciesList "->" "number" ";"
             { reaction r = {$1, speciesRatios(), static_cast<double>(1)}; drv.currentModule.reactions.push_back(r); }
 
-        | reactionSpeciesList "->" "(" "decimal" ")" "number" ";" 
-            {reaction r = {$1, speciesRatios(), $4}; drv.currentModule.reactions.push_back(r); } 
+        | reactionSpeciesList "->" "(" "decimal" ")" "number" ";"
+            {reaction r = {$1, speciesRatios(), $4}; drv.currentModule.reactions.push_back(r); }
 
-        | reactionSpeciesList "->" "(" "number" ")" "number" ";" 
+        | reactionSpeciesList "->" "(" "number" ")" "number" ";"
             {reaction r = {$1, speciesRatios(), static_cast<double>($4)}; drv.currentModule.reactions.push_back(r); }
             ;
 
