@@ -56,6 +56,7 @@ void InsertToSpecieMap(speciesRatios &ratio, SpeciesPair &toInsert) {
 %token
     END  0               "end of file"
     T_DMODULE            "module"
+    T_DFUNCTION          "function"
     T_DPRIVATE           "private:"
     T_DINPUT             "input:"
     T_DOUTPUT            "output:"
@@ -95,10 +96,17 @@ void InsertToSpecieMap(speciesRatios &ratio, SpeciesPair &toInsert) {
 
 modules  : module
          | modules module
+         | functions function
          ;
 
 module : T_DMODULE "name" "{" properties "}" { drv.currentModule.name = $2; drv.FinishParsingModule(); }
 	   ;
+
+functions : function
+      | functions function
+      ;
+
+function : T_DFUNCTION "name" "{" properties "}" { drv.currentFunction.name = $2; drv.FinishParsingFunction(); }
 
 properties : property
 		   | properties property

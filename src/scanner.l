@@ -81,6 +81,7 @@
 
 int               [0-9]+
 T_DMODULE         "module"
+T_DFUNCTION       "function"
 T_DPRIVATE        "private:"
 T_DINPUT          "input:"
 T_DOUTPUT         "output:"
@@ -122,6 +123,7 @@ blank             [ \t\r]
 \n+         loc.lines(yyleng); loc.step();
 
 {T_DMODULE}          return yy::parser::make_T_DMODULE         (loc);
+{T_DFUNCTION}        return yy::parser::make_T_DFUNCTION       (loc);
 {T_DPRIVATE}         return yy::parser::make_T_DPRIVATE        (loc);
 {T_DINPUT}           return yy::parser::make_T_DINPUT          (loc);
 {T_DOUTPUT}          return yy::parser::make_T_DOUTPUT         (loc);
