@@ -49,4 +49,4 @@ add_executable(tests
 )
 target_link_libraries(tests ${GTEST_BOTH_LIBRARIES} Boost::iostreams Boost::system)
 
-install(TARGETS Chemilang DESTINATION /usr/bin/)
+install(TARGETS chemilang DESTINATION /usr/bin/)
