@@ -1,13 +1,25 @@
 #include "module.h"
 #include "composition.h"
 #include <algorithm>
+#include <iomanip>
 #include <iostream>
+#include <sstream>
+
+namespace precision {
+
+std::string to_string(double d) {
+
+	std::ostringstream stm;
+	stm << std::setprecision(std::numeric_limits<double>::digits10) << d;
+	return stm.str();
+}
+} // namespace precision
 
 std::string Module::Compile() {
 	Verify();
 	ApplyCompositions();
 
-	std::string output = "";
+	std::string output;
 
 	if (outputSpecies.size() > 0) {
 		output += "-C ";
@@ -36,12 +48,12 @@ std::string Module::Compile() {
 		if (reaction.rate != 1) {
 			output += "->";
 			output += "(";
-			output += std::to_string(reaction.rate);
+			output += precision::to_string(reaction.rate);
 			output += ") ";
 		} else {
 			output += "-> ";
 		}
-		auto &products = reaction.products;
+		const auto &products = reaction.products;
 		if (!products.empty()) {
 			for (const auto &specie : reaction.products) {
 				output += name + "_" + specie.first + " + ";
