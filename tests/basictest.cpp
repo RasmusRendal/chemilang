@@ -126,7 +126,6 @@ TEST_F(BasicTest, CompositionTest) {
 }
 
 TEST_F(BasicTest, ReactionRateTest) {
-	int rate = 2;
 	std::string in = "module main {\n"
 									 "private: [x, y];\n"
 									 "output: z;\n"
@@ -135,24 +134,16 @@ TEST_F(BasicTest, ReactionRateTest) {
 									 "y := 30;\n"
 									 "}\n"
 									 "reactions: {\n"
-									 "x + y ->(" +
-									 std::to_string(rate) +
-									 ") x + y + z;\n"
-									 "z ->(" +
-									 std::to_string(rate) +
-									 ") 0;\n"
+									 "x + y ->(2) x + y + z;\n"
+									 "z ->(2.21000) 0;\n"
 									 "}\n"
 									 "}\n";
 
-	double rateEX = static_cast<double>(rate);
 	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_z\n"
 										"main_x := 50;\n"
 										"main_y := 30;\n"
-										"main_x + main_y ->(" +
-										std::to_string(rateEX) +
-										") main_x + main_y + main_z;\n"
-										"main_z ->(" +
-										std::to_string(rateEX) + ") 0;\n";
+										"main_x + main_y ->(2) main_x + main_y + main_z;\n"
+										"main_z ->(2.21) 0;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
 	EXPECT_EQ(drv.out, out);
