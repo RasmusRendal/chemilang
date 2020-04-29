@@ -174,7 +174,43 @@ TEST_F(ModuleTest, ReactionRate) {
 		rightSide.insert(std::make_pair("a", 1));
 		rightSide.insert(std::make_pair("b", 1));
 		rightSide.insert(std::make_pair("c", 1));
-		reaction r = {leftSide, rightSide, 2.30};
+		reaction r = {leftSide, rightSide, 2};
+		m.reactions.push_back(r);
+	}
+	{
+		speciesRatios leftSide;
+		leftSide.insert(std::make_pair("c", 1));
+		speciesRatios rightSide;
+		reaction r = {leftSide, rightSide, 1};
+		m.reactions.push_back(r);
+	}
+
+	m.concentrations.insert(std::make_pair("a", 50));
+	m.concentrations.insert(std::make_pair("b", 30));
+
+	std::string output = "\nmain_a := 50;\n"
+											 "main_b := 30;\n"
+											 "main_a + main_b ->(2) main_a + main_b + main_c;\n"
+											 "main_c -> 0;\n";
+
+	EXPECT_EQ(m.Compile(), output);
+}
+TEST_F(ModuleTest, ReactionRateTrailingZeros) {
+	Module m;
+	m.name = "main";
+	m.privateSpecies.emplace_back("a");
+	m.privateSpecies.emplace_back("b");
+	m.privateSpecies.emplace_back("c");
+
+	{
+		speciesRatios leftSide;
+		leftSide.insert(std::make_pair("a", 1));
+		leftSide.insert(std::make_pair("b", 1));
+		speciesRatios rightSide;
+		rightSide.insert(std::make_pair("a", 1));
+		rightSide.insert(std::make_pair("b", 1));
+		rightSide.insert(std::make_pair("c", 1));
+		reaction r = {leftSide, rightSide, 2.300000};
 		m.reactions.push_back(r);
 	}
 	{
