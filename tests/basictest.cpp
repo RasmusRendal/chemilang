@@ -183,15 +183,15 @@ TEST_F(BasicTest, ReactionRateTrailingZero) {
 									 "y := 30;\n"
 									 "}\n"
 									 "reactions: {\n"
-									 "x + y ->(2) x + y + z;\n"
-									 "z ->(3) 0;\n"
+									 "x + z ->(2.00001) x;\n"
+									 "z ->(3.0) 0;\n"
 									 "}\n"
 									 "}\n";
 
 	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_z\n"
 										"main_x := 50;\n"
 										"main_y := 30;\n"
-										"main_x + main_y ->(2) main_x + main_y + main_z;\n"
+										"main_x + main_z ->(2.00001) main_x;\n"
 										"main_z ->(3) 0;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
