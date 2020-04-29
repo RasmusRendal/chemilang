@@ -149,7 +149,7 @@ TEST_F(BasicTest, ReactionRateTest) {
 	EXPECT_EQ(drv.out, out);
 }
 
-TEST_F(BasicTest, ReactionRateTrailingZeros) {
+TEST_F(BasicTest, ReactionRateZeros) {
 	std::string in = "module main {\n"
 									 "private: [x, y];\n"
 									 "output: z;\n"
@@ -158,8 +158,8 @@ TEST_F(BasicTest, ReactionRateTrailingZeros) {
 									 "y := 30;\n"
 									 "}\n"
 									 "reactions: {\n"
-									 "x + y ->(2.0000000) x + y + z;\n"
-									 "z ->(2.0000001) 0;\n"
+									 "x + y ->(2) x + y + z;\n"
+									 "z ->(3) 0;\n"
 									 "}\n"
 									 "}\n";
 
@@ -167,21 +167,24 @@ TEST_F(BasicTest, ReactionRateTrailingZeros) {
 										"main_x := 50;\n"
 										"main_y := 30;\n"
 										"main_x + main_y ->(2) main_x + main_y + main_z;\n"
-										"main_z ->(2.0000001) 0;\n";
+										"main_z ->(3) 0;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
 	EXPECT_EQ(drv.out, out);
 }
 
-TEST_F(BasicTest, ReactionRateZero) {
+TEST_F(BasicTest, ReactionRateTrailingZero) {
 
 	std::string in = "module main {\n"
+									 "private: [x];\n"
 									 "output: z;\n"
 									 "reactions: {\n"
-									 "z ->(3) 0;\n"
+									 "x + z ->(2.00001) x;\n"
+									 "z ->(3.0) 0;\n"
 									 "}\n"
 									 "}\n";
 	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_z\n"
+										"main_x + main_z ->(2.00001) main_x;\n"
 										"main_z ->(3) 0;\n";
 
 	driver drv;
