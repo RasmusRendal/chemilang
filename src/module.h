@@ -73,7 +73,6 @@ public:
 	 * the vector
 	 */
 	void ApplyCompositions();
-
 	std::string name;
 	std::vector<specie> inputSpecies;
 	std::vector<specie> outputSpecies;
