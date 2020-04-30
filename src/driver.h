@@ -27,6 +27,7 @@ public:
 	int parse_string(const std::string &s);
 	int parse();
 	void FinishParsingModule();
+	void FinishParsingFunction();
 	// The name of the file being parsed.
 	std::string file;
 	std::string out = "";

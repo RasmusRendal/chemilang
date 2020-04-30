@@ -56,6 +56,7 @@ void InsertToSpecieMap(speciesRatios &ratio, SpeciesPair &toInsert) {
 %token
     END  0               "end of file"
     T_DMODULE            "module"
+    T_DFUNCTION          "function"
     T_DPRIVATE           "private:"
     T_DINPUT             "input:"
     T_DOUTPUT            "output:"
@@ -99,7 +100,7 @@ modules  : module
          ;
 
 module : T_DMODULE "name" "{" properties "}" { drv.currentModule.name = $2; drv.FinishParsingModule(); }
-	   ;
+       | T_DFUNCTION "name" "{" properties "}" { drv.currentModule.name = $2; drv.FinishParsingFunction(); }
 
 properties : property
 		   | properties property
@@ -149,7 +150,6 @@ reaction: reactionSpeciesList "->" reactionSpeciesList ";"
 
 reactionRate : "number" { $$ = static_cast<double>($1); }
              | "decimal" { $$ = $1; }
-
 
 reactionSpeciesList: reactionSpecie { speciesRatios l; InsertToSpecieMap(l, $1); $$ = l; }
                     | reactionSpeciesList "+" reactionSpecie { speciesRatios l = $1; InsertToSpecieMap(l, $3); $$ = l; }

@@ -37,7 +37,6 @@ std::string Module::Compile() {
 	for (const auto &reaction : reactions) {
 		if (!reaction.reactants.empty()) {
 			for (const auto &specie : reaction.reactants) {
-				std::cout << specie.first << std::endl;
 				if (specie.first.empty()) {
 					output += "0";
 				} else if (specie.second != 1) {
@@ -120,5 +119,14 @@ void Module::ApplyCompositions() {
 		comp->ApplyComposition(name, compositionNumber++, concentrations, reactions,
 													 privateSpecies);
 		compositions.pop_back();
+	}
+}
+
+void Module::VerifyFunction() {
+	for (const auto &input : inputSpecies) {
+		for (auto reaction : reactions) {
+			if (reaction.reactants[input] != reaction.products[input])
+				throw FunctionIncorrectReactionsException(name);
+		}
 	}
 }
