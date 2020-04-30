@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <vector>
 
 namespace precision {
 
@@ -25,24 +26,28 @@ std::string Module::Compile() {
 	if (outputSpecies.size() > 0) {
 		output += "-C ";
 		for (const auto &specie : outputSpecies) {
-			output += name + "_" + specie + ",";
+			if (name != "main") {
+				output += name + "_" + specie + ",";
+			} else {
+				output += specie + ",";
+			}
 		}
 		output.pop_back();
 	}
 	output += "\n";
 
 	for (const auto &c : concentrations) {
-		output += name + "_" + c.first + " := " + std::to_string(c.second) + ";\n";
+		if (name != "main") {
+			output +=
+					name + "_" + c.first + " := " + std::to_string(c.second) + ";\n";
+		} else {
+			output += c.first + " := " + std::to_string(c.second) + ";\n";
+		}
 	}
 	for (const auto &reaction : reactions) {
 		if (!reaction.reactants.empty()) {
 			for (const auto &specie : reaction.reactants) {
-				if (specie.second != 1) {
-					output +=
-							std::to_string(specie.second) + name + "_" + specie.first + " + ";
-				} else {
-					output += name + "_" + specie.first + " + ";
-				}
+				output += MapName(name, specie.first, specie.second);
 			}
 			// Remove the last trailing +, because I'm too lazy not to add it
 			output.pop_back();
@@ -61,7 +66,11 @@ std::string Module::Compile() {
 		const auto &products = reaction.products;
 		if (!products.empty()) {
 			for (const auto &specie : reaction.products) {
-				output += name + "_" + specie.first + " + ";
+				if (name != "main") {
+					output += name + "_" + specie.first + " + ";
+				} else {
+					output += specie.first + " + ";
+				}
 			}
 			output.pop_back();
 			output.pop_back();
@@ -127,4 +136,24 @@ void Module::VerifyFunction() {
 				throw FunctionIncorrectReactionsException(name);
 		}
 	}
+}
+std::string Module::MapName(std::string moduleName, std::string specieName,
+														int specieNumber) {
+	std::string output;
+	if (moduleName != "main") {
+		if (specieNumber != 1) {
+
+			output +=
+					std::to_string(specieNumber) + moduleName + "_" + specieName + " + ";
+		} else {
+			output += moduleName + "_" + specieName + " + ";
+		}
+	} else {
+		if (specieNumber != 1) {
+			output += std::to_string(specieNumber) + specieName + " + ";
+		} else {
+			output += specieName + " + ";
+		}
+	}
+	return output;
 }
