@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <iostream>
 #include <sstream>
+#include <string>
 
 namespace precision {
 
@@ -34,17 +35,24 @@ std::string Module::Compile() {
 		output += name + "_" + c.first + " := " + std::to_string(c.second) + ";\n";
 	}
 	for (const auto &reaction : reactions) {
-		for (const auto &specie : reaction.reactants) {
-			if (specie.second != 1) {
-				output +=
-						std::to_string(specie.second) + name + "_" + specie.first + " + ";
-			} else {
-				output += name + "_" + specie.first + " + ";
+		if (!reaction.reactants.empty()) {
+			for (const auto &specie : reaction.reactants) {
+				std::cout << specie.first << std::endl;
+				if (specie.first.empty()) {
+					output += "0";
+				} else if (specie.second != 1) {
+					output +=
+							std::to_string(specie.second) + name + "_" + specie.first + " + ";
+				} else {
+					output += name + "_" + specie.first + " + ";
+				}
 			}
+			// Remove the last trailing +, because I'm too lazy not to add it
+			output.pop_back();
+			output.pop_back();
+		} else {
+			output += "0 ";
 		}
-		// Remove the last trailing +, because I'm too lazy not to add it
-		output.pop_back();
-		output.pop_back();
 		if (reaction.rate != 1) {
 			output += "->";
 			output += "(";
