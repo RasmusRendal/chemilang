@@ -176,17 +176,173 @@ TEST_F(BasicTest, ReactionRateZeros) {
 TEST_F(BasicTest, ReactionRateTrailingZero) {
 
 	std::string in = "module main {\n"
-									 "private: [x];\n"
+									 "private: [x, y];\n"
 									 "output: z;\n"
+									 "concentrations: {\n"
+									 "x := 50;\n"
+									 "y := 30;\n"
+									 "}\n"
 									 "reactions: {\n"
 									 "x + z ->(2.00001) x;\n"
 									 "z ->(3.0) 0;\n"
 									 "}\n"
 									 "}\n";
+
 	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_z\n"
+										"main_x := 50;\n"
+										"main_y := 30;\n"
 										"main_x + main_z ->(2.00001) main_x;\n"
 										"main_z ->(3) 0;\n";
+	driver drv;
+	ASSERT_EQ(drv.parse_string(in), 0);
+	EXPECT_EQ(drv.out, out);
+}
+TEST_F(BasicTest, BiArrowInt) {
+	std::string in = "module main {\n"
+									 "private: [x, y];\n"
+									 "output: z;\n"
+									 "reactions: {\n"
+									 "x + y (3)<->(2) x + z;\n"
+									 "x + y (3)<-> x + z;\n"
+									 "x + y  <->(3) x + z;\n"
+									 "x + y  <-> x + z;\n"
+									 "}\n"
+									 "}\n";
 
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_z\n"
+										"main_x + main_y ->(2) main_x + main_z;\n"
+										"main_x + main_z ->(3) main_x + main_y;\n"
+
+										"main_x + main_y -> main_x + main_z;\n"
+										"main_x + main_z ->(3) main_x + main_y;\n"
+
+										"main_x + main_y ->(3) main_x + main_z;\n"
+										"main_x + main_z -> main_x + main_y;\n"
+
+										"main_x + main_y -> main_x + main_z;\n"
+										"main_x + main_z -> main_x + main_y;\n";
+	driver drv;
+	ASSERT_EQ(drv.parse_string(in), 0);
+	EXPECT_EQ(drv.out, out);
+}
+TEST_F(BasicTest, BiArrowDouble) {
+
+	std::string in = "module main {\n"
+									 "private: [x, y];\n"
+									 "output: z;\n"
+									 "reactions: {\n"
+									 "x + y (3.32)<->(2.32) x + z;\n"
+									 "x + y (3.32)<-> x + z;\n"
+									 "x + y  <->(3.32) x + z;\n"
+									 "}\n"
+									 "}\n";
+
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_z\n"
+										"main_x + main_y ->(2.32) main_x + main_z;\n"
+										"main_x + main_z ->(3.32) main_x + main_y;\n"
+
+										"main_x + main_y -> main_x + main_z;\n"
+										"main_x + main_z ->(3.32) main_x + main_y;\n"
+
+										"main_x + main_y ->(3.32) main_x + main_z;\n"
+										"main_x + main_z -> main_x + main_y;\n";
+
+	driver drv;
+	ASSERT_EQ(drv.parse_string(in), 0);
+	EXPECT_EQ(drv.out, out);
+}
+TEST_F(BasicTest, BiArrowIntDouble) {
+	std::string in = "module main {\n"
+									 "private: [x, y];\n"
+									 "output: z;\n"
+									 "reactions: {\n"
+									 "x + y (3)<->(2.32) x + z;\n"
+									 "}\n"
+									 "}\n";
+
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_z\n"
+										"main_x + main_y ->(2.32) main_x + main_z;\n"
+										"main_x + main_z ->(3) main_x + main_y;\n";
+
+	driver drv;
+	ASSERT_EQ(drv.parse_string(in), 0);
+	EXPECT_EQ(drv.out, out);
+}
+TEST_F(BasicTest, BiArrowZeroInt) {
+	std::string in = "module main {\n"
+									 "private: [x, y];\n"
+									 "output: z;\n"
+									 "reactions: {\n"
+									 "x <-> 0;\n"
+									 "x <->(2) 0;\n"
+									 "x (2)<->(2) 0;\n"
+									 "x (2)<-> 0;\n"
+									 "}\n"
+									 "}\n";
+
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_z\n"
+										"main_x -> 0;\n"
+										"0 -> main_x;\n"
+
+										"main_x ->(2) 0;\n"
+										"0 -> main_x;\n"
+
+										"main_x ->(2) 0;\n"
+										"0 ->(2) main_x;\n"
+
+										"main_x -> 0;\n"
+										"0 ->(2) main_x;\n";
+	driver drv;
+	ASSERT_EQ(drv.parse_string(in), 0);
+	EXPECT_EQ(drv.out, out);
+}
+
+TEST_F(BasicTest, BiArrowZeroDecimal) {
+	std::string in = "module main {\n"
+									 "private: [x, y];\n"
+									 "output: z;\n"
+									 "reactions: {\n"
+									 "x <-> 0;\n"
+									 "x <->(2.1) 0;\n"
+									 "x (2.2)<->(2.2) 0;\n"
+									 "x (2.1)<-> 0;\n"
+									 "}\n"
+									 "}\n";
+
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_z\n"
+										"main_x -> 0;\n"
+										"0 -> main_x;\n"
+
+										"main_x ->(2.1) 0;\n"
+										"0 -> main_x;\n"
+
+										"main_x ->(2.2) 0;\n"
+										"0 ->(2.2) main_x;\n"
+
+										"main_x -> 0;\n"
+										"0 ->(2.1) main_x;\n";
+	driver drv;
+	ASSERT_EQ(drv.parse_string(in), 0);
+	EXPECT_EQ(drv.out, out);
+}
+
+TEST_F(BasicTest, BiArrowZeroComp) {
+	std::string in = "module main {\n"
+									 "private: [x, y];\n"
+									 "output: z;\n"
+									 "reactions: {\n"
+									 "x (2.2)<->(2) 0;\n"
+									 "x (2)<->(2.2) 0;\n"
+									 "}\n"
+									 "}\n";
+
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C main_z\n"
+
+										"main_x ->(2) 0;\n"
+										"0 ->(2.2) main_x;\n"
+
+										"main_x ->(2.2) 0;\n"
+										"0 ->(2) main_x;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
 	EXPECT_EQ(drv.out, out);

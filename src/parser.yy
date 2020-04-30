@@ -87,7 +87,7 @@ void InsertToSpecieMap(speciesRatios &ratio, SpeciesPair &toInsert) {
 %nterm <std::vector<specie>> speciesArray
 %nterm <speciesRatios> reactionSpeciesList
 %nterm <std::pair<specie, int>> reactionSpecie
-
+%nterm <double> reactionRate
 %nterm <Composition*> composition
 %nterm <std::vector<Composition*>> compositions
 
@@ -127,26 +127,34 @@ reactions: reaction
 		 ;
 
 reaction: reactionSpeciesList "->" reactionSpeciesList ";"
-            { reaction r = {$1, $3, 1}; drv.currentModule.reactions.push_back(r); }
-
-        | reactionSpeciesList "->" "(" "decimal" ")" reactionSpeciesList ";"
+            { reaction r = {$1, $3, 1}; drv.currentModule.reactions.push_back(r); } 
+    
+        | reactionSpeciesList "->" "(" reactionRate ")" reactionSpeciesList ";" 
             { reaction r = {$1, $6, $4}; drv.currentModule.reactions.push_back(r); }
+        
+        | reactionSpeciesList "<->" reactionSpeciesList ";" {
+            reaction r = {$1, $3, 1}; drv.currentModule.reactions.push_back(r);
+            reaction R = {$3, $1, 1}; drv.currentModule.reactions.push_back(R);}
+        
+        | reactionSpeciesList "<->" "(" reactionRate ")" reactionSpeciesList ";" {
+            reaction r = {$1, $6, $4}; drv.currentModule.reactions.push_back(r);
+            reaction R = {$6, $1, 1}; drv.currentModule.reactions.push_back(R);}
 
-        | reactionSpeciesList "->" "(" "number" ")" reactionSpeciesList ";"
-            { reaction r = {$1, $6, static_cast<double>($4)}; drv.currentModule.reactions.push_back(r); }
+        | reactionSpeciesList "(" reactionRate ")" "<->" "(" reactionRate ")" reactionSpeciesList ";" {
+            reaction r = {$1, $9, $7}; drv.currentModule.reactions.push_back(r);
+            reaction R = {$9, $1, $3}; drv.currentModule.reactions.push_back(R); }
+        
+        | reactionSpeciesList "(" reactionRate ")" "<->" reactionSpeciesList ";" {
+            reaction r = {$1, $6, 1}; drv.currentModule.reactions.push_back(r);
+            reaction R = {$6, $1, $3}; drv.currentModule.reactions.push_back(R); }
 
-	| reactionSpeciesList "->" "number" ";"
-            { reaction r = {$1, speciesRatios(), static_cast<double>(1)}; drv.currentModule.reactions.push_back(r); }
-
-        | reactionSpeciesList "->" "(" "decimal" ")" "number" ";"
-            {reaction r = {$1, speciesRatios(), $4}; drv.currentModule.reactions.push_back(r); }
-
-        | reactionSpeciesList "->" "(" "number" ")" "number" ";"
-            {reaction r = {$1, speciesRatios(), static_cast<double>($4)}; drv.currentModule.reactions.push_back(r); }
-            ;
+reactionRate : "number" { $$ = static_cast<double>($1); }
+             | "decimal" { $$ = $1; }
 
 reactionSpeciesList: reactionSpecie { speciesRatios l; InsertToSpecieMap(l, $1); $$ = l; }
                     | reactionSpeciesList "+" reactionSpecie { speciesRatios l = $1; InsertToSpecieMap(l, $3); $$ = l; }
+                    | "number" {if ($1 !=0) {yy::parser::error(@1, "Standalone number in reaction "); YYABORT; } 
+                            $$ = std::map<std::string, int>();}
                     ;
 
 reactionSpecie: "name" { $$ = std::pair<specie, int>(std::move($1), std::move(1)); }
