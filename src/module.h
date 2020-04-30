@@ -57,6 +57,9 @@ public:
 	Module() {}
 	void Verify();
 	void VerifyFunction();
+	std::string MapName(std::string moduleName, std::string specieName,
+											int specieNumber);
+
 	std::string Compile();
 	/**
 	 * Remove all compositions from the vector, and add items to the object
