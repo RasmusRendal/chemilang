@@ -37,9 +37,7 @@ std::string Module::Compile() {
 	for (const auto &reaction : reactions) {
 		if (!reaction.reactants.empty()) {
 			for (const auto &specie : reaction.reactants) {
-				if (specie.first.empty()) {
-					output += "0";
-				} else if (specie.second != 1) {
+				if (specie.second != 1) {
 					output +=
 							std::to_string(specie.second) + name + "_" + specie.first + " + ";
 				} else {
