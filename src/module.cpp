@@ -1,5 +1,6 @@
 #include "module.h"
 #include "composition.h"
+#include "typedefs.h"
 #include <algorithm>
 #include <iomanip>
 #include <iostream>
@@ -7,6 +8,10 @@
 #include <string>
 #include <utility>
 #include <vector>
+
+namespace constants {
+std::string MAIN_MODULE = "main";
+} // namespace constants
 
 namespace precision {
 
@@ -27,23 +32,19 @@ std::string Module::Compile() {
 	if (outputSpecies.size() > 0) {
 		output += "-C ";
 		for (const auto &specie : outputSpecies) {
-			if (name != "main") {
-				output += name + "_" + specie + ",";
-			} else {
-				output += specie + ",";
-			}
+			output += MapSpecie(specie) + ",";
 		}
 		output.pop_back();
 	}
 	output += "\n";
 
 	for (const auto &concs : concentrations) {
-		output += MapConcs(concs);
+		output += MapSpecieConcs(concs);
 	}
 	for (const auto &reaction : reactions) {
 		if (!reaction.reactants.empty()) {
 			for (const auto &specie : reaction.reactants) {
-				output += MapSpecie(specie);
+				output += MapSpecieReact(specie);
 			}
 			// Remove the last trailing +, because I'm too lazy not to add it
 			output.pop_back();
@@ -62,7 +63,7 @@ std::string Module::Compile() {
 		const auto &products = reaction.products;
 		if (!products.empty()) {
 			for (const auto &specie : reaction.products) {
-				output += MapSpecie(specie);
+				output += MapSpecieReact(specie);
 			}
 			output.pop_back();
 			output.pop_back();
@@ -130,32 +131,21 @@ void Module::VerifyFunction() {
 	}
 }
 
-const std::string Module::MapSpecie(const std::pair<std::string, int> &specie) {
-	std::string output;
-	if (name != mainModuleName) {
-		if (specie.second != 1) {
-
-			output +=
-					std::to_string(specie.second) + name + "_" + specie.first + " + ";
-		} else {
-			output += name + "_" + specie.first + " + ";
-		}
-	} else {
-		if (specie.second != 1) {
-			output += std::to_string(specie.second) + specie.first + " + ";
-		} else {
-			output += specie.first + " + ";
-		}
-	}
-	return output;
+std::string Module::MapSpecieReact(const std::pair<std::string, int> &specie) {
+	return MapSpecieCoef(specie.second) + MapSpecie(specie.first) + " + ";
 }
-const std::string Module::MapConcs(const std::pair<std::string, int> &concs) {
-	std::string output;
-	if (name != mainModuleName) {
-		output += name + "_" + concs.first + " := " + std::to_string(concs.second) +
-							";\n";
-	} else {
-		output += concs.first + " := " + std::to_string(concs.second) + ";\n";
-	}
-	return output;
+
+std::string Module::MapSpecieCoef(int coeff) {
+	return (coeff != 1) ? std::to_string(coeff) : "";
+}
+
+std::string Module::MapSpecie(const std::string &specie) {
+	return (name == constants::MAIN_MODULE) ? specie : name + "_" + specie;
+}
+
+std::string Module::MapSpecieConcs(const std::pair<std::string, int> &concs) {
+	return MapSpecie(concs.first) + " := " + std::to_string(concs.second) + ";\n";
+}
+std::string Module::MapSpecieOut(std::string &specieName) {
+	return MapSpecie(specieName) + ",";
 }
