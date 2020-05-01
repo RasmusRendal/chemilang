@@ -72,6 +72,7 @@ public:
 	 */
 	void ApplyCompositions();
 
+	const std::string mainModuleName = "main";
 	std::string name;
 	std::vector<specie> inputSpecies;
 	std::vector<specie> outputSpecies;
