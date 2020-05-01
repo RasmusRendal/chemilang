@@ -132,7 +132,7 @@ void Module::VerifyFunction() {
 
 const std::string Module::MapSpecie(const std::pair<std::string, int> &specie) {
 	std::string output;
-	if (name != "main") {
+	if (name != mainModuleName) {
 		if (specie.second != 1) {
 
 			output +=
@@ -151,7 +151,7 @@ const std::string Module::MapSpecie(const std::pair<std::string, int> &specie) {
 }
 const std::string Module::MapConcs(const std::pair<std::string, int> &concs) {
 	std::string output;
-	if (name != "main") {
+	if (name != mainModuleName) {
 		output += name + "_" + concs.first + " := " + std::to_string(concs.second) +
 							";\n";
 	} else {
