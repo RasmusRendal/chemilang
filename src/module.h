@@ -4,6 +4,7 @@
 #include <set>
 #include <string>
 #include <tuple>
+#include <utility>
 #include <vector>
 
 class Module;
@@ -57,9 +58,8 @@ public:
 	Module() {}
 	void Verify();
 	void VerifyFunction();
-	std::string MapName(std::string moduleName, std::string specieName,
-											int specieNumber);
-
+	const std::string MapSpecie(const std::pair<std::string, int> &specie);
+	const std::string MapConcs(const std::pair<std::string, int> &concs);
 	std::string Compile();
 	/**
 	 * Remove all compositions from the vector, and add items to the object
