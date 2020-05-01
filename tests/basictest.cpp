@@ -828,21 +828,16 @@ TEST_F(BasicTest, ReactionCoefficientDecimal) {
 	std::string in = "module main {\n"
 									 "private: [x, y];\n"
 									 "output: z;\n"
-									 "concentrations: {\n"
-									 "x := 50;\n"
-									 "y := 30;\n"
-									 "}\n"
 									 "reactions: {\n"
 									 "x + y -> 2.2x;\n"
-									 "z -> 0;\n"
+									 "x + y <-> 2.3x"
+
+									 "x + y ->(1.2) 2.2x;\n"
+									 "x + y (2)<->(2) 2.3x;\n"
+									 "x + y (2)<-> 2.3x;\n"
+									 "x + y <->(2) 2.3x;\n"
 									 "}\n"
 									 "}\n";
-	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C z\n"
-										"x := 50;\n"
-										"y := 30;\n"
-										"x + y -> 2x;\n"
-										"z -> 0;\n";
 	driver drv;
-	ASSERT_EQ(drv.parse_string(in), 0);
-	EXPECT_EQ(drv.out, out);
+	ASSERT_EQ(drv.parse_string(in), 1);
 }
