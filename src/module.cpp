@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace precision {
@@ -36,18 +37,13 @@ std::string Module::Compile() {
 	}
 	output += "\n";
 
-	for (const auto &c : concentrations) {
-		if (name != "main") {
-			output +=
-					name + "_" + c.first + " := " + std::to_string(c.second) + ";\n";
-		} else {
-			output += c.first + " := " + std::to_string(c.second) + ";\n";
-		}
+	for (const auto &concs : concentrations) {
+		output += MapConcs(concs);
 	}
 	for (const auto &reaction : reactions) {
 		if (!reaction.reactants.empty()) {
 			for (const auto &specie : reaction.reactants) {
-				output += MapName(name, specie.first, specie.second);
+				output += MapSpecie(specie);
 			}
 			// Remove the last trailing +, because I'm too lazy not to add it
 			output.pop_back();
@@ -66,11 +62,7 @@ std::string Module::Compile() {
 		const auto &products = reaction.products;
 		if (!products.empty()) {
 			for (const auto &specie : reaction.products) {
-				if (name != "main") {
-					output += name + "_" + specie.first + " + ";
-				} else {
-					output += specie.first + " + ";
-				}
+				output += MapSpecie(specie);
 			}
 			output.pop_back();
 			output.pop_back();
@@ -137,23 +129,33 @@ void Module::VerifyFunction() {
 		}
 	}
 }
-std::string Module::MapName(std::string moduleName, std::string specieName,
-														int specieNumber) {
+
+const std::string Module::MapSpecie(const std::pair<std::string, int> &specie) {
 	std::string output;
-	if (moduleName != "main") {
-		if (specieNumber != 1) {
+	if (name != "main") {
+		if (specie.second != 1) {
 
 			output +=
-					std::to_string(specieNumber) + moduleName + "_" + specieName + " + ";
+					std::to_string(specie.second) + name + "_" + specie.first + " + ";
 		} else {
-			output += moduleName + "_" + specieName + " + ";
+			output += name + "_" + specie.first + " + ";
 		}
 	} else {
-		if (specieNumber != 1) {
-			output += std::to_string(specieNumber) + specieName + " + ";
+		if (specie.second != 1) {
+			output += std::to_string(specie.second) + specie.first + " + ";
 		} else {
-			output += specieName + " + ";
+			output += specie.first + " + ";
 		}
+	}
+	return output;
+}
+const std::string Module::MapConcs(const std::pair<std::string, int> &concs) {
+	std::string output;
+	if (name != "main") {
+		output += name + "_" + concs.first + " := " + std::to_string(concs.second) +
+							";\n";
+	} else {
+		output += concs.first + " := " + std::to_string(concs.second) + ";\n";
 	}
 	return output;
 }
