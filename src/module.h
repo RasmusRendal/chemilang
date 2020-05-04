@@ -4,6 +4,7 @@
 #include <set>
 #include <string>
 #include <tuple>
+#include <utility>
 #include <vector>
 
 class Module;
@@ -57,6 +58,10 @@ public:
 	Module() {}
 	void Verify();
 	void VerifyFunction();
+	std::string OutputSpecieToString(const std::string &speciesName);
+	std::string SpecieConcsTostring(const std::pair<std::string, int> &concs);
+	std::string SpecieCoefToString(int coeff);
+	std::string SpecieReactToString(const std::pair<std::string, int> &specie);
 	std::string Compile();
 	/**
 	 * Remove all compositions from the vector, and add items to the object

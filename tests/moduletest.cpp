@@ -43,10 +43,10 @@ TEST_F(ModuleTest, twoValues) {
 	m.concentrations.insert(std::make_pair("a", 50));
 	m.concentrations.insert(std::make_pair("b", 30));
 
-	std::string output = "\nmain_a := 50;\n"
-											 "main_b := 30;\n"
-											 "main_a + main_b -> main_a + main_b + main_c;\n"
-											 "main_c -> 0;\n";
+	std::string output = "\na := 50;\n"
+											 "b := 30;\n"
+											 "a + b -> a + b + c;\n"
+											 "c -> 0;\n";
 
 	EXPECT_EQ(m.Compile(), output);
 }
@@ -188,10 +188,10 @@ TEST_F(ModuleTest, ReactionRate) {
 	m.concentrations.insert(std::make_pair("a", 50));
 	m.concentrations.insert(std::make_pair("b", 30));
 
-	std::string output = "\nmain_a := 50;\n"
-											 "main_b := 30;\n"
-											 "main_a + main_b ->(2) main_a + main_b + main_c;\n"
-											 "main_c -> 0;\n";
+	std::string output = "\na := 50;\n"
+											 "b := 30;\n"
+											 "a + b ->(2) a + b + c;\n"
+											 "c -> 0;\n";
 
 	EXPECT_EQ(m.Compile(), output);
 }
@@ -224,10 +224,10 @@ TEST_F(ModuleTest, ReactionRateTrailingZeros) {
 	m.concentrations.insert(std::make_pair("a", 50));
 	m.concentrations.insert(std::make_pair("b", 30));
 
-	std::string output = "\nmain_a := 50;\n"
-											 "main_b := 30;\n"
-											 "main_a + main_b ->(2.3) main_a + main_b + main_c;\n"
-											 "main_c -> 0;\n";
+	std::string output = "\na := 50;\n"
+											 "b := 30;\n"
+											 "a + b ->(2.3) a + b + c;\n"
+											 "c -> 0;\n";
 
 	EXPECT_EQ(m.Compile(), output);
 }
@@ -292,9 +292,9 @@ TEST_F(ModuleTest, MultSpeciesInReact) {
 
 	m.concentrations.insert(std::make_pair("a", 50));
 
-	std::string output = "\nmain_a := 50;\n"
-											 "2main_a -> main_c;\n"
-											 "main_c -> 0;\n";
+	std::string output = "\na := 50;\n"
+											 "2a -> c;\n"
+											 "c -> 0;\n";
 
 	EXPECT_EQ(m.Compile(), output);
 }
@@ -314,12 +314,12 @@ TEST_F(ModuleTest, FunctionTest) {
 											"compositions: {\n"
 											" a = funcm(a); \n "
 											"} \n}";
-		driver drv;
-		drv.parse_string(input);
-		std::string expected = "#!/usr/bin/env -S crnsimul -e -P \n"
-														"main_a := 5;\n"
-														"main_a + main_funcm_0_b -> main_a;\n";
-		EXPECT_EQ(drv.out, expected);
+	driver drv;
+	drv.parse_string(input);
+	std::string expected = "#!/usr/bin/env -S crnsimul -e -P \n"
+												 "a := 5;\n"
+												 "a + funcm_0_b -> a;\n";
+	EXPECT_EQ(drv.out, expected);
 }
 
 TEST_F(ModuleTest, FunctionTestThrow) {
@@ -356,18 +356,18 @@ TEST_F(ModuleTest, FunctionTestRatioDifferent) {
 											"compositions: {\n"
 											" a = funcm(a); \n "
 											"} \n}";
-  driver drv;
+	driver drv;
 	EXPECT_THROW(drv.parse_string(input), FunctionIncorrectReactionsException);
 }
 
 TEST_F(ModuleTest, FunctionTestInputSpeciesVariantPresence) {
- std::string input = "function funcm { \n"
+	std::string input = "function funcm { \n"
 											"input: c; \n"
 											"private: b; \n"
 											"output: a; \n"
 											"reactions: {\n"
 											"c + a -> b + a + c; \n"
-										 	"a -> 0; \n } \n"
+											"a -> 0; \n } \n"
 											"}"
 											"module main { \n"
 											"private: a; \n"
@@ -376,10 +376,10 @@ TEST_F(ModuleTest, FunctionTestInputSpeciesVariantPresence) {
 											"compositions: {\n"
 											" a = funcm(a); \n "
 											"} \n}";
-  std::string expected = "#!/usr/bin/env -S crnsimul -e -P \n"
-												 "main_a := 5;\n"
-												 "main_a + main_funcm_0_b -> main_a;\n"
-												 "main_a -> 0;\n";
+	std::string expected = "#!/usr/bin/env -S crnsimul -e -P \n"
+												 "a := 5;\n"
+												 "a + funcm_0_b -> a;\n"
+												 "a -> 0;\n";
 	driver drv;
 	drv.parse_string(input);
 	EXPECT_EQ(drv.out, expected);

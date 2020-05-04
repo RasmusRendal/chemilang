@@ -1,10 +1,17 @@
 #include "module.h"
 #include "composition.h"
+#include "typedefs.h"
 #include <algorithm>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <utility>
+#include <vector>
+
+namespace constants {
+std::string MAIN_MODULE = "main";
+} // namespace constants
 
 namespace precision {
 
@@ -25,24 +32,19 @@ std::string Module::Compile() {
 	if (outputSpecies.size() > 0) {
 		output += "-C ";
 		for (const auto &specie : outputSpecies) {
-			output += name + "_" + specie + ",";
+			output += OutputSpecieToString(specie);
 		}
 		output.pop_back();
 	}
 	output += "\n";
 
-	for (const auto &c : concentrations) {
-		output += name + "_" + c.first + " := " + std::to_string(c.second) + ";\n";
+	for (const auto &concs : concentrations) {
+		output += SpecieConcsTostring(concs);
 	}
 	for (const auto &reaction : reactions) {
 		if (!reaction.reactants.empty()) {
 			for (const auto &specie : reaction.reactants) {
-				if (specie.second != 1) {
-					output +=
-							std::to_string(specie.second) + name + "_" + specie.first + " + ";
-				} else {
-					output += name + "_" + specie.first + " + ";
-				}
+				output += SpecieReactToString(specie);
 			}
 			// Remove the last trailing +, because I'm too lazy not to add it
 			output.pop_back();
@@ -61,7 +63,7 @@ std::string Module::Compile() {
 		const auto &products = reaction.products;
 		if (!products.empty()) {
 			for (const auto &specie : reaction.products) {
-				output += name + "_" + specie.first + " + ";
+				output += SpecieReactToString(specie);
 			}
 			output.pop_back();
 			output.pop_back();
@@ -127,4 +129,22 @@ void Module::VerifyFunction() {
 				throw FunctionIncorrectReactionsException(name);
 		}
 	}
+}
+
+std::string
+Module::SpecieReactToString(const std::pair<std::string, int> &specie) {
+	return SpecieCoefToString(specie.second) + specie.first + " + ";
+}
+
+std::string Module::OutputSpecieToString(const std::string &specieName) {
+	return specieName + ",";
+}
+
+std::string Module::SpecieCoefToString(int coeff) {
+	return (coeff != 1) ? std::to_string(coeff) : "";
+}
+
+std::string
+Module::SpecieConcsTostring(const std::pair<std::string, int> &concs) {
+	return concs.first + " := " + std::to_string(concs.second) + ";\n";
 }
