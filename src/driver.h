@@ -26,11 +26,9 @@ public:
 	int parse_file(const std::string &filename);
 	int parse_string(const std::string &s);
 	int parse();
+	std::string Compile();
 	void FinishParsingModule();
 	void FinishParsingFunction();
-	// The name of the file being parsed.
-	std::string file;
-	std::string out = "";
 	std::map<std::string, Module> modules;
 	Module currentModule;
 	// Whether to generate parser debug traces.
@@ -43,4 +41,6 @@ public:
 	bool trace_scanning;
 	// The token's location used by the scanner.
 	yy::location location;
+	// Removes all instances of the import regex, and parses the files
+	std::string import_files(const std::string &in);
 };

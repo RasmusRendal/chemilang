@@ -33,7 +33,7 @@ TEST_F(BasicTest, CompileExample) {
 										"z -> 0;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
-	EXPECT_EQ(drv.out, out);
+	EXPECT_EQ(drv.Compile(), out);
 }
 
 TEST_F(BasicTest, NoMainModule) {
@@ -51,7 +51,8 @@ TEST_F(BasicTest, NoMainModule) {
 									 "}\n";
 
 	driver drv;
-	ASSERT_THROW(drv.parse_string(in), NoMainModuleException);
+	drv.parse_string(in);
+	ASSERT_THROW(drv.Compile(), NoMainModuleException);
 }
 
 TEST_F(BasicTest, TwoModules) {
@@ -86,7 +87,7 @@ TEST_F(BasicTest, TwoModules) {
 										"z -> 0;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
-	EXPECT_EQ(drv.out, out);
+	EXPECT_EQ(drv.Compile(), out);
 }
 
 TEST_F(BasicTest, CompositionTest) {
@@ -122,7 +123,7 @@ TEST_F(BasicTest, CompositionTest) {
 										"b -> d;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
-	EXPECT_EQ(drv.out, out);
+	EXPECT_EQ(drv.Compile(), out);
 }
 
 TEST_F(BasicTest, ReactionRateTest) {
@@ -146,7 +147,7 @@ TEST_F(BasicTest, ReactionRateTest) {
 										"z -> 0;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
-	EXPECT_EQ(drv.out, out);
+	EXPECT_EQ(drv.Compile(), out);
 }
 
 TEST_F(BasicTest, ReactionRateZeros) {
@@ -170,7 +171,7 @@ TEST_F(BasicTest, ReactionRateZeros) {
 										"z ->(3) 0;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
-	EXPECT_EQ(drv.out, out);
+	EXPECT_EQ(drv.Compile(), out);
 }
 
 TEST_F(BasicTest, ReactionRateTrailingZero) {
@@ -195,7 +196,7 @@ TEST_F(BasicTest, ReactionRateTrailingZero) {
 										"z ->(3) 0;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
-	EXPECT_EQ(drv.out, out);
+	EXPECT_EQ(drv.Compile(), out);
 }
 TEST_F(BasicTest, BiArrowInt) {
 	std::string in = "module main {\n"
@@ -223,7 +224,7 @@ TEST_F(BasicTest, BiArrowInt) {
 										"x + z -> x + y;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
-	EXPECT_EQ(drv.out, out);
+	EXPECT_EQ(drv.Compile(), out);
 }
 TEST_F(BasicTest, BiArrowDouble) {
 
@@ -249,7 +250,7 @@ TEST_F(BasicTest, BiArrowDouble) {
 
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
-	EXPECT_EQ(drv.out, out);
+	EXPECT_EQ(drv.Compile(), out);
 }
 TEST_F(BasicTest, BiArrowIntDouble) {
 	std::string in = "module main {\n"
@@ -266,7 +267,7 @@ TEST_F(BasicTest, BiArrowIntDouble) {
 
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
-	EXPECT_EQ(drv.out, out);
+	EXPECT_EQ(drv.Compile(), out);
 }
 TEST_F(BasicTest, BiArrowZeroInt) {
 	std::string in = "module main {\n"
@@ -294,7 +295,7 @@ TEST_F(BasicTest, BiArrowZeroInt) {
 										"0 ->(2) x;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
-	EXPECT_EQ(drv.out, out);
+	EXPECT_EQ(drv.Compile(), out);
 }
 
 TEST_F(BasicTest, BiArrowZeroDecimal) {
@@ -323,7 +324,7 @@ TEST_F(BasicTest, BiArrowZeroDecimal) {
 										"0 ->(2.1) x;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
-	EXPECT_EQ(drv.out, out);
+	EXPECT_EQ(drv.Compile(), out);
 }
 
 TEST_F(BasicTest, BiArrowZeroComp) {
@@ -345,7 +346,7 @@ TEST_F(BasicTest, BiArrowZeroComp) {
 										"0 ->(2) x;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
-	EXPECT_EQ(drv.out, out);
+	EXPECT_EQ(drv.Compile(), out);
 }
 
 TEST_F(BasicTest, InputConcException) {
@@ -390,7 +391,7 @@ TEST_F(BasicTest, MultSpeciesInReact) {
 										"2x -> y;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
-	EXPECT_EQ(drv.out, out);
+	EXPECT_EQ(drv.Compile(), out);
 }
 
 TEST_F(BasicTest, MultSpeciesInReact2) {
@@ -409,7 +410,7 @@ TEST_F(BasicTest, MultSpeciesInReact2) {
 										"3x -> y;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
-	EXPECT_EQ(drv.out, out);
+	EXPECT_EQ(drv.Compile(), out);
 }
 
 TEST_F(BasicTest, CompWrongInputSize) {
@@ -496,7 +497,7 @@ TEST_F(BasicTest, NestedComposition) {
 												 "a := 1337;\n"
 												 "some_0_aa := 20;\n"
 												 "some_0_thing_0_chem := 420;\n";
-	EXPECT_EQ(drv.out, expected);
+	EXPECT_EQ(drv.Compile(), expected);
 }
 
 TEST_F(BasicTest, privateSpecMapOneSubMod) {
@@ -534,7 +535,7 @@ TEST_F(BasicTest, privateSpecMapOneSubMod) {
 										"Addition_0_y -> d;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
-	EXPECT_EQ(drv.out, out);
+	EXPECT_EQ(drv.Compile(), out);
 }
 
 TEST_F(BasicTest, privateSpecMapTwoSubMod) {
@@ -590,7 +591,7 @@ TEST_F(BasicTest, privateSpecMapTwoSubMod) {
 										"Addition_0_AdditionTwo_0_y -> d;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
-	EXPECT_EQ(drv.out, out);
+	EXPECT_EQ(drv.Compile(), out);
 }
 
 TEST_F(BasicTest, privateSpecSubModReacConc) {
@@ -628,7 +629,7 @@ TEST_F(BasicTest, privateSpecSubModReacConc) {
 										"10Addition_0_y -> d;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
-	EXPECT_EQ(drv.out, out);
+	EXPECT_EQ(drv.Compile(), out);
 }
 
 TEST_F(BasicTest, outputSpecInSubModConc) {
@@ -668,7 +669,7 @@ TEST_F(BasicTest, outputSpecInSubModConc) {
 										"10Addition_0_y -> d;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
-	EXPECT_EQ(drv.out, out);
+	EXPECT_EQ(drv.Compile(), out);
 }
 
 TEST_F(BasicTest, UsingInputSpecieAsOutputOfCompModuleException) {
@@ -705,7 +706,8 @@ TEST_F(BasicTest, UsingInputSpecieAsOutputOfCompModuleException) {
 									 "}\n";
 
 	driver drv;
-	ASSERT_THROW(drv.parse_string(in), MapConcForSubModuleException);
+	drv.parse_string(in);
+	ASSERT_THROW(drv.Compile(), MapConcForSubModuleException);
 }
 
 TEST_F(BasicTest, multipleOutputSpecie) {
@@ -731,7 +733,7 @@ TEST_F(BasicTest, multipleOutputSpecie) {
 										"a + e -> a + e + f;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
-	EXPECT_EQ(drv.out, out);
+	EXPECT_EQ(drv.Compile(), out);
 }
 
 TEST_F(BasicTest, multipleOutputSpecieWithSubMod) {
@@ -764,7 +766,7 @@ TEST_F(BasicTest, multipleOutputSpecieWithSubMod) {
 										"5a -> d;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
-	EXPECT_EQ(drv.out, out);
+	EXPECT_EQ(drv.Compile(), out);
 }
 
 TEST_F(BasicTest, FuzzyLogicTest) {
@@ -798,7 +800,7 @@ TEST_F(BasicTest, FuzzyLogicTest) {
 
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
-	EXPECT_EQ(drv.out, out);
+	EXPECT_EQ(drv.Compile(), out);
 }
 
 TEST_F(BasicTest, ReactionCoefficient) {
@@ -821,7 +823,7 @@ TEST_F(BasicTest, ReactionCoefficient) {
 										"z -> 0;\n";
 	driver drv;
 	ASSERT_EQ(drv.parse_string(in), 0);
-	EXPECT_EQ(drv.out, out);
+	EXPECT_EQ(drv.Compile(), out);
 }
 
 TEST_F(BasicTest, ReactionCoefficientDecimal) {
@@ -840,4 +842,27 @@ TEST_F(BasicTest, ReactionCoefficientDecimal) {
 									 "}\n";
 	driver drv;
 	EXPECT_NE(drv.parse_string(in), 0);
+}
+
+// TODO: This unit test depends on where you execute it, which is bad
+TEST_F(BasicTest, IsReentrant) {
+	std::string in = "import chemlib/oscillator.chem;\n"
+		"module main {\n"
+									 "private: [x, y];\n"
+									 "output: z;\n"
+									 "concentrations: {\n"
+									 "x := 50;\n"
+									 "y := 30;\n"
+									 "}\n"
+									 "reactions: {\n"
+									 "x + y -> x + y + z;\n"
+									 "z -> 0;\n"
+									 "}\n"
+									 "}\n";
+
+	driver drv;
+	drv.parse_string(in);
+	drv.Compile();
+
+
 }

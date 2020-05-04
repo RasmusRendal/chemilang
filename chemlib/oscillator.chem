@@ -1,0 +1,43 @@
+# Based on the oscillator from
+# https://github.com/RasmusRendal/crnsimul/blob/milestone/1.0/examples/oscillator.crn
+function oscillator {
+	output: [a, b, c];
+	private: [ga, gb, gc, gob, goc, goa];
+	concentrations: {
+		a := 5;
+		b := 4;
+		c := 10;
+
+		ga  := 1;
+		gb  := 1;
+		gc  := 1;
+		gob := 1;
+		goc := 1;
+		goa := 1;
+	}
+
+	reactions: {
+		a + b -> 2b;
+		b + c -> 2c;
+		c + a -> 2a;
+
+		a + la <-> ga + lga;
+		a + gb -> iab;
+		iab + gob -> 2b;
+
+		b + lb <-> gb + lgb;
+		b + gc -> ibc;
+		ibc + goc -> 2c;
+
+		c + lc <-> gc + lgc;
+		c + ga -> ica;
+		ica + goa -> 2a;
+
+		0 ->(0.00001) ga;
+		0 ->(0.00001) gb;
+		0 ->(0.00001) gc;
+		0 ->(0.00001) gob;
+		0 ->(0.00001) goc;
+		0 ->(0.00001) goa;
+	}
+}

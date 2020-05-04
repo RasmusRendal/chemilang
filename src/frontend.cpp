@@ -3,7 +3,7 @@
 #include <sys/stat.h>
 
 void Frontend::GenerateStringStream() {
-	stream.str(drv->out);
+	stream.str(drv->Compile());
 }
 
 void Frontend::WriteFile() {
