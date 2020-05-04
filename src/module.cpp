@@ -32,19 +32,19 @@ std::string Module::Compile() {
 	if (outputSpecies.size() > 0) {
 		output += "-C ";
 		for (const auto &specie : outputSpecies) {
-			output += MapSpecie(specie) + ",";
+			output += OutputSpecieToString(specie);
 		}
 		output.pop_back();
 	}
 	output += "\n";
 
 	for (const auto &concs : concentrations) {
-		output += MapSpecieConcs(concs);
+		output += SpecieConcsTostring(concs);
 	}
 	for (const auto &reaction : reactions) {
 		if (!reaction.reactants.empty()) {
 			for (const auto &specie : reaction.reactants) {
-				output += MapSpecieReact(specie);
+				output += SpecieReactToString(specie);
 			}
 			// Remove the last trailing +, because I'm too lazy not to add it
 			output.pop_back();
@@ -63,7 +63,7 @@ std::string Module::Compile() {
 		const auto &products = reaction.products;
 		if (!products.empty()) {
 			for (const auto &specie : reaction.products) {
-				output += MapSpecieReact(specie);
+				output += SpecieReactToString(specie);
 			}
 			output.pop_back();
 			output.pop_back();
@@ -131,21 +131,20 @@ void Module::VerifyFunction() {
 	}
 }
 
-std::string Module::MapSpecieReact(const std::pair<std::string, int> &specie) {
-	return MapSpecieCoef(specie.second) + MapSpecie(specie.first) + " + ";
+std::string
+Module::SpecieReactToString(const std::pair<std::string, int> &specie) {
+	return SpecieCoefToString(specie.second) + specie.first + " + ";
 }
 
-std::string Module::MapSpecieCoef(int coeff) {
+std::string Module::OutputSpecieToString(const std::string &specieName) {
+	return specieName + ",";
+}
+
+std::string Module::SpecieCoefToString(int coeff) {
 	return (coeff != 1) ? std::to_string(coeff) : "";
 }
 
-std::string Module::MapSpecie(const std::string &specie) {
-	return (name == constants::MAIN_MODULE) ? specie : name + "_" + specie;
-}
-
-std::string Module::MapSpecieConcs(const std::pair<std::string, int> &concs) {
-	return MapSpecie(concs.first) + " := " + std::to_string(concs.second) + ";\n";
-}
-std::string Module::MapSpecieOut(std::string &specieName) {
-	return MapSpecie(specieName) + ",";
+std::string
+Module::SpecieConcsTostring(const std::pair<std::string, int> &concs) {
+	return concs.first + " := " + std::to_string(concs.second) + ";\n";
 }

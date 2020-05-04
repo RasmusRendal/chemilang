@@ -58,11 +58,10 @@ public:
 	Module() {}
 	void Verify();
 	void VerifyFunction();
-	std::string MapSpecie(const std::string &specie);
-	std::string MapSpecieConcs(const std::pair<std::string, int> &concs);
-	std::string MapSpecieCoef(int coeff);
-	std::string MapSpecieReact(const std::pair<std::string, int> &specie);
-	std::string MapSpecieOut(std::string &specieName);
+	std::string OutputSpecieToString(const std::string &speciesName);
+	std::string SpecieConcsTostring(const std::pair<std::string, int> &concs);
+	std::string SpecieCoefToString(int coeff);
+	std::string SpecieReactToString(const std::pair<std::string, int> &specie);
 	std::string Compile();
 	/**
 	 * Remove all compositions from the vector, and add items to the object
