@@ -839,5 +839,5 @@ TEST_F(BasicTest, ReactionCoefficientDecimal) {
 									 "}\n"
 									 "}\n";
 	driver drv;
-	ASSERT_EQ(drv.parse_string(in), 1);
+	EXPECT_NE(drv.parse_string(in), 0);
 }
