@@ -4,7 +4,6 @@
 
 %define api.token.constructor
 %define api.value.type variant
-%define parse.assert
 
 %code requires {
   #include <string>
@@ -41,9 +40,7 @@ Composition *MakeComposition(driver &drv, const std::string &moduleName, std::ve
 	return new ModuleComposition(module, inputs, outputs);
 }
 
-using SpeciesPair = std::pair<specie, int>;
-
-void InsertToSpecieMap(speciesRatios &ratio, SpeciesPair &toInsert) {
+void InsertToSpecieMap(speciesRatios &ratio, std::pair<specie, int> &toInsert) {
 	if (ratio.find(toInsert.first) == ratio.end()) {
 		ratio.insert(toInsert);
 	} else {
@@ -127,15 +124,15 @@ reactions: reaction
 		 ;
 
 reaction: reactionSpeciesList "->" reactionSpeciesList ";"
-            { reaction r = {$1, $3, 1}; drv.currentModule.reactions.push_back(r); } 
-    
-        | reactionSpeciesList "->" "(" reactionRate ")" reactionSpeciesList ";" 
+            { reaction r = {$1, $3, 1}; drv.currentModule.reactions.push_back(r); }
+
+        | reactionSpeciesList "->" "(" reactionRate ")" reactionSpeciesList ";"
             { reaction r = {$1, $6, $4}; drv.currentModule.reactions.push_back(r); }
-        
+
         | reactionSpeciesList "<->" reactionSpeciesList ";" {
             reaction r = {$1, $3, 1}; drv.currentModule.reactions.push_back(r);
             reaction R = {$3, $1, 1}; drv.currentModule.reactions.push_back(R);}
-        
+
         | reactionSpeciesList "<->" "(" reactionRate ")" reactionSpeciesList ";" {
             reaction r = {$1, $6, $4}; drv.currentModule.reactions.push_back(r);
             reaction R = {$6, $1, 1}; drv.currentModule.reactions.push_back(R);}
@@ -143,7 +140,7 @@ reaction: reactionSpeciesList "->" reactionSpeciesList ";"
         | reactionSpeciesList "(" reactionRate ")" "<->" "(" reactionRate ")" reactionSpeciesList ";" {
             reaction r = {$1, $9, $7}; drv.currentModule.reactions.push_back(r);
             reaction R = {$9, $1, $3}; drv.currentModule.reactions.push_back(R); }
-        
+
         | reactionSpeciesList "(" reactionRate ")" "<->" reactionSpeciesList ";" {
             reaction r = {$1, $6, 1}; drv.currentModule.reactions.push_back(r);
             reaction R = {$6, $1, $3}; drv.currentModule.reactions.push_back(R); }
@@ -153,7 +150,7 @@ reactionRate : "number" { $$ = static_cast<double>($1); }
 
 reactionSpeciesList: reactionSpecie { speciesRatios l; InsertToSpecieMap(l, $1); $$ = l; }
                     | reactionSpeciesList "+" reactionSpecie { speciesRatios l = $1; InsertToSpecieMap(l, $3); $$ = l; }
-                    | "number" {if ($1 !=0) {yy::parser::error(@1, "Standalone number in reaction "); YYABORT; } 
+                    | "number" {if ($1 !=0) {yy::parser::error(@1, "Standalone number in reaction "); YYABORT; }
                             $$ = std::map<std::string, int>();}
                     ;
 
