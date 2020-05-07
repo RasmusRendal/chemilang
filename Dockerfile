@@ -9,7 +9,7 @@ WORKDIR /chem
 COPY CMakeLists.txt ./
 COPY gencov.sh ./
 COPY src ./src/
-RUN mkdir tests
-COPY tests/* ./tests/
+COPY chemlib/ ./
+COPY tests/ ./
 
 RUN sh -c "cmake -DCMAKE_BUILD_TYPE=Debug . && make && ./bin/tests"
