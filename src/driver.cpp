@@ -3,6 +3,7 @@
 #include "parser.hpp"
 #include <fstream>
 #include <iostream>
+#include <regex>
 #include <sstream>
 
 driver::driver() : trace_parsing(false), trace_scanning(false) {}
@@ -18,8 +19,23 @@ int driver::parse_file(const std::string &filename) {
 	return parse_string(buffer.str());
 }
 
+// TODO: This is not the best way of doing this
+// If we have time, we should implement it properly in flex/
+// bison or as part of a real preprocessor
+std::string driver::import_files(const std::string &in) {
+	std::smatch m;
+	std::regex e("^import ([/a-zA-Z0-9.]+);");
+	std::string out = in;
+	while (std::regex_search(out, m, e)) {
+		const std::string &filename = m[1];
+		parse_file(filename);
+		out = m.prefix().str() + m.suffix().str();
+	}
+	return out;
+}
+
 int driver::parse_string(const std::string &s) {
-	scan_begin(s);
+	scan_begin(import_files(s));
 	return parse();
 }
 
@@ -29,18 +45,24 @@ int driver::parse() {
 			static_cast<yy::parser::debug_level_type>(trace_parsing));
 	int res = parse();
 	scan_end();
-	if (res != 0) {
-		return res;
-	}
-	if (modules.find("main") == modules.end()) {
-		throw NoMainModuleException();
-	}
-	out = "#!/usr/bin/env -S crnsimul -e -P ";
-	out += modules["main"].Compile();
 	return res;
 }
 
+std::string driver::Compile() {
+	if (modules.find("main") == modules.end()) {
+		std::cerr << "Modules declared:" << std::endl;
+		for (const auto &m : modules) {
+			std::cerr << "\t" << m.first << std::endl;
+		}
+		throw NoMainModuleException();
+	}
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P ";
+	out += modules["main"].Compile();
+	return out;
+};
+
 void driver::FinishParsingModule() {
+	currentModule.Verify();
 	modules.insert(std::make_pair(currentModule.name, currentModule));
 	currentModule = Module();
 }

@@ -319,7 +319,7 @@ TEST_F(ModuleTest, FunctionTest) {
 	std::string expected = "#!/usr/bin/env -S crnsimul -e -P \n"
 												 "a := 5;\n"
 												 "a + funcm_0_b -> a;\n";
-	EXPECT_EQ(drv.out, expected);
+	EXPECT_EQ(drv.Compile(), expected);
 }
 
 TEST_F(ModuleTest, FunctionTestThrow) {
@@ -382,5 +382,5 @@ TEST_F(ModuleTest, FunctionTestInputSpeciesVariantPresence) {
 												 "a -> 0;\n";
 	driver drv;
 	drv.parse_string(input);
-	EXPECT_EQ(drv.out, expected);
+	EXPECT_EQ(drv.Compile(), expected);
 }

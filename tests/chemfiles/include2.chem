@@ -1,0 +1,10 @@
+module Addition {
+	input: [a, b];
+	output: v;
+
+	reactions: {
+		a -> a + v;
+		b -> b + v;
+		v -> 0;
+	}
+}
