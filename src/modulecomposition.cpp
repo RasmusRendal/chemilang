@@ -79,6 +79,7 @@ specie ModuleComposition::MapSpecie(const specie &specieName) {
 	} else if (mapPri.find(specieName) != mapPri.end()) {
 		return mapPri.at(specieName);
 	} else {
-		throw std::runtime_error("Specie not found");
+		// To make the compiler happy
+		throw std::runtime_error("Specie not found. This should never happen.");
 	}
 }
