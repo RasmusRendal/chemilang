@@ -2,7 +2,11 @@
 # https://github.com/RasmusRendal/crnsimul/blob/milestone/1.0/examples/oscillator.crn
 function oscillator {
 	output: [a, b, c];
+	input: x;
 	private: [ga, gb, gc, gob, goc, goa];
+	private: [la, lb, lc];
+	private: [lga, lgb, lgc];
+	private: [iab, ibc, ica];
 	concentrations: {
 		a := 5;
 		b := 4;
