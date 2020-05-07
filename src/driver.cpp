@@ -19,6 +19,9 @@ int driver::parse_file(const std::string &filename) {
 	return parse_string(buffer.str());
 }
 
+// TODO: This is not the best way of doing this
+// If we have time, we should implement it properly in flex/
+// bison or as part of a real preprocessor
 std::string driver::import_files(const std::string &in) {
 	std::smatch m;
 	std::regex e("^import ([/a-zA-Z0-9.]+);");
