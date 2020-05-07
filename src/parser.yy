@@ -116,6 +116,7 @@ compositions: composition { std::vector<Composition*> vec; vec.push_back($1); $$
 			;
 
 composition: speciesArray "=" "name" "(" speciesArray ")" ";" { $$ = MakeComposition(drv, $3, $5, $1); }
+					 | speciesArray "=" "name" "(" ")" ";" { $$ = MakeComposition(drv, $3, std::vector<specie>(), $1); }
            | "if" "(" "name" ")" "{" compositions "}" { $$ = new ConditionalComposition($3, $6); }
 		   ;
 

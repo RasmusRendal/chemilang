@@ -26,7 +26,6 @@ void ModuleComposition::ApplyComposition(
 		std::string moduleName, int compositionNumber,
 		std::map<specie, int> &concOut, std::vector<reaction> &reactionsOut,
 		std::vector<specie> &privateSpecieOut) {
-	speciesMapping mapPri;
 	module->Verify();
 	module->ApplyCompositions();
 
@@ -39,7 +38,7 @@ void ModuleComposition::ApplyComposition(
 	}
 
 	for (const auto &reaction : module->reactions) {
-		reactionsOut.push_back(MapReaction(mapPri, reaction));
+		reactionsOut.push_back(MapReaction(reaction));
 	}
 
 	for (const auto &c : module->concentrations) {
@@ -54,41 +53,33 @@ void ModuleComposition::ApplyComposition(
 	}
 }
 
-reaction ModuleComposition::MapReaction(const speciesMapping &mapPri,
-																				const reaction &r) {
+reaction ModuleComposition::MapReaction(const reaction &r) {
 	speciesRatios leftSide;
 	for (const auto &specie : r.reactants) {
 		const std::string &specieName = specie.first;
-		if (inputMapping.find(specieName) != inputMapping.end()) {
-			leftSide.insert(
-					std::make_pair(inputMapping.at(specieName), specie.second));
-		} else if (outputMapping.find(specieName) != outputMapping.end()) {
-			leftSide.insert(
-					std::make_pair(outputMapping.at(specieName), specie.second));
-		} else if (mapPri.find(specieName) != mapPri.end()) {
-			leftSide.insert(std::make_pair(mapPri.at(specieName), specie.second));
-		} else {
-			throw std::runtime_error("Specie not found");
-		}
+		leftSide.insert(std::make_pair(MapSpecie(specieName), specie.second));
 	}
 
 	speciesRatios rightSide;
 	for (const auto &specie : r.products) {
 		const std::string &specieName = specie.first;
-		if (inputMapping.find(specieName) != inputMapping.end()) {
-			rightSide.insert(
-					std::make_pair(inputMapping.at(specieName), specie.second));
-		} else if (outputMapping.find(specieName) != outputMapping.end()) {
-			rightSide.insert(
-					std::make_pair(outputMapping.at(specieName), specie.second));
-		} else if (mapPri.find(specieName) != mapPri.end()) {
-			leftSide.insert(std::make_pair(mapPri.at(specieName), specie.second));
-		} else {
-			throw std::runtime_error("Specie not found");
-		}
+		rightSide.insert(std::make_pair(MapSpecie(specieName), specie.second));
 	}
 
 	reactionRate rate = r.rate;
 	reaction mapped = {leftSide, rightSide, rate};
 	return mapped;
+}
+
+specie ModuleComposition::MapSpecie(const specie &specieName) {
+	if (inputMapping.find(specieName) != inputMapping.end()) {
+		return inputMapping.at(specieName);
+	} else if (outputMapping.find(specieName) != outputMapping.end()) {
+		return outputMapping.at(specieName);
+	} else if (mapPri.find(specieName) != mapPri.end()) {
+		return mapPri.at(specieName);
+	} else {
+		// To make the compiler happy
+		throw std::runtime_error("Specie not found. This should never happen.");
+	}
 }

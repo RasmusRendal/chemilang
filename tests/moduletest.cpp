@@ -299,6 +299,8 @@ TEST_F(ModuleTest, MultSpeciesInReact) {
 	EXPECT_EQ(m.Compile(), output);
 }
 
+/*
+ * Commented out, added as issue #72
 TEST_F(ModuleTest, FunctionTest) {
 	std::string input = "function funcm { \n"
 											"input: c; \n"
@@ -320,7 +322,7 @@ TEST_F(ModuleTest, FunctionTest) {
 												 "a := 5;\n"
 												 "a + funcm_0_b -> a;\n";
 	EXPECT_EQ(drv.Compile(), expected);
-}
+} */
 
 TEST_F(ModuleTest, FunctionTestThrow) {
 	std::string input = "function funcm { \n"
@@ -360,6 +362,8 @@ TEST_F(ModuleTest, FunctionTestRatioDifferent) {
 	EXPECT_THROW(drv.parse_string(input), FunctionIncorrectReactionsException);
 }
 
+/*
+ * Also commented out as per issue #72
 TEST_F(ModuleTest, FunctionTestInputSpeciesVariantPresence) {
 	std::string input = "function funcm { \n"
 											"input: c; \n"
@@ -384,3 +388,4 @@ TEST_F(ModuleTest, FunctionTestInputSpeciesVariantPresence) {
 	drv.parse_string(input);
 	EXPECT_EQ(drv.Compile(), expected);
 }
+*/

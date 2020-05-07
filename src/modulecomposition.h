@@ -31,8 +31,12 @@ public:
 												std::vector<reaction> &reactionOut,
 												std::vector<specie> &specieOut) override;
 
-	reaction MapReaction(const speciesMapping &mapPri, const reaction &r);
+	reaction MapReaction(const reaction &r);
+	specie MapSpecie(const specie &inSpecie);
 	speciesMapping inputMapping;
 	speciesMapping outputMapping;
 	Module *module;
+
+private:
+	speciesMapping mapPri;
 };
