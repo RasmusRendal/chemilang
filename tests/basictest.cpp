@@ -847,7 +847,7 @@ TEST_F(BasicTest, ReactionCoefficientDecimal) {
 // TODO: This unit test depends on where you execute it, which is bad
 TEST_F(BasicTest, IsReentrant) {
 	std::string in = "import chemlib/oscillator.chem;\n"
-		"module main {\n"
+									 "module main {\n"
 									 "private: [x, y];\n"
 									 "output: z;\n"
 									 "concentrations: {\n"
@@ -863,6 +863,38 @@ TEST_F(BasicTest, IsReentrant) {
 	driver drv;
 	drv.parse_string(in);
 	drv.Compile();
+}
 
+TEST_F(BasicTest, NestedIncludes) {
+	std::string in = "import tests/chemfiles/include1.chem;\n"
+									 "module main {\n"
+									 "private: [a, b, c, d];\n"
+									 "output: z;\n"
+									 "concentrations: {\n"
+									 "a := 3;\n"
+									 "b := 3;\n"
+									 "c := 3;\n"
+									 "d := 3;\n"
+									 "}\n"
+									 "compositions: {"
+									 "z = MulAdditions(a, b, c, d);"
+									 "}}";
 
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C z\n"
+										"a := 3;\n"
+										"b := 3;\n"
+										"c := 3;\n"
+										"d := 3;\n"
+										"MulAdditions_0_x + MulAdditions_0_y -> z;\n"
+										"z -> 0;\n"
+										"MulAdditions_0_y + c -> c;\n"
+										"MulAdditions_0_y + d -> d;\n"
+										"MulAdditions_0_y -> 0;\n"
+										"MulAdditions_0_x + a -> a;\n"
+										"MulAdditions_0_x + b -> b;\n"
+										"MulAdditions_0_x -> 0;\n";
+
+	driver drv;
+	drv.parse_string(in);
+	EXPECT_EQ(drv.Compile(), out);
 }
