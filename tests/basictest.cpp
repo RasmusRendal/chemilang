@@ -885,16 +885,37 @@ TEST_F(BasicTest, NestedIncludes) {
 										"b := 3;\n"
 										"c := 3;\n"
 										"d := 3;\n"
-										"MulAdditions_0_x + MulAdditions_0_y -> z;\n"
+										"MulAdditions_0_x + MulAdditions_0_y -> MulAdditions_0_x + "
+										"MulAdditions_0_y + z;\n"
 										"z -> 0;\n"
-										"MulAdditions_0_y + c -> c;\n"
-										"MulAdditions_0_y + d -> d;\n"
+										"c -> MulAdditions_0_y + c;\n"
+										"d -> MulAdditions_0_y + d;\n"
 										"MulAdditions_0_y -> 0;\n"
-										"MulAdditions_0_x + a -> a;\n"
-										"MulAdditions_0_x + b -> b;\n"
+										"a -> MulAdditions_0_x + a;\n"
+										"b -> MulAdditions_0_x + b;\n"
 										"MulAdditions_0_x -> 0;\n";
 
 	driver drv;
 	drv.parse_string(in);
 	EXPECT_EQ(drv.Compile(), out);
+}
+
+TEST_F(BasicTest, NoArgComp) {
+	std::string in = "module ReturnFive { \n"
+									 "output: x;\n"
+									 "private: y;\n"
+									 "concentrations: { y := 5; }\n"
+									 "reactions: { y -> y + x; x -> 0; }\n"
+									 "}\n"
+									 "module main {\n"
+									 "output: v;\n"
+									 "compositions: { v = ReturnFive(); } }";
+
+	driver drv;
+	ASSERT_EQ(drv.parse_string(in), 0);
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C v\n"
+										"ReturnFive_0_y := 5;\n"
+										"ReturnFive_0_y -> ReturnFive_0_y + v;\n"
+										"v -> 0;\n";
+	ASSERT_EQ(drv.Compile(), out);
 }
