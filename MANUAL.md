@@ -43,6 +43,8 @@ $ ./out.crn
 This will evaluate the CRN using the default shebang placed in the top-most line.
 If you would like to use some other `crnsimul` options, you can edit the output file yourself, or simply call `crnsimul` directly with `crnsimul [options] out.crn`.
 
+Additionally, the command line parameter `-O filename` is supported.
+This is the only option supported in the chemilang compiler.
 ### 2. Syntax of Chemilang
 That last example had a lot of code.
 But what did it mean?
