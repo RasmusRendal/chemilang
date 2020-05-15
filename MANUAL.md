@@ -1,13 +1,23 @@
 # chemilang manual
-This manual is inteded as an instruction in using the chemilang compiler.
+This manual is intended as an instruction in using the chemilang compiler.
 
 ### Prerequisites
-This manual assumes that you have chemilang and crnismul installed, and have them in your `$PATH`.
-To copmile chemilang, see the README in this repository.
+This manual assumes that you have chemilang and crnsimul installed, and have them in your `$PATH`.
+To compile chemilang, see the README in this repository.
 To compile crnsimul, see the README in the [crnsimul repository](https://github.com/rasmusrendal/crnsimul).
 
 ## Table of contents
-TODO: Add this
+- [chemilang manual](#chemilang-manual)
+		- [Prerequisites](#prerequisites)
+	- [Table of contents](#table-of-contents)
+		- [1. Hello world example](#1-hello-world-example)
+		- [2. Syntax of Chemilang](#2-syntax-of-chemilang)
+			- [2.1 Private species](#21-private-species)
+			- [2.2 Output species](#22-output-species)
+			- [2.3 Concentrations](#23-concentrations)
+			- [2.4 Reactions](#24-reactions)
+			- [2.5 Composition](#25-composition)
+				- [2.5.1 Conditional Composition](#251-conditional-composition)
 
 ### 1. Hello world example
 We can't really do a canonical hello world in chemilang, due to the absence of strings.
@@ -49,7 +59,7 @@ But what did it mean?
 
 First of all, we defined a module named `main`.
 A module is basically a chemical reaction network.
-The strength of chemilang as a language is its ability to compose these modules, to create very complicated reaction networks, while still keeping the mental load managable.
+The strength of chemilang as a language is its ability to compose these modules. To create very complicated reaction networks, while still keeping the mental load managable.
 
 The name is important, because this is the main "entry point" of the compiler into the reaction network.
 If there is no module named main, the compiler will throw an error.
@@ -66,7 +76,7 @@ Later, the properties composition and input will be covered.
 
 First of all, we will explain the properties used in order.
 
-Some general things to keep in mind about the synax of chemilang is also that whitespace is not meaningful, semicolon is used as a seperator, and that comments start with `#`, extending to the end of the line.
+Some general things to keep in mind about the syntax of chemilang is also that whitespaces are not meaningful, semicolons are used as a seperator, and that comments start with `#`, extending to the end of the line.
 
 #### 2.1 Private species
 Private species are species that are internal to a module.
@@ -76,10 +86,10 @@ They are specified in the format `private: a;`, or if multiple are to be specifi
 
 If you define your private species twice, the second definition will be apppended to the first.
 
-Tih salso counts for input and output species.
+This also counts for input and output species.
 
 #### 2.2 Output species
-Output species are the species that contain the result of the computation the module performs.
+Output species are the species that contain the result of the computation that the module performs.
 
 If we use composition, output species are visible to the supermodule.
 
@@ -110,7 +120,7 @@ The main point of chemilang, and the reason that it is useful to specify large c
 
 This feature allows the user to define submodules, which can be reused multiple times by different supermodules.
 
-Take for instancre, the submodule `Addition`:
+Take for instance, the submodule `Addition`:
 
 ```
 # addition.chem
@@ -159,7 +169,7 @@ $ chemilang tripleaddition.chem
 Output written to out.crn
 ```
 What the composition feature does is that it adds the reactions, private species, and initial concentrations of the submodule to the supermodule.
-Additionally, the input and outptsu, speciefied before the equals sign and inside the parentheses respectively, are aliased in the submodule.
+Additionally, the input and output, specified before the equals sign and inside the parentheses respectively, are aliased in the submodule.
 That is, before the reactions are appended to the supermodule, any occurence of parameter #x is replaced by argument #x, akin to call-by-name in some programming languages, and Lambda calculus.
 
 ##### 2.5.1 Conditional Composition
@@ -204,4 +214,4 @@ a + z -> c + z;
 b + z -> c + z;
 ```
 This allows all sorts of interesting methods of fuzzy logic.
-It can also be combined with oscillator in the chemlib to produce sequential reaction networks, for instance.
+It can also be combined with the oscillator in the chemlib to produce sequential reaction networks, for instance.
