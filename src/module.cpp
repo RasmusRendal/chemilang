@@ -15,11 +15,18 @@ std::string MAIN_MODULE = "main";
 
 namespace precision {
 
+// TODO: This does not seem ideal, but getting floats in just the right format
+// seems to be a hard problem.
 std::string to_string(double d) {
-
-	std::ostringstream stm;
-	stm << std::setprecision(std::numeric_limits<double>::digits10) << d;
-	return stm.str();
+	std::ostringstream ss;
+	ss << std::fixed;
+	ss << std::setprecision(MAX_DECS);
+	ss << d;
+	std::string out = ss.str();
+	while (out.back() == '0' || out.back() == '.') {
+		out.pop_back();
+	}
+	return out;
 }
 } // namespace precision
 
