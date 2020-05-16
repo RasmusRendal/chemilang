@@ -10,6 +10,10 @@
 class Module;
 class Composition;
 
+namespace precision {
+	std::string to_string(double d);
+}
+
 struct FunctionIncorrectReactionsException : public std::exception {
 	std::string error;
 	FunctionIncorrectReactionsException(std::string moduleName)

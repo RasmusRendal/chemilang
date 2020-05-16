@@ -23,7 +23,10 @@ std::string to_string(double d) {
 	ss << std::setprecision(MAX_DECS);
 	ss << d;
 	std::string out = ss.str();
-	while (out.back() == '0' || out.back() == '.') {
+	while (out.find('.') != std::string::npos && out.back() == '0') {
+		out.pop_back();
+	}
+	if (out.back() == '.') {
 		out.pop_back();
 	}
 	return out;

@@ -9,9 +9,10 @@ void ScalarComposition::ApplyComposition(std::string moduleName,
 	for (Composition *subcomp : subCompositions) {
 		subcomp->ApplyComposition(moduleName, compositionNumber, concOut, preRates,
 															specieOut);
+		compositionNumber++;
 	}
 	for (auto reaction : preRates) {
-		reaction.rate *= time;
+		reaction.rate *= scale;
 		reactionOut.push_back(reaction);
 	}
 }

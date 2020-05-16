@@ -389,3 +389,10 @@ TEST_F(ModuleTest, FunctionTestInputSpeciesVariantPresence) {
 	EXPECT_EQ(drv.Compile(), expected);
 }
 */
+
+TEST_F(ModuleTest, TestNumberPrint) {
+	EXPECT_EQ(precision::to_string(2.5), "2.5");
+	EXPECT_EQ(precision::to_string(10), "10");
+	EXPECT_EQ(precision::to_string(100), "100");
+	EXPECT_EQ(precision::to_string(1.00), "1");
+}

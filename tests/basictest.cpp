@@ -969,3 +969,86 @@ TEST_F(BasicTest, SmallRate) {
 
 	EXPECT_EQ(drv.Compile(), out);
 }
+
+TEST_F(BasicTest, ScaleRateTest) {
+	std::string in = "module Addition {\n"
+									 "input: [x, y];\n"
+									 "output: z;\n"
+									 "reactions: {\n"
+									 "x -> z;\n"
+									 "y -> z;\n"
+									 "}\n"
+									 "}\n"
+									 "module main {\n"
+									 "private: [a, b, c, d];\n"
+									 "output: e;\n"
+									 "concentrations: {\n"
+									 "a := 50;\n"
+									 "b := 30;\n"
+									 "c := 30;\n"
+									 "}\n"
+									 "compositions: {\n"
+									 "scale (10) {\n"
+									 "d = Addition(a, b);\n"
+									 "e = Addition(d, c);\n"
+									 "}\n"
+									 "}\n"
+									 "}\n";
+
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C e\n"
+										"a := 50;\n"
+										"b := 30;\n"
+										"c := 30;\n"
+										"a ->(10) d;\n"
+										"b ->(10) d;\n"
+										"d ->(10) e;\n"
+										"c ->(10) e;\n";
+	driver drv;
+	ASSERT_EQ(drv.parse_string(in), 0);
+	EXPECT_EQ(drv.Compile(), out);
+}
+
+TEST_F(BasicTest, ScaleRateTestDown) {
+	std::string in = "module Addition {\n"
+									 "input: [x, y];\n"
+									 "output: z;\n"
+									 "private: a;\n"
+									 "concentrations: {\n"
+									 "a := 5;\n"
+									 "}\n"
+									 "reactions: {\n"
+									 "x -> z;\n"
+									 "y -> z;\n"
+									 "}\n"
+									 "}\n"
+									 "module main {\n"
+									 "private: [a, b, c, d];\n"
+									 "output: e;\n"
+									 "concentrations: {\n"
+									 "a := 50;\n"
+									 "b := 30;\n"
+									 "c := 30;\n"
+									 "}\n"
+									 "compositions: {\n"
+									 "scale (0.1) {\n"
+									 "d = Addition(a, b);\n"
+									 "e = Addition(d, c);\n"
+									 "}\n"
+									 "}\n"
+									 "}\n";
+
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C e\n"
+										"Addition_0_a := 5;\n"
+										"Addition_1_a := 5;\n"
+										"a := 50;\n"
+										"b := 30;\n"
+										"c := 30;\n"
+										"a ->(0.1) d;\n"
+										"b ->(0.1) d;\n"
+										"d ->(0.1) e;\n"
+										"c ->(0.1) e;\n";
+	driver drv;
+	ASSERT_EQ(drv.parse_string(in), 0);
+	EXPECT_EQ(drv.Compile(), out);
+}
+

@@ -3,9 +3,8 @@
 
 class ScalarComposition : public Composition {
 public:
-	ScalarComposition(double time, std::vector<Composition *> subCompositions)
-			: subCompositions(subCompositions) {
-		this->time = time;
+	ScalarComposition(double scale, std::vector<Composition *> subCompositions)
+			: subCompositions(subCompositions), scale(scale) {
 	}
 
 	void ApplyComposition(std::string moduleName, int compositionNumber,
@@ -14,6 +13,6 @@ public:
 												std::vector<specie> &specieOut) override;
 
 private:
-	double time;
+	double scale;
 	std::vector<Composition *> subCompositions;
 };
