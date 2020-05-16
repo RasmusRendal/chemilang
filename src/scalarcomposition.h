@@ -4,8 +4,7 @@
 class ScalarComposition : public Composition {
 public:
 	ScalarComposition(double scale, std::vector<Composition *> subCompositions)
-			: subCompositions(subCompositions), scale(scale) {
-	}
+			: subCompositions(subCompositions), scale(scale) {}
 
 	void ApplyComposition(std::string moduleName, int compositionNumber,
 												std::map<specie, int> &concOut,

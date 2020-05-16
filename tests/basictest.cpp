@@ -1051,4 +1051,3 @@ TEST_F(BasicTest, ScaleRateTestDown) {
 	ASSERT_EQ(drv.parse_string(in), 0);
 	EXPECT_EQ(drv.Compile(), out);
 }
-

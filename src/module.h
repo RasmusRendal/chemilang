@@ -11,7 +11,7 @@ class Module;
 class Composition;
 
 namespace precision {
-	std::string to_string(double d);
+std::string to_string(double d);
 }
 
 struct FunctionIncorrectReactionsException : public std::exception {
