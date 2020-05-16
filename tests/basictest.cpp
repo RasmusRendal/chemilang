@@ -922,37 +922,50 @@ TEST_F(BasicTest, NoArgComp) {
 
 TEST_F(BasicTest, MultipleIncludes) {
 	std::string in = "import chemlib/oscillator.chem;\n"
-		"import tests/chemfiles/include1.chem;\n"
-		"module main {\n"
-		"private: [a, b, c, d];\n"
-		"output: z;\n"
-		"concentrations: {\n"
-		"a := 3;\n"
-		"b := 3;\n"
-		"c := 3;\n"
-		"d := 3;\n"
-		"}\n"
-		"compositions: {"
-		"z = MulAdditions(a, b, c, d);"
-		"}}";
+									 "import tests/chemfiles/include1.chem;\n"
+									 "module main {\n"
+									 "private: [a, b, c, d];\n"
+									 "output: z;\n"
+									 "concentrations: {\n"
+									 "a := 3;\n"
+									 "b := 3;\n"
+									 "c := 3;\n"
+									 "d := 3;\n"
+									 "}\n"
+									 "compositions: {"
+									 "z = MulAdditions(a, b, c, d);"
+									 "}}";
 
 	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C z\n"
-		"a := 3;\n"
-		"b := 3;\n"
-		"c := 3;\n"
-		"d := 3;\n"
-		"MulAdditions_0_x + MulAdditions_0_y -> MulAdditions_0_x + "
-		"MulAdditions_0_y + z;\n"
-		"z -> 0;\n"
-		"c -> MulAdditions_0_y + c;\n"
-		"d -> MulAdditions_0_y + d;\n"
-		"MulAdditions_0_y -> 0;\n"
-		"a -> MulAdditions_0_x + a;\n"
-		"b -> MulAdditions_0_x + b;\n"
-		"MulAdditions_0_x -> 0;\n";
+										"a := 3;\n"
+										"b := 3;\n"
+										"c := 3;\n"
+										"d := 3;\n"
+										"MulAdditions_0_x + MulAdditions_0_y -> MulAdditions_0_x + "
+										"MulAdditions_0_y + z;\n"
+										"z -> 0;\n"
+										"c -> MulAdditions_0_y + c;\n"
+										"d -> MulAdditions_0_y + d;\n"
+										"MulAdditions_0_y -> 0;\n"
+										"a -> MulAdditions_0_x + a;\n"
+										"b -> MulAdditions_0_x + b;\n"
+										"MulAdditions_0_x -> 0;\n";
 
 	driver drv;
 	drv.parse_string(in);
 	EXPECT_EQ(drv.Compile(), out);
+}
 
+TEST_F(BasicTest, SmallRate) {
+	std::string in = "module main {\n"
+									 "private: a;\n"
+									 "output: b;\n"
+									 "reactions: { a ->(0.00000001) b; }}";
+
+	driver drv;
+	ASSERT_EQ(drv.parse_string(in), 0);
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C b\n"
+										"a ->(0.00000001) b;\n";
+
+	EXPECT_EQ(drv.Compile(), out);
 }

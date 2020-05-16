@@ -2,6 +2,8 @@
 #include <map>
 #include <string>
 
+#define MAX_DECS 10
+
 using specie = std::string;
 using speciesRatios = std::map<specie, int>;
 using reactionRate = double;
