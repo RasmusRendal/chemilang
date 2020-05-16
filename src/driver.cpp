@@ -24,7 +24,7 @@ int driver::parse_file(const std::string &filename) {
 // bison or as part of a real preprocessor
 std::string driver::import_files(const std::string &in) {
 	std::smatch m;
-	std::regex e("^import ([/a-zA-Z0-9.]+);");
+	std::regex e("import ([/a-zA-Z0-9.]+);");
 	std::string out = in;
 	while (std::regex_search(out, m, e)) {
 		const std::string &filename = m[1];
