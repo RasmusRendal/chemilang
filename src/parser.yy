@@ -14,6 +14,7 @@
   #include "module.h"
   #include "modulecomposition.h"
   #include "conditionalcomposition.h"
+  #include "scalarcomposition.h"
   class driver;
 }
 
@@ -53,6 +54,7 @@ void InsertToSpecieMap(speciesRatios &ratio, std::pair<specie, int> &toInsert) {
 %token
     END  0               "end of file"
     T_DMODULE            "module"
+    T_DSCALE             "scale"
     T_DFUNCTION          "function"
     T_DPRIVATE           "private:"
     T_DINPUT             "input:"
@@ -113,12 +115,14 @@ property : "private:" dSpecies ";" { MergeVectors(drv.currentModule.privateSpeci
 
 compositions: composition { std::vector<Composition*> vec; vec.push_back($1); $$ = vec; }
 			| compositions composition { auto vec = $1; $1.push_back($2); $$ = $1; }
-			;
+      ;
 
 composition: speciesArray "=" "name" "(" speciesArray ")" ";" { $$ = MakeComposition(drv, $3, $5, $1); }
 					 | speciesArray "=" "name" "(" ")" ";" { $$ = MakeComposition(drv, $3, std::vector<specie>(), $1); }
            | "if" "(" "name" ")" "{" compositions "}" { $$ = new ConditionalComposition($3, $6); }
-		   ;
+           | "scale" "(" "number" ")" "{" compositions "}" { $$ = new ScalarComposition(($3), $6); }
+           | "scale" "(" "decimal" ")" "{" compositions "}" { $$ = new ScalarComposition($3, $6); }
+		       ;
 
 reactions: reaction
 		 | reactions reaction

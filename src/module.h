@@ -10,6 +10,10 @@
 class Module;
 class Composition;
 
+namespace precision {
+std::string to_string(double d);
+}
+
 struct FunctionIncorrectReactionsException : public std::exception {
 	std::string error;
 	FunctionIncorrectReactionsException(std::string moduleName)
@@ -73,7 +77,6 @@ public:
 	 * the vector
 	 */
 	void ApplyCompositions();
-
 	std::string name;
 	std::vector<specie> inputSpecies;
 	std::vector<specie> outputSpecies;
