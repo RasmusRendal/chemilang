@@ -57,6 +57,18 @@ struct MapConcForSubModuleException : public std::exception {
 	}
 };
 
+struct NoSuchModuleException : public std::exception {
+	std::string error;
+	NoSuchModuleException(std::string moduleName)
+			: error(
+						"You tried to create a composition with module '" + moduleName +
+						"', but no such module has been defined. Maybe it's defined below "
+						"the current module?") {}
+	const char *what() const throw() {
+		return error.c_str();
+	}
+};
+
 class Module {
 public:
 	Module() {}
