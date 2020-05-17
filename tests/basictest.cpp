@@ -1051,3 +1051,22 @@ TEST_F(BasicTest, ScaleRateTestDown) {
 	ASSERT_EQ(drv.parse_string(in), 0);
 	EXPECT_EQ(drv.Compile(), out);
 }
+
+TEST_F(BasicTest, CompErrorTest) {
+	std::string in = "module main {\n"
+									 "private: [a, b, c, d];\n"
+									 "output: e;\n"
+									 "concentrations: {\n"
+									 "a := 50;\n"
+									 "b := 30;\n"
+									 "c := 30;\n"
+									 "}\n"
+									 "compositions: {\n"
+									 "d = Addition(a, b);\n"
+									 "e = Addition(d, c);\n"
+									 "}\n"
+									 "}\n";
+
+	driver drv;
+	ASSERT_THROW(drv.parse_string(in), NoSuchModuleException);
+}
