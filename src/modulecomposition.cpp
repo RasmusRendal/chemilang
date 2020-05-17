@@ -1,5 +1,6 @@
 #include "modulecomposition.h"
 #include "module.h"
+#include <iostream>
 
 ModuleComposition::ModuleComposition(Module *module, std::vector<specie> inputs,
 																		 std::vector<specie> outputs)
@@ -79,7 +80,8 @@ specie ModuleComposition::MapSpecie(const specie &specieName) {
 	} else if (mapPri.find(specieName) != mapPri.end()) {
 		return mapPri.at(specieName);
 	} else {
-		// To make the compiler happy
-		throw std::runtime_error("Specie not found. This should never happen.");
+		throw std::runtime_error("Module '" + module->name + "' used the specie '" +
+														 specieName +
+														 "' in a composition, but did not declare it.");
 	}
 }
