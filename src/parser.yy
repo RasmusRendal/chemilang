@@ -37,6 +37,9 @@ void MergeVectors(std::vector<T> &v1, const std::vector<T> &v2) {
 }
 
 Composition *MakeComposition(driver &drv, const std::string &moduleName, std::vector<specie> inputs, std::vector<specie> outputs) {
+	if (drv.modules.find(moduleName) == drv.modules.end()) {
+		throw NoSuchModuleException(moduleName);
+	}
 	Module *module = &drv.modules.at(moduleName);
 	return new ModuleComposition(module, inputs, outputs);
 }
