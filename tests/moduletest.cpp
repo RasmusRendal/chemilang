@@ -362,6 +362,24 @@ TEST_F(ModuleTest, FunctionTestRatioDifferent) {
 	EXPECT_THROW(drv.parse_string(input), FunctionIncorrectReactionsException);
 }
 
+TEST_F(ModuleTest, BadFunctionModule) {
+	std::string input = "function funcm { \n"
+											"input: c; \n"
+											"private: b; \n"
+											"output: a; \n"
+											"reactions: {\n"
+											"c + a -> b + a + c + aaaaaaa; \n } \n"
+											"}"
+											"module main { \n"
+											"private: a; \n"
+											"concentrations: { \n"
+											"a := 5; \n } \n"
+											"compositions: {\n"
+											" a = funcm(a); \n "
+											"} \n}";
+	driver drv;
+	EXPECT_THROW(drv.parse_string(input), SpecieNotDeclaredException);
+}
 /*
  * Also commented out as per issue #72
 TEST_F(ModuleTest, FunctionTestInputSpeciesVariantPresence) {
