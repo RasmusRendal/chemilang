@@ -99,13 +99,17 @@ void Module::Verify() {
 	}
 
 	for (const auto &c : concentrations) {
-		if (declaredSpecies.find(c.first) == declaredSpecies.end()) {
-			throw SpecieNotDeclaredException(c.first, name);
+		const auto &specieName = c.first;
+		if (declaredSpecies.find(specieName) == declaredSpecies.end()) {
+			throw SpecieNotDeclaredException(specieName, name);
 		}
-		for (const auto &specie : inputSpecies) {
-			if (c.first == specie) {
-				throw InputSpecieConcException(c.first, name);
-			}
+		if (std::find(inputSpecies.begin(), inputSpecies.end(), specieName) !=
+				inputSpecies.end()) {
+			throw InputSpecieConcException(c.first, name);
+		}
+		if (std::find(outputSpecies.begin(), outputSpecies.end(), specieName) !=
+				outputSpecies.end()) {
+			throw OutputSpecieConcException(specieName, name);
 		}
 	}
 	for (const auto &reaction : reactions) {
