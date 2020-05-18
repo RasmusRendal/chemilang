@@ -1,12 +1,12 @@
 #include "driver.h"
 #include "frontend.h"
 #include "parser.hpp"
+#include <boost/algorithm/string.hpp>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <regex>
 #include <sstream>
-#include <cstdlib>
-#include <boost/algorithm/string.hpp>
 
 driver::driver() : trace_parsing(false), trace_scanning(false) {}
 
@@ -81,7 +81,7 @@ void driver::FinishParsingFunction() {
 }
 
 std::string driver::FindFileInPath(const std::string &fileName) {
-	char * chemPath = getenv("CHEMPATH");
+	char *chemPath = getenv("CHEMPATH");
 	std::string searchPath = defaultPath;
 
 	if (chemPath != nullptr) {
@@ -89,7 +89,7 @@ std::string driver::FindFileInPath(const std::string &fileName) {
 	}
 
 	std::vector<std::string> paths;
-	boost::split(paths, searchPath, []( char c ){ return c == ':'; });
+	boost::split(paths, searchPath, [](char c) { return c == ':'; });
 	for (std::string &dir : paths) {
 		if (dir.back() != '/')
 			dir += "/";
@@ -97,7 +97,6 @@ std::string driver::FindFileInPath(const std::string &fileName) {
 		if (f.good()) {
 			return dir + fileName;
 		}
-
 	}
 	throw std::runtime_error("File '" + fileName + "' not found");
 }
