@@ -217,3 +217,12 @@ b + z -> c + z;
 ```
 This allows all sorts of interesting methods of fuzzy logic.
 It can also be combined with the oscillator in the chemlib to produce sequential reaction networks, for instance.
+
+### 2.6 Import Statement
+Using a statement of the form `import file.chem` allows the user to import other files.
+It will prefer files in the same directory.
+However, it also searches in the chemilang library path, determined by the environment variable `$CHEMPATH`.
+You can add a custom search path for Chemilang modules to your path by using the command `export CHEMPATH=/home/user/Projects/chemilang/chemlib`.
+Multiple directiories can be added, like a standard UNIX search path.
+
+If the file can be found in neither the current directory, or any of the directories defined by the environment variable, chemilang will also look in `/usr/local/share/chemlib` and `/usr/share/chemlib/` for any files.

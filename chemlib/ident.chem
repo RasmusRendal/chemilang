@@ -1,0 +1,9 @@
+function ident {
+	input: x;
+	output: y;
+
+	reactions: {
+		x ->(100) x + y;
+		y ->(100) 0;
+	}
+}
