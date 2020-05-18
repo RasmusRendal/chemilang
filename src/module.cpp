@@ -137,6 +137,7 @@ void Module::ApplyCompositions() {
 }
 
 void Module::VerifyFunction() {
+	Verify();
 	for (const auto &input : inputSpecies) {
 		for (auto reaction : reactions) {
 			if (reaction.reactants[input] != reaction.products[input])
