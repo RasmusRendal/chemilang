@@ -1,0 +1,12 @@
+function sub {
+	input: [x, y];
+	private: c;
+	output: z;
+
+	reactions: {
+		x -> x + z;
+		y -> y + c;
+		z -> 0;
+		z + c -> 0;
+	}
+}

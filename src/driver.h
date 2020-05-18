@@ -43,4 +43,7 @@ public:
 	yy::location location;
 	// Removes all instances of the import regex, and parses the files
 	std::string import_files(const std::string &in);
+private:
+	std::string FindFileInPath(const std::string &fileName);
+	std::string defaultPath = "/usr/local/share/chemlib/:/usr/share/chemlib/";
 };

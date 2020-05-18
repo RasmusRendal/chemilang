@@ -5,6 +5,8 @@
 #include <iostream>
 #include <regex>
 #include <sstream>
+#include <cstdlib>
+#include <boost/algorithm/string.hpp>
 
 driver::driver() : trace_parsing(false), trace_scanning(false) {}
 
@@ -28,7 +30,12 @@ std::string driver::import_files(const std::string &in) {
 	std::string out = in;
 	while (std::regex_search(out, m, e)) {
 		const std::string &filename = m[1];
-		parse_file(filename);
+		std::ifstream f(filename);
+		if (f.good()) {
+			parse_file(filename);
+		} else {
+			parse_file(FindFileInPath(filename));
+		}
 		out = m.prefix().str() + m.suffix().str();
 	}
 	return out;
@@ -71,4 +78,26 @@ void driver::FinishParsingFunction() {
 	currentModule.VerifyFunction();
 	modules.insert(std::make_pair(currentModule.name, currentModule));
 	currentModule = Module();
+}
+
+std::string driver::FindFileInPath(const std::string &fileName) {
+	char * chemPath = getenv("CHEMPATH");
+	std::string searchPath = defaultPath;
+
+	if (chemPath != nullptr) {
+		searchPath = std::string(chemPath) + ":" + searchPath;
+	}
+
+	std::vector<std::string> paths;
+	boost::split(paths, searchPath, []( char c ){ return c == ':'; });
+	for (std::string &dir : paths) {
+		if (dir.back() != '/')
+			dir += "/";
+		std::ifstream f(dir + fileName);
+		if (f.good()) {
+			return dir + fileName;
+		}
+
+	}
+	throw std::runtime_error("File '" + fileName + "' not found");
 }
