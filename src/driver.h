@@ -16,6 +16,15 @@ struct NoMainModuleException : public std::exception {
 	}
 };
 
+struct MultipleModulesWithSameName : public std::exception {
+	std::string error;
+	MultipleModulesWithSameName(std::string moduleName)
+			: error("Multiple modules with name: \"" + moduleName + "\" detected ") {}
+	const char *what() const throw() {
+		return error.c_str();
+	}
+};
+
 // Conducting the whole scanning and parsing of Calc++.
 //! driver class, wroom wroom.
 class driver {
