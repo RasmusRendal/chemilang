@@ -54,6 +54,7 @@ public:
 	std::string import_files(const std::string &in);
 
 private:
+	void AddModuleToMap();
 	std::string FindFileInPath(const std::string &fileName);
 	std::string defaultPath = "/usr/local/share/chemlib/:/usr/share/chemlib/";
 };
