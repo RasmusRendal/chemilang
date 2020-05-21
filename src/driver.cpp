@@ -70,14 +70,22 @@ std::string driver::Compile() {
 
 void driver::FinishParsingModule() {
 	currentModule.Verify();
-	modules.insert(std::make_pair(currentModule.name, currentModule));
+	AddModuleToMap();
 	currentModule = Module();
 }
 
 void driver::FinishParsingFunction() {
 	currentModule.VerifyFunction();
-	modules.insert(std::make_pair(currentModule.name, currentModule));
+	AddModuleToMap();
 	currentModule = Module();
+}
+
+void driver::AddModuleToMap() {
+	if (modules.find(currentModule.name) == modules.end()) {
+		modules.insert(std::make_pair(currentModule.name, currentModule));
+	} else {
+		throw MultipleModulesWithSameName(currentModule.name);
+	}
 }
 
 std::string driver::FindFileInPath(const std::string &fileName) {
