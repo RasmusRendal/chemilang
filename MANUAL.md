@@ -236,8 +236,10 @@ Requirements:
 - 2gb of ram
 - 12gb of free disk space
 
-These requirements are set to ensure a stable performance of the virtual machine.
-The virtual machine runs Manjaro Linux.
+These requirements are set to ensure a stable performance of the virtual machine, but can be changed in accordance with the users preferences.
+
+
+The virtual machine runs Manjaro Linux with the gnome desktop environment.
 - Sudo Password = 1234
 
 The source code for both Chemilang and crnsimul are included and placed in `~/Desktop`
