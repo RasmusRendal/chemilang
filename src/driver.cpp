@@ -27,8 +27,8 @@ int driver::parse_file(const std::string &filename) {
 std::string driver::import_files(const std::string &in) {
 	std::smatch m;
 	std::regex e("import ([/a-zA-Z0-9.]+);");
-	std::string out = in;
-	while (std::regex_search(out, m, e)) {
+	std::string res = in;
+	while (std::regex_search(res, m, e)) {
 		const std::string &filename = m[1];
 		std::ifstream f(filename);
 		if (f.good()) {
@@ -36,9 +36,9 @@ std::string driver::import_files(const std::string &in) {
 		} else {
 			parse_file(FindFileInPath(filename));
 		}
-		out = m.prefix().str() + m.suffix().str();
+		res = m.prefix().str() + m.suffix().str();
 	}
-	return out;
+	return res;
 }
 
 int driver::parse_string(const std::string &s) {
@@ -63,21 +63,29 @@ std::string driver::Compile() {
 		}
 		throw NoMainModuleException();
 	}
-	std::string out = "#!/usr/bin/env -S crnsimul -e -P ";
-	out += modules["main"].Compile();
-	return out;
+	std::string res = "#!/usr/bin/env -S crnsimul -e -P ";
+	res += modules["main"].Compile();
+	return res;
 };
 
 void driver::FinishParsingModule() {
 	currentModule.Verify();
-	modules.insert(std::make_pair(currentModule.name, currentModule));
+	AddModuleToMap();
 	currentModule = Module();
 }
 
 void driver::FinishParsingFunction() {
 	currentModule.VerifyFunction();
-	modules.insert(std::make_pair(currentModule.name, currentModule));
+	AddModuleToMap();
 	currentModule = Module();
+}
+
+void driver::AddModuleToMap() {
+	if (modules.find(currentModule.name) == modules.end()) {
+		modules.insert(std::make_pair(currentModule.name, currentModule));
+	} else {
+		throw MultipleModulesWithSameName(currentModule.name);
+	}
 }
 
 std::string driver::FindFileInPath(const std::string &fileName) {
