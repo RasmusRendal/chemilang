@@ -1,4 +1,0 @@
-/usr/local/bin/chemilang
-/usr/local/share//chemlib/ident.chem
-/usr/local/share//chemlib/oscillator.chem
-/usr/local/share//chemlib/sub.chem
