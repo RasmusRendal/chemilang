@@ -45,6 +45,9 @@ void ModuleComposition::ApplyComposition(
 	for (const auto &c : module->concentrations) {
 		if (mapPri.find(c.first) != mapPri.end()) {
 			concOut.insert(std::pair<specie, int>(mapPri.at(c.first), c.second));
+		} else if (outputMapping.find(c.first) != outputMapping.end()) {
+			concOut.insert(
+					std::pair<specie, int>(outputMapping.at(c.first), c.second));
 		} else {
 			throw MapConcForSubModuleException(c.first, module->name, moduleName);
 		}

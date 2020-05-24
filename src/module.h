@@ -34,16 +34,6 @@ struct SpecieNotDeclaredException : public std::exception {
 	}
 };
 
-struct OutputSpecieConcException : public std::exception {
-	std::string error;
-	OutputSpecieConcException(std::string speciesName, std::string moduleName)
-			: error("Illegal use of output species " + speciesName + ", in module " +
-							moduleName + ". Cannot set concentration of input species") {}
-	const char *what() const throw() {
-		return error.c_str();
-	}
-};
-
 struct InputSpecieConcException : public std::exception {
 	std::string error;
 	InputSpecieConcException(std::string speciesName, std::string moduleName)
