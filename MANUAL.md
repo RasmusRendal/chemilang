@@ -18,6 +18,7 @@ To compile crnsimul, see the README in the [crnsimul repository](https://github.
 			- [2.4 Reactions](#24-reactions)
 			- [2.5 Composition](#25-composition)
 				- [2.5.1 Conditional Composition](#251-conditional-composition)
+			- [2.6 Import Statement](#26-import-statement)
 		- [3. Virtual environment](#3-virtual-environment)
 
 ### 1. Hello world example
