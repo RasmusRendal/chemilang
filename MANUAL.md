@@ -226,3 +226,23 @@ You can add a custom search path for Chemilang modules to your path by using the
 Multiple directiories can be added, like a standard UNIX search path.
 
 If the file can be found in neither the current directory, or any of the directories defined by the environment variable, chemilang will also look in `/usr/local/share/chemlib` and `/usr/share/chemlib/` for any files.
+
+### 2.7 Virtual environment
+A virtual environment has been set up for chemilang using virtualbox.
+
+Requirements:
+- Atleast 2 available cores
+- 2gb of ram
+- 12gb of free disk space
+
+These requirements are set to ensure a stable performance of the virtual machine.
+The virtual machine runs Manjaro Linux.
+- Sudo Password = 1234
+
+The source code for both Chemilang and crnsimul are included and placed in ~/Desktop
+
+In the folder ~/Desktop/examples some small examples in Chemilang code can be found.
+
+Chemilang and crnsimul have been installed in '/usr/bin' and can thus be invoked from the terminal.
+
+ChemVirtualBox
