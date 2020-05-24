@@ -1070,3 +1070,30 @@ TEST_F(BasicTest, CompErrorTest) {
 	driver drv;
 	ASSERT_THROW(drv.parse_string(in), NoSuchModuleException);
 }
+
+TEST_F(BasicTest, MultipleModulesWithSameName) {
+	std::string in = "module main {\n"
+									 "private: [a, b, c, d];\n"
+									 "output: z;\n"
+									 "concentrations: {\n"
+									 "a := 3;\n"
+									 "b := 3;\n"
+									 "c := 3;\n"
+									 "d := 3;\n"
+									 "}\n"
+									 "}"
+									 "module main {\n"
+									 "private: [a, b, c, d];\n"
+									 "output: z;\n"
+									 "concentrations: {\n"
+									 "a := 3;\n"
+									 "b := 3;\n"
+									 "c := 3;\n"
+									 "d := 3;\n"
+									 "}\n"
+									 "}";
+
+	driver drv;
+	// drv.parse_string(in);
+	EXPECT_THROW(drv.parse_string(in), MultipleModulesWithSameName);
+}
