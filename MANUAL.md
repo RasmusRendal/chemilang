@@ -240,7 +240,8 @@ Requirements:
 These requirements are set to ensure a stable performance of the virtual machine, but can be changed in accordance with the users preferences.
 
 The virtual machine runs Manjaro Linux with the Gnome desktop environment.
-A user account is created with the username `chem` and the password `1234`
+A user account is created with the username `chem` and the password `1234`.
+The root password is also `1234`.
 
 The source code for both Chemilang and crnsimul are included and placed in `~/Desktop`
 
