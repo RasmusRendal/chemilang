@@ -1,0 +1,10 @@
+function compare {
+	input: [x,y];
+	output: [a,b];
+
+	reactions: {
+		x -> x + a;
+		y -> y + b;
+		a + b -> 0;
+	}
+}
