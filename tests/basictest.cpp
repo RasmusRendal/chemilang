@@ -659,8 +659,17 @@ TEST_F(BasicTest, outputSpecInSubModConc) {
 									 "}\n"
 									 "}\n";
 
+	std::string out = "#!/usr/bin/env -S crnsimul -e -P -C e\n"
+										"Addition_0_y := 20;\n"
+										"a := 50;\n"
+										"b := 30;\n"
+										"c := 30;\n"
+										"d := 20;\n"
+										"5a -> d;\n"
+										"10Addition_0_y -> d;\n";
 	driver drv;
-	ASSERT_THROW(drv.parse_string(in), OutputSpecieConcException);
+	ASSERT_EQ(drv.parse_string(in), 0);
+	EXPECT_EQ(drv.Compile(), out);
 }
 
 TEST_F(BasicTest, UsingInputSpecieAsOutputOfCompModuleException) {
@@ -697,7 +706,8 @@ TEST_F(BasicTest, UsingInputSpecieAsOutputOfCompModuleException) {
 									 "}\n";
 
 	driver drv;
-	ASSERT_THROW(drv.parse_string(in), OutputSpecieConcException);
+	drv.parse_string(in);
+	ASSERT_THROW(drv.Compile(), MapConcForSubModuleException);
 }
 
 TEST_F(BasicTest, multipleOutputSpecie) {
