@@ -26,7 +26,7 @@ ModuleComposition::ModuleComposition(Module *module, std::vector<specie> inputs,
 void ModuleComposition::ApplyComposition(
 		std::string moduleName, int compositionNumber,
 		std::map<specie, int> &concOut, std::vector<reaction> &reactionsOut,
-		std::vector<specie> &privateSpecieOut) {
+		std::vector<specie> &privateSpecieRes) {
 	module->Verify();
 	module->ApplyCompositions();
 
@@ -34,7 +34,7 @@ void ModuleComposition::ApplyComposition(
 		specie newSpecie = module->name + "_" + std::to_string(compositionNumber) +
 											 "_" + priSpecie;
 
-		privateSpecieOut.push_back(newSpecie);
+		privateSpecieRes.push_back(newSpecie);
 		mapPri.insert(std::make_pair(priSpecie, newSpecie));
 	}
 
